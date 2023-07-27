@@ -5,12 +5,12 @@ export class BaseEntity {
     type: 'datetime',
     default: () => `datetime('now')`,
   })
-  public createdAt: Date;
+  public regDtm: Date;
 
   @UpdateDateColumn({
     type: 'datetime',
     default: () => `datetime('now')`,
     onUpdate: `datetime('now')`,
   })
-  public updatedAt: Date;
+  public modDtm: Date;
 }
