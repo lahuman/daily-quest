@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { format, parse } from "date-fns";
+import { format, parse, subDays, addDays } from "date-fns";
 import { TodoVo } from "./TodoVo";
 import { client } from "./fetchHelper";
 
@@ -10,7 +10,6 @@ export default function Todo() {
   const [loading, setLoading] = useState(false);
   const [dateStr, setDateStr] = useState(format(new Date(), "yyyyMMdd"));
   const [list, setList] = useState<TodoVo[] | undefined>();
-
 
   useEffect(() => {
     client(`/todo/${dateStr}`).then((data) => {
@@ -23,9 +22,35 @@ export default function Todo() {
       <div className="justify-center h-screen">
         <div className="w-full px-4 py-8 mx-auto shadow lg:w-1/3">
           <div className="flex items-center mb-6">
-            <h1 className="mr-6 text-4xl font-bold text-purple-600">
+            <h1 className="mr-6 text-2xl font-bold text-purple-600">
               {" "}
-              {format(parse(dateStr, "yyyyMMdd", new Date()), "yyyy-MM-dd")} TO DO
+              <button
+                className="bg-purple-300 hover:bg-purple-400 text-gray-800 rounded-l"
+                onClick={(e) =>
+                  setDateStr(
+                    format(
+                      subDays(parse(dateStr, "yyyyMMdd", new Date()), 1),
+                      "yyyyMMdd"
+                    )
+                  )
+                }
+              >
+                {"<<"}
+              </button>{" "}
+              {format(parse(dateStr, "yyyyMMdd", new Date()), "yyyy-MM-dd")}{" "}
+              <button
+                className="bg-purple-300 hover:bg-purple-400 text-gray-800 rounded-r"
+                onClick={(e) =>
+                  setDateStr(
+                    format(
+                      addDays(parse(dateStr, "yyyyMMdd", new Date()), 1),
+                      "yyyyMMdd"
+                    )
+                  )
+                }
+              >
+                {">>"}
+              </button>{" "}
             </h1>
           </div>
           <div className="relative">
