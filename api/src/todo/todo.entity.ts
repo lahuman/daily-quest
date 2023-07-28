@@ -25,9 +25,9 @@ export class Todo extends BaseEntity {
   @Column()
   content: string;
 
-  @Column()
+  @Column('varchar', { default: 'N' })
   completeYn: string;
 
-  @Column()
+  @Column('varchar', { default: 'Y' })
   useYn: string;
 }

@@ -23,6 +23,8 @@ export class UserController {
   @ApiOperation({ summary: '사용자 토큰 만료시 refresh 토큰으로 호출' })
   @Post('/refresh')
   refresh(@RequestHeaders() headers: RefreshHeaderDTO) {
-    return this.userService.tokenRefresh(headers.authorization);
+    return this.userService.tokenRefresh(
+      headers.authorization.split('Bearer ')[1],
+    );
   }
 }

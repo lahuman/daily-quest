@@ -25,14 +25,16 @@ export class TodoService {
         new Todo({
           ...createTodo,
           userSeq,
-          todoDay: format(new Date(), 'yyyyMMdd'),
           dailyTodoSeq: dailyTodo.seq,
         }),
       );
       return new TodoVo(todo);
     } else {
       const todo = await this.todoRepository.save(
-        new Todo({ ...createTodo, userSeq }),
+        new Todo({
+          ...createTodo,
+          userSeq,
+        }),
       );
       return new TodoVo(todo);
     }
@@ -41,7 +43,7 @@ export class TodoService {
   async getTodoList(dateStr: string, userSeq: number) {
     const [todo, todayDaily, dailyTodo] = await Promise.all([
       this.todoRepository.find({
-        where: { type: TODO_TYPE.T, useYn: 'Y', userSeq },
+        where: { type: TODO_TYPE.T, useYn: 'Y', userSeq, todoDay: dateStr },
       }),
       this.todoRepository.find({
         where: { type: TODO_TYPE.DT, todoDay: dateStr, useYn: 'Y', userSeq },
@@ -91,8 +93,9 @@ export class TodoService {
   }
 
   async todoComplete(todoDto: TodoDto, userSeq: number) {
+    let todo;
     if (todoDto.seq) {
-      await this.todoRepository.findOneOrFail({
+      todo = await this.todoRepository.findOneOrFail({
         where: {
           userSeq,
           seq: todoDto.seq,
@@ -100,7 +103,7 @@ export class TodoService {
         },
       });
     } else if (todoDto.dailyTodoSeq) {
-      const todo = await this.todoRepository.findOne({
+      todo = await this.todoRepository.findOne({
         where: {
           userSeq,
           dailyTodoSeq: todoDto.dailyTodoSeq,
@@ -108,28 +111,29 @@ export class TodoService {
           useYn: 'Y',
         },
       });
-      if (todo) {
-        todo.completeYn = todoDto.completeYn;
-        await this.todoRepository.save(todo);
-      } else {
-        const newTodo = await this.dailyTodoRepository.findOneOrFail({
-          where: {
-            userSeq,
-            useYn: 'Y',
-            seq: todoDto.dailyTodoSeq,
-          },
-        });
-        await this.todoRepository.save(
-          new Todo({
-            userSeq,
-            content: newTodo.content,
-            dailyTodoSeq: newTodo.seq,
-            type: TODO_TYPE.DT,
-            completeYn: todoDto.completeYn,
-            todoDay: todoDto.todoDay,
-          }),
-        );
-      }
+    }
+    if (todo) {
+      todo.completeYn = todoDto.completeYn;
+      todo.todoDay = todoDto.todoDay;
+      await this.todoRepository.save(todo);
+    } else {
+      const newTodo = await this.dailyTodoRepository.findOneOrFail({
+        where: {
+          userSeq,
+          useYn: 'Y',
+          seq: todoDto.dailyTodoSeq,
+        },
+      });
+      await this.todoRepository.save(
+        new Todo({
+          userSeq,
+          content: newTodo.content,
+          dailyTodoSeq: newTodo.seq,
+          type: TODO_TYPE.DT,
+          completeYn: todoDto.completeYn,
+          todoDay: todoDto.todoDay,
+        }),
+      );
     }
   }
 }

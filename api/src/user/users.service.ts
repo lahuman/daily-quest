@@ -30,7 +30,9 @@ export class UserService {
   async tokenRefresh(refresh: string): Promise<UserTokenVo> {
     try {
       const decode = jwt.verify(refresh, JWT_REFRESH_SECRET);
-      const user = await this.userRepository.findOneOrFail(decode.seq);
+      const user = await this.userRepository.findOneOrFail({
+        where: { seq: decode.seq },
+      });
 
       return this.makeUserTokenVO(user);
     } catch (error) {
@@ -40,9 +42,10 @@ export class UserService {
   }
 
   private makeUserTokenVO(user: User): UserTokenVo {
+    const { seq } = user;
     const token = jwt.sign(
       {
-        ...user,
+        seq,
       },
       JWT_SECRET,
       {
@@ -51,7 +54,7 @@ export class UserService {
     );
     const refresh = jwt.sign(
       {
-        ...user,
+        seq,
       },
       JWT_REFRESH_SECRET,
       {

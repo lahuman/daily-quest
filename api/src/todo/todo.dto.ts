@@ -21,6 +21,11 @@ export class CreateTodoDto {
   @IsString()
   content: string;
 
+  @ApiProperty({ description: '실행일', required: true })
+  @IsNotEmpty()
+  @IsString()
+  todoDay: string;
+
   @ApiProperty({ description: '완료여부', required: false })
   @IsOptional()
   @IsString()
@@ -56,8 +61,8 @@ export class TodoDto {
   @IsString()
   completeYn: string;
 
-  @ApiProperty({ description: '미션날자', required: false })
-  @IsOptional()
+  @ApiProperty({ description: '미션날자', required: true })
+  @IsNotEmpty()
   @IsString()
   todoDay: string;
 }

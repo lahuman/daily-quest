@@ -6,15 +6,12 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common';
-import { FirebaseService } from './firebase.service';
 import { StrategyStorage } from '../auth/strategy-storage';
 import { AuthStrategy } from '../auth/auth.strategy';
 
 @Injectable()
 export class FirebaseGuard implements CanActivate {
   logger: Logger = new Logger(FirebaseGuard.name);
-
-  // constructor(private firebaseService: FirebaseService) {}
 
   async canActivate(context: ExecutionContext) {
     const req = context.switchToHttp().getRequest();

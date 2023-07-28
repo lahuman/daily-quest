@@ -15,6 +15,6 @@ export class DailyTodo extends BaseEntity {
   @Column()
   content: string;
 
-  @Column()
+  @Column('varchar', { default: 'Y' })
   useYn: string;
 }

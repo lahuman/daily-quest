@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { UsersModule } from './user/user.module';
 import { FirebaseModule } from './firebase/firebase.module';
@@ -28,6 +28,7 @@ require('./core/snake-naming.strategy').SnakeNamingStrategy;
       synchronize: false,
       entities: [join(__dirname, '**/*.entity.{ts,js}')],
       subscribers: [],
+      logging: true,
       maxQueryExecutionTime: 1000, // 1초 이상되는 모든 쿼리 등록
       extra: {
         synchronous: 'normal',

@@ -1,12 +1,7 @@
-import { User } from './user.entity';
+import { IsNumber } from 'class-validator';
 
 export class UserVO {
-  constructor(data: Partial<User>) {
-    Object.assign(this, data);
-  }
+
+  @IsNumber()
   seq: number;
-  email: string;
-  uid: string;
-  regDtm: Date;
-  modDtm: Date;
 }
