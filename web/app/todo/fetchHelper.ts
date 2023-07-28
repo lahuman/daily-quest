@@ -100,6 +100,7 @@ export const client = wrapperClient((endpoint: string, { body, ...customConfig }
     };
   }
 
+  console.log(process.env.NEXT_PUBLIC_API_HOST)
   return fetch(`${process.env.NEXT_PUBLIC_API_HOST}${endpoint}`, config).then(
     async (res) => {
       const txt = await res.text();
