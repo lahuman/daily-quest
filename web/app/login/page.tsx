@@ -55,11 +55,11 @@ export default function Login() {
                   src="https://lahuman.github.io/assets/img/logo.png"
                   alt="lahuman"
                 />
-                매일 미션!
+                Daily Quests
               </h4>
 
               <p className="text-sm">
-              매일 미션을 수행하는 프로그램은 개인의 성장과 목표 달성을 돕기 위해 개발된 혁신적인 도구입니다. 이 프로그램은 사용자가 매일 새로운 도전과 목표를 설정하고, 그것을 달성하도록 도와주는데 초점을 맞추고 있습니다. 간단한 인터페이스와 개인 맞춤 기능으로 사용자들의 일상에 쉽게 접목시킬 수 있도록 설계되었습니다.
+              The program designed for daily missions is an innovative tool developed to aid in individual growth and goal attainment. Its core focus revolves around helping users set new challenges and objectives each day and assisting them in accomplishing those goals. With a user-friendly interface and personalized features, the program is designed to seamlessly integrate into users' daily routines.
               </p>
             </div>
 
