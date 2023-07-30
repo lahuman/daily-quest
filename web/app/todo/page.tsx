@@ -117,7 +117,8 @@ export default function Todo() {
       <p className="w-1/3 text-center text-white">This may take a few seconds, please don't close this page.</p>
     </div>}
 
-      <div className="justify-center h-screen">
+    {/* bg-fixed bg-center bg-cover bg-no-repeat bg-[url('https://lahuman.github.io/assets/img/logo.png')] */}
+      <div className="justify-center h-screen  ">
         <div className="w-full px-4 py-8 mx-auto shadow lg:w-1/3">
           <div className="flex justify-center  mb-6">
             <h1 className="text-2xl font-bold text-purple-600">
