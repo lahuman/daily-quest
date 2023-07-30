@@ -67,15 +67,17 @@ export class TodoService {
 
   async removeTodo(todoDto: TodoDto, userSeq: number) {
     if (todoDto.type === TODO_TYPE.DT) {
-      const daily = await this.dailyTodoRepository.findOneOrFail({
+      const daily = await this.dailyTodoRepository.findOne({
         where: {
           userSeq,
           seq: todoDto.dailyTodoSeq,
           useYn: 'Y',
         },
       });
-      daily.useYn = 'N';
-      await this.dailyTodoRepository.save(daily);
+      if(daily) {
+        daily.useYn = 'N';
+        await this.dailyTodoRepository.save(daily);
+      }
     }
     const todo = await this.todoRepository.findOne({
       where: {

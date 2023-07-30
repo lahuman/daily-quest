@@ -18,9 +18,9 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  tokenValidate(token: string): UserTokenVo {
+  tokenValidate(token: string): UserVO {
     try {
-      return jwt.verify(token, JWT_SECRET);
+      return jwt.verify(token, JWT_SECRET) as UserVO
     } catch (e) {
       this.logger.error(e);
       throw new HttpException('Token is invalid.', HttpStatus.UNAUTHORIZED);
@@ -29,7 +29,7 @@ export class UserService {
 
   async tokenRefresh(refresh: string): Promise<UserTokenVo> {
     try {
-      const decode = jwt.verify(refresh, JWT_REFRESH_SECRET);
+      const decode = jwt.verify(refresh, JWT_REFRESH_SECRET) as UserVO;
       const user = await this.userRepository.findOneOrFail({
         where: { seq: decode.seq },
       });

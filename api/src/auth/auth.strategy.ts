@@ -3,6 +3,7 @@ import { UserService } from '../user/users.service';
 import { StrategyStorage } from './strategy-storage';
 import { UserTokenVo } from '../user/user-token.vo';
 import { FirebaseService } from '../firebase/firebase.service';
+import { UserVO } from '..//user/user.vo';
 
 @Injectable()
 export class AuthStrategy {
@@ -16,7 +17,7 @@ export class AuthStrategy {
   fbVerify(token: string) {
     return this.firebaseService.authTokenVerify(token);
   }
-  userVerify(token: string): UserTokenVo {
+  userVerify(token: string): UserVO {
     return this.userService.tokenValidate(token);
   }
 }

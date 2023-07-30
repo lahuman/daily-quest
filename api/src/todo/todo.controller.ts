@@ -49,8 +49,8 @@ export class TodoController {
   @ApiOperation({ summary: '미션 삭제' })
   @ApiResponse({ status: 204 })
   @HttpCode(204)
-  remove(@AuthUser() userVo: UserVO, @Body() todoDto: TodoDto) {
-    this.service.removeTodo(todoDto, userVo.seq);
+  async remove(@AuthUser() userVo: UserVO, @Body() todoDto: TodoDto) {
+    await this.service.removeTodo(todoDto, userVo.seq);
   }
 
   @Put()
