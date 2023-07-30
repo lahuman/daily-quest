@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 export default function Dashboard() {
   const [error, setError] = useState("");
@@ -14,8 +13,10 @@ export default function Dashboard() {
     setError("");
 
     try {
-      await logout();
-      router.push("/login");
+      if (logout) {
+        await logout();
+        router.push("/login");
+      }
     } catch {
       setError("Failed to log out");
     }
@@ -29,7 +30,7 @@ export default function Dashboard() {
       fetch(`${process.env.NEXT_PUBLIC_API_HOST}/user/signIn`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${currentUser.accessToken}`,
+          Authorization: `Bearer ${(currentUser as any).accessToken}`,
           "Content-Type": "application/json",
         },
       })
@@ -45,30 +46,30 @@ export default function Dashboard() {
   return (
     <>
       <section className="h-screen">
-          <div className="bg-white bg-opacity-60 z-10 h-full w-full flex items-center justify-center">
-            <div className="flex items-center">
-              <span className="text-3xl mr-4">Loading</span>
-              <svg
-                className="animate-spin h-8 w-8 text-gray-800"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-            </div>
+        <div className="bg-white bg-opacity-60 z-10 h-full w-full flex items-center justify-center">
+          <div className="flex items-center">
+            <span className="text-3xl mr-4">Loading</span>
+            <svg
+              className="animate-spin h-8 w-8 text-gray-800"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+          </div>
         </div>
       </section>
       {/* <section className="h-screen">

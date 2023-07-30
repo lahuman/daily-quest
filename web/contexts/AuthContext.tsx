@@ -1,13 +1,16 @@
 "use client";
 import React, { useContext, useState, useEffect, ReactNode } from "react";
-import {
-  auth,
-  signInWithGoogle,
-  signOutAccount,
-} from "@/app/firebase";
+import { auth, signInWithGoogle, signOutAccount } from "@/app/firebase";
 import { User } from "firebase/auth";
 
-const AuthContext = React.createContext({});
+
+export interface AuthContextType {
+  currentUser?: User | null | undefined;
+  loginGoogle?: () => Promise<void>;
+  logout?: () => Promise<void>;
+}
+
+const AuthContext = React.createContext<AuthContextType>({});
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -16,7 +19,6 @@ export function useAuth() {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [loading, setLoading] = useState(true);
-
 
   // 구글 로그인
   async function loginGoogle() {
@@ -37,7 +39,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   function logout() {
     return signOutAccount();
   }
-
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {

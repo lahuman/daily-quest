@@ -59,7 +59,7 @@ export default function Todo() {
     })
   }
 
-  function updateTodoCompleted(row){
+  function updateTodoCompleted(row: TodoVo){
     setLoading(true);
 
     client("/todo", {
@@ -75,7 +75,7 @@ export default function Todo() {
     });
   }
 
-  function deleteTodo(row) {
+  function deleteTodo(row: TodoVo) {
     setLoading(true);
 
     client("/todo", {
@@ -114,7 +114,7 @@ export default function Todo() {
       ></path>
               </svg><h2 className="text-center text-white text-xl font-semibold">Loading...</h2>
       
-      <p className="w-1/3 text-center text-white">This may take a few seconds, please don't close this page.</p>
+      <p className="w-1/3 text-center text-white">This may take a few seconds, please don&apos;t close this page.</p>
     </div>}
 
     {/* bg-fixed bg-center bg-cover bg-no-repeat bg-[url('https://lahuman.github.io/assets/img/logo.png')] */}
