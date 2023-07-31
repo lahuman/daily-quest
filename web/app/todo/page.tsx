@@ -144,9 +144,9 @@ export default function Todo() {
             </h1>
           </div>
           <div className="flex flex-row">
-            <select className="basis-3/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2" value={type} onChange={e => setType(e.target.value === "DT"? TODO_TYPE.DT : TODO_TYPE.T)}>
-              <option value="DT">Repeat quest</option>
-              <option value="T">Once quest</option>
+            <select className="basis-2/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2" value={type} onChange={e => setType(e.target.value === "DT"? TODO_TYPE.DT : TODO_TYPE.T)}>
+              <option value="DT">Repeat</option>
+              <option value="T">Once</option>
             </select>
             <input
               value={newTodo}
