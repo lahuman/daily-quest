@@ -50,8 +50,10 @@ export default function Login() {
               <h4 className="mb-6 text-xl font-semibold">
                 <Image
                   className="inline-block h-12 w-12 rounded-full ring-2 ring-white"
-                  src="https://lahuman.github.io/assets/img/logo.png"
+                  src="/ironMan.png"
                   alt="lahuman"
+                  width={100}
+                  height={100}
                 />
                 Daily Quests
               </h4>
