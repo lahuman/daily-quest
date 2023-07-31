@@ -143,8 +143,8 @@ export default function Todo() {
             </button>
             </h1>
           </div>
-          <div className="flex flex-row">
-            <select className="basis-2/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2" value={type} onChange={e => setType(e.target.value === "DT"? TODO_TYPE.DT : TODO_TYPE.T)}>
+          <div className="flex ">
+            <select className="w-2/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2" value={type} onChange={e => setType(e.target.value === "DT"? TODO_TYPE.DT : TODO_TYPE.T)}>
               <option value="DT">Repeat</option>
               <option value="T">Once</option>
             </select>
@@ -157,7 +157,7 @@ export default function Todo() {
                 }}}
               type="text"
               placeholder="Please write a Quest"
-              className="basis-7/12 px-2 py-3 border rounded outline-none border-grey-600"
+              className="w-9/12 px-2 py-3 border rounded outline-none border-grey-600"
             />
           </div>
           <ul className="list-reset">
