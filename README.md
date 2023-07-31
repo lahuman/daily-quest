@@ -16,6 +16,10 @@ $ npm run typeorm migration:run
 # drop
 $ npm run typeorm schema:drop
 ```
+### 설정 파일
+
+> Firebase console > 프로젝트 설정 > 서비스 계정 > Firebase Admin SDK의 Node.js 새 비공개 키 생성 후 해당 파일을 `api/src/firebase/firebase.config.json` 위치에 넣어야 합니다. 
+
 
 ### 실행
 
