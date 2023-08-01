@@ -132,7 +132,7 @@ export default function Todo() {
               </div>
             </button>
            {" "}
-              {format(parse(dateStr, "yyyyMMdd", new Date()), "yyyy-MM-dd")}{" "}
+              {format(parse(dateStr, "yyyyMMdd", new Date()), "yyyy-MM-dd EEE")}{" "}
               <button type="button" onClick={(e) => changeDate(true)}  className="bg-purple-300 text-white rounded-r-md py-2 border-l border-gray-200 hover:bg-purple-400 hover:text-white px-3">
               <div className="flex flex-row align-middle">
                 <span className="mr-2"></span>
