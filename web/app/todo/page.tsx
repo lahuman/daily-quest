@@ -156,7 +156,7 @@ export default function Todo() {
                   saveNewTodo();
                 }}}
               type="text"
-              placeholder="Please write a Quest"
+              placeholder="Write a Quest and hit Enter."
               className="w-9/12 px-2 py-3 border rounded outline-none border-grey-600"
             />
           </div>

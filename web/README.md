@@ -1,6 +1,6 @@
-# Firebase Login Example
+# Routine WEB
 
-> [nestjs 101](https://github.com/lahuman/nestjs_101)에 [Firebase](https://console.firebase.google.com/) 연동 예제를 만들면서 사용할 UI를 만들어 보았습니다. 
+> [nestjs 101](https://github.com/lahuman/nestjs_101)에 [Firebase](https://github.com/lahuman/firebase-auth-ui) 연동 예제를 참고해서 만들었습니다. 
 
 
 ## 환경 구성
@@ -15,22 +15,6 @@
     + 프로젝트 설정 > 내 앱(없을 경우 WEB 추가)
 3. `npm run dev`로 서버 기동
 
-## Screen Shot
-
-### LOGIN
-![](/public/login.png)
-
-
-### 회원 가입(Email / Password)
-![](/public/signup.png)
-
-
-### 로그인 성공 or 회원 가입 성공
-![](/public/loginInfo.png)
-
-
-### 비밀번호 변경
-![](/public/resetPw.png)
 
 ## 마치며
 
