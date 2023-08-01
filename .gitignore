@@ -4,4 +4,8 @@
 */.next
 */firebase.config.json
 
+api/routine
+api/routine-shm
+api/routine-wal
+
 .env*
