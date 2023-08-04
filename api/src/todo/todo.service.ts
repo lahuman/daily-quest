@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Todo } from './todo.entity';
 import { DailyTodo } from './daily-todo.entity';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, Repository } from 'typeorm';
 import { CreateTodoDto, TODO_TYPE, TodoDto } from './todo.dto';
 import { TodoVo } from './todo.vo';
 
@@ -18,7 +18,11 @@ export class TodoService {
   async saveTodo(createTodo: CreateTodoDto, userSeq: number) {
     if (createTodo.type === TODO_TYPE.DT) {
       const dailyTodo = await this.dailyTodoRepository.save(
-        new DailyTodo({ ...createTodo, userSeq }),
+        new DailyTodo({
+          ...createTodo,
+          userSeq,
+          startDay: parseInt(createTodo.todoDay),
+        }),
       );
       const todo = await this.todoRepository.save(
         new Todo({
@@ -48,7 +52,11 @@ export class TodoService {
         where: { type: TODO_TYPE.DT, todoDay: dateStr, useYn: 'Y', userSeq },
       }),
       this.dailyTodoRepository.find({
-        where: { useYn: 'Y', userSeq },
+        where: {
+          useYn: 'Y',
+          userSeq,
+          startDay: LessThanOrEqual(parseInt(dateStr)),
+        },
       }),
     ]);
     return [
@@ -74,7 +82,7 @@ export class TodoService {
           useYn: 'Y',
         },
       });
-      if(daily) {
+      if (daily) {
         daily.useYn = 'N';
         await this.dailyTodoRepository.save(daily);
       }

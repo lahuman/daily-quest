@@ -55,6 +55,8 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   await app.listen(parseInt(process.env.PORT, 10) || 3000);
-  logger.log('Application started on port 3000');
+  logger.log(
+    `Application started on port ${parseInt(process.env.PORT, 10) || 3000}`,
+  );
 }
 bootstrap();

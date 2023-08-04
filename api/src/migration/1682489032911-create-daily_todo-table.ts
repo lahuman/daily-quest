@@ -7,10 +7,13 @@ export class CreateDailyTodoTable1682489032911 implements MigrationInterface {
             seq integer primary key autoincrement,
             user_seq integer not null,
             content varchar(2000) not null,
+            start_day integer not null,
             use_yn varchar(1) not null  default 'Y',
             reg_dtm datetime,
             mod_dtm datetime
-        );`);
+        );
+        create index idx_daily_todo_01 on daily_todo(start_day);
+        `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

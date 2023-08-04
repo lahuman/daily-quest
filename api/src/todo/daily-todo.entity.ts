@@ -1,4 +1,10 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  Index,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('daily_todo')
 export class DailyTodo extends BaseEntity {
@@ -11,6 +17,10 @@ export class DailyTodo extends BaseEntity {
 
   @Column()
   userSeq: number;
+
+  @Index()
+  @Column()
+  startDay: number;
 
   @Column()
   content: string;
