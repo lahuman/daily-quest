@@ -197,7 +197,6 @@ export default function Todo() {
                   e.nativeEvent.isComposing === false &&
                   newTodo.trim() !== ""
                 ) {
-                  console.log("엔터 팍팍!!");
                   e.preventDefault();
                   saveNewTodo();
                 }
