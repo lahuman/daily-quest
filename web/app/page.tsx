@@ -36,9 +36,21 @@ export default function Dashboard() {
       })
         .then((response) => response.json())
         .then((data) => {
-          // logout();
-          window.localStorage.setItem("token", JSON.stringify(data));
-          router.push("/todo");
+          if(data.statusCode === 500){
+            alert('회원 처리에 실패했습니다. 관리자에게 문의 하세요.');
+            indexedDB.deleteDatabase('firebaseLocalStorageDb');
+            window.localStorage.clear();
+            window.location.href = "/";
+          }else {
+            window.localStorage.setItem("token", JSON.stringify(data));
+            router.push("/todo");
+          }
+        })
+        .catch((err) => {
+          alert('회원 처리에 실패했습니다. 관리자에게 문의 하세요.');
+          indexedDB.deleteDatabase('firebaseLocalStorageDb');
+          window.localStorage.clear();
+          window.location.href = "/";
         });
     }
   }, [currentUser]);
