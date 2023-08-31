@@ -14,6 +14,14 @@ export class Todo extends BaseEntity {
   userSeq: number;
 
   @Column()
+  memberSeq: number;
+
+  @Column({
+    default: 0
+  })
+  point: number;
+
+  @Column()
   dailyTodoSeq: number;
 
   @Column()

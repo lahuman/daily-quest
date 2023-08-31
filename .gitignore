@@ -8,4 +8,6 @@ api/routine
 api/routine-shm
 api/routine-wal
 
+*/firebase.config.json
+
 .env*

@@ -10,6 +10,7 @@ import { TodoModule } from './todo/todo.module';
 import { AuthStrategy } from './auth/auth.strategy';
 import { AllExceptionsFilter } from './core/exception.filter';
 import { APP_FILTER } from '@nestjs/core';
+import { MemberModule } from './member/member.module';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('./core/snake-naming.strategy').SnakeNamingStrategy;
@@ -40,6 +41,7 @@ require('./core/snake-naming.strategy').SnakeNamingStrategy;
     UsersModule,
     TodoModule,
     FirebaseModule,
+    MemberModule,
   ],
   controllers: [AppController],
   providers: [

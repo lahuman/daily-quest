@@ -17,6 +17,14 @@ export class DailyTodo extends BaseEntity {
 
   @Column()
   userSeq: number;
+  
+  @Column()
+  memberSeq: number;
+
+  @Column({
+    default: 0
+  })
+  point: number;
 
   @Index()
   @Column()

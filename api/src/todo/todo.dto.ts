@@ -11,6 +11,15 @@ export class CreateTodoDto {
   @IsOptional()
   dailyTodoSeq?: number;
 
+  @ApiProperty({ description: '담당자 SEQ', required: false })
+  @IsOptional()
+  memberSeq?: number;
+
+  @ApiProperty({ description: '포인트', required: false })
+  @IsOptional()
+  point?: number;
+
+
   @ApiProperty({ description: '타입', required: false })
   @IsNotEmpty()
   @IsEnum(Object.values(TODO_TYPE))

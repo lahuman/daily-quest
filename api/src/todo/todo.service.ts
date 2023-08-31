@@ -59,9 +59,7 @@ export class TodoService {
         },
       }),
     ]);
-    return [
-      ...todo,
-      ...todayDaily,
+    const allTodoList =  [
       ...dailyTodo
         .filter((d) => !todayDaily.some((t) => t.dailyTodoSeq === d.seq))
         .map((d) => ({
@@ -69,8 +67,20 @@ export class TodoService {
           dailyTodoSeq: d.seq,
           content: d.content,
           todoDay: dateStr,
+          point: d.point,
+          memberSeq: d.memberSeq
         })),
+      ...todo,
+      ...todayDaily,
     ];
+
+    allTodoList.sort((a, b) => {
+      if(a["completeYn"] === 'Y') return 1;
+      if(a["completeYn"] === 'N') return -1;
+      return 0;
+    });
+
+    return allTodoList;
   }
 
   async removeTodo(todoDto: TodoDto, userSeq: number) {

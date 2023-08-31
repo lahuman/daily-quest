@@ -14,7 +14,7 @@ export default function Todo() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [newTodo, setNewTodo] = useState("");
-  const [type, setType] = useState<TODO_TYPE>(TODO_TYPE.DT);
+  const [type, setType] = useState<TODO_TYPE>(TODO_TYPE.T);
   const [dateStr, setDateStr] = useState(format(new Date(), "yyyyMMdd"));
   const [list, setList] = useState<TodoVo[] | undefined>();
 
