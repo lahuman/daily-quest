@@ -185,8 +185,8 @@ export default function Todo() {
                 setType(e.target.value === "DT" ? TODO_TYPE.DT : TODO_TYPE.T)
               }
             >
-              <option value="DT">Repeat</option>
               <option value="T">Once</option>
+              <option value="DT">Repeat</option>
             </select>
             <input
               value={newTodo}
