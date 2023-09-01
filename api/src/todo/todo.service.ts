@@ -163,6 +163,7 @@ export class TodoService {
       if (!todo.memberSeq) {
         delete todo.memberSeq;
       }
+      if (isNaN(todo.point)) todo.point = 0;
       await manager.save(todo);
       if (todo.memberSeq) {
         const m = await manager.findOne(Member, {
