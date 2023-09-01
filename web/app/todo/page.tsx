@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { format, parse, subDays, addDays } from "date-fns";
 import { TodoVo } from "./TodoVo";
 import { client } from "./fetchHelper";
+import Loadding from "@/components/Loadding";
+import { MemberVo } from "../member/MemberVo";
 
 enum TODO_TYPE {
   T = "T",
@@ -14,10 +16,16 @@ export default function Todo() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [newTodo, setNewTodo] = useState("");
+  const [newMember, setNewMember] = useState("");
+  const [newPoint, setNewPoint] = useState(0);
   const [type, setType] = useState<TODO_TYPE>(TODO_TYPE.T);
   const [dateStr, setDateStr] = useState(format(new Date(), "yyyyMMdd"));
   const [list, setList] = useState<TodoVo[] | undefined>();
+  const [memberList, setMemberList] = useState<MemberVo[] | undefined>();
 
+  function numberWithCommas(x: number) {
+    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  }
   function getTodoList() {
     setLoading(true);
     client(`/todo/${dateStr}`).then((data) => {
@@ -25,6 +33,16 @@ export default function Todo() {
       setLoading(false);
     });
   }
+  function getMemberList() {
+    client("/member").then((data) => {
+      setMemberList(data);
+    });
+  };
+
+  useEffect(() => {
+    getMemberList()
+  }, []);
+
   useEffect(() => {
     getTodoList();
   }, [dateStr]);
@@ -45,6 +63,8 @@ export default function Todo() {
         type,
         content: newTodo,
         todoDay: dateStr,
+        memberSeq: newMember,
+        point: newPoint
       },
     })
       .then((r) => {
@@ -92,38 +112,18 @@ export default function Todo() {
         alert(e);
       });
   }
+
+  function findByMemberSeq(memberSeq: number) {
+    if (memberList) {
+      const m = memberList.find(m => m.seq === memberSeq);
+      return m ? ` @${m.name}` : '';
+    }
+    return "";
+  }
   return (
     <>
       {loading && (
-        <div className="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center">
-          <svg
-            className="animate-spin h-8 w-8 text-gray-800"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="5"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-          <h2 className="text-center text-white text-xl font-semibold">
-            Loading...
-          </h2>
-
-          <p className="w-1/3 text-center text-white">
-            This may take a few seconds, please don&apos;t close this page.
-          </p>
-        </div>
+        <Loadding />
       )}
 
       {/* bg-fixed bg-center bg-cover bg-no-repeat bg-[url('https://lahuman.github.io/assets/img/logo.png')] */}
@@ -179,7 +179,7 @@ export default function Todo() {
           </div>
           <div className="flex ">
             <select
-              className="w-2/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
+              className="w-4/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
               value={type}
               onChange={(e) =>
                 setType(e.target.value === "DT" ? TODO_TYPE.DT : TODO_TYPE.T)
@@ -188,6 +188,19 @@ export default function Todo() {
               <option value="T">Once</option>
               <option value="DT">Repeat</option>
             </select>
+            <select
+              className="w-4/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
+              value={newMember}
+              onChange={(e) =>
+                setNewMember(e.target.value)
+              }
+            >
+              <option value="">None</option>
+              {memberList?.map(m => <option value={m.seq}>{m.name}</option>
+              )}
+            </select>
+          </div>
+          <div className="flex ">
             <input
               value={newTodo}
               onChange={(e) => setNewTodo(e.target.value)}
@@ -204,6 +217,23 @@ export default function Todo() {
               type="text"
               placeholder="Write a Quest and hit Enter."
               className="w-9/12 px-2 py-3 border rounded outline-none border-grey-600"
+            />
+            <input
+              value={newPoint}
+              onChange={(e) => setNewPoint(parseInt(e.target.value))}
+              onKeyDown={(e) => {
+                if (
+                  e.key === "Enter" &&
+                  e.nativeEvent.isComposing === false &&
+                  newTodo.trim() !== ""
+                ) {
+                  e.preventDefault();
+                  saveNewTodo();
+                }
+              }}
+              type="number"
+              placeholder="Write Point and hit Enter."
+              className="w-4/12 px-2 py-3 border rounded outline-none border-grey-600"
             />
           </div>
           <ul className="list-reset">
@@ -227,12 +257,11 @@ export default function Todo() {
                       checked={todo.completeYn === "Y"}
                     />
                     <label
-                      className={`inline-block mt-1 text-gray-600  cursor-pointer ${
-                        todo.completeYn === "Y" ? "line-through" : ""
-                      }`}
+                      className={`inline-block mt-1 text-gray-600  cursor-pointer ${todo.completeYn === "Y" ? "line-through" : ""
+                        }`}
                       htmlFor={`todo${idx}`}
                     >
-                      {todo.content}
+                      {todo.content} - <font color="red">{numberWithCommas(todo.point)}</font> {findByMemberSeq(todo.memberSeq)}
                     </label>
                   </div>
                   <button

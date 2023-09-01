@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Todo } from './todo.entity';
 import { DailyTodo } from './daily-todo.entity';
-import { LessThanOrEqual, Repository } from 'typeorm';
+import { DataSource, LessThanOrEqual, Repository } from 'typeorm';
 import { CreateTodoDto, TODO_TYPE, TodoDto } from './todo.dto';
 import { TodoVo } from './todo.vo';
+import { Member } from 'src/member/member.entity';
 
 @Injectable()
 export class TodoService {
@@ -13,7 +14,8 @@ export class TodoService {
     private readonly todoRepository: Repository<Todo>,
     @InjectRepository(DailyTodo)
     private readonly dailyTodoRepository: Repository<DailyTodo>,
-  ) {}
+    private dataSource: DataSource
+  ) { }
 
   async saveTodo(createTodo: CreateTodoDto, userSeq: number) {
     if (createTodo.type === TODO_TYPE.DT) {
@@ -59,7 +61,7 @@ export class TodoService {
         },
       }),
     ]);
-    const allTodoList =  [
+    const allTodoList = [
       ...dailyTodo
         .filter((d) => !todayDaily.some((t) => t.dailyTodoSeq === d.seq))
         .map((d) => ({
@@ -75,8 +77,8 @@ export class TodoService {
     ];
 
     allTodoList.sort((a, b) => {
-      if(a["completeYn"] === 'Y') return 1;
-      if(a["completeYn"] === 'N') return -1;
+      if (a["completeYn"] === 'Y') return 1;
+      if (a["completeYn"] === 'N') return -1;
       return 0;
     });
 
@@ -112,7 +114,7 @@ export class TodoService {
   }
 
   async todoComplete(todoDto: TodoDto, userSeq: number) {
-    let todo;
+    let todo: Todo;
     if (todoDto.seq) {
       todo = await this.todoRepository.findOneOrFail({
         where: {
@@ -131,28 +133,38 @@ export class TodoService {
         },
       });
     }
-    if (todo) {
-      todo.completeYn = todoDto.completeYn;
-      todo.todoDay = todoDto.todoDay;
-      await this.todoRepository.save(todo);
-    } else {
-      const newTodo = await this.dailyTodoRepository.findOneOrFail({
-        where: {
-          userSeq,
-          useYn: 'Y',
-          seq: todoDto.dailyTodoSeq,
-        },
-      });
-      await this.todoRepository.save(
-        new Todo({
+
+    await this.dataSource.transaction(async manager => {
+      if (todo) {
+        todo.completeYn = todoDto.completeYn;
+        todo.todoDay = todoDto.todoDay;
+      } else {
+        const newTodo = await this.dailyTodoRepository.findOneOrFail({
+          where: {
+            userSeq,
+            useYn: 'Y',
+            seq: todoDto.dailyTodoSeq,
+          },
+        });
+        todo = new Todo({
           userSeq,
           content: newTodo.content,
           dailyTodoSeq: newTodo.seq,
           type: TODO_TYPE.DT,
           completeYn: todoDto.completeYn,
           todoDay: todoDto.todoDay,
-        }),
-      );
-    }
+        });
+      }
+      await manager.save(todo);
+      if (todo.memberSeq) {
+        const m = await manager.findOne(Member, { where: { seq: todo.memberSeq } });
+        if (todo.completeYn === 'Y')
+          m.totalPoint += todo.point;
+        else
+          m.totalPoint -= todo.point;
+
+        await manager.save(m);
+      }
+    });
   }
 }
