@@ -150,10 +150,11 @@ export class TodoService {
           },
         });
         todo = new Todo({
-          ...newTodo,
           userSeq,
           content: newTodo.content,
           dailyTodoSeq: newTodo.seq,
+          memberSeq: newTodo.memberSeq,
+          point: newTodo.point,
           type: TODO_TYPE.DT,
           completeYn: todoDto.completeYn,
           todoDay: todoDto.todoDay,
