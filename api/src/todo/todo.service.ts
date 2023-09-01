@@ -96,6 +96,8 @@ export class TodoService {
       });
       if (daily) {
         daily.useYn = 'N';
+        if (isNaN(daily.point)) daily.point = 0;
+
         await this.dailyTodoRepository.save(daily);
       }
     }
@@ -109,6 +111,7 @@ export class TodoService {
     });
     if (todo) {
       todo.useYn = 'N';
+      if (isNaN(todo.point)) todo.point = 0;
       await this.todoRepository.save(todo);
     }
   }
