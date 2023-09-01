@@ -50,7 +50,7 @@ export default function Dashboard() {
           alert('회원 처리에 실패했습니다. 관리자에게 문의 하세요.');
           indexedDB.deleteDatabase('firebaseLocalStorageDb');
           window.localStorage.clear();
-          window.location.href = "/";
+          router.push("/");
         });
     }
   }, [currentUser]);

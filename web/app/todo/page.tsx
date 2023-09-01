@@ -17,7 +17,7 @@ export default function Todo() {
   const [loading, setLoading] = useState(false);
   const [newTodo, setNewTodo] = useState("");
   const [newMember, setNewMember] = useState("");
-  const [newPoint, setNewPoint] = useState(0);
+  const [newPoint, setNewPoint] = useState<number | string>(0);
   const [type, setType] = useState<TODO_TYPE>(TODO_TYPE.T);
   const [dateStr, setDateStr] = useState(format(new Date(), "yyyyMMdd"));
   const [list, setList] = useState<TodoVo[] | undefined>();
@@ -199,7 +199,7 @@ export default function Todo() {
                 }
               >
                 <option value="0">None</option>
-                {memberList?.map(m => <option value={m.seq}>{m.name}</option>
+                {memberList?.map(m => <option key={m.seq} value={m.seq}>{m.name}</option>
                 )}
               </select>
             </div>
@@ -223,7 +223,9 @@ export default function Todo() {
               />
               <input
                 value={newPoint}
-                onChange={(e) => setNewPoint(e.target.value)}
+                onChange={(e) => {
+                  setNewPoint(e.target.value)
+                }}
                 onKeyDown={(e) => {
                   if (
                     e.key === "Enter" &&
@@ -265,7 +267,7 @@ export default function Todo() {
                         }`}
                       htmlFor={`todo${idx}`}
                     >
-                      {todo.content} - <font color={todo.point === 0 ? 'black' : todo.point > 0 ? 'blue' : 'red'}>{numberWithCommas(todo.point)}</font> {findByMemberSeq(todo.memberSeq)}
+                      {todo.content} - <span color={todo.point === 0 ? 'black' : todo.point > 0 ? 'blue' : 'red'}>{numberWithCommas(todo.point)}</span> {findByMemberSeq(todo.memberSeq)}
                     </label>
                   </div>
                   <button
