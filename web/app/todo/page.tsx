@@ -177,64 +177,66 @@ export default function Todo() {
               </button>
             </h1>
           </div>
-          <div className="flex ">
-            <select
-              className="w-4/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
-              value={type}
-              onChange={(e) =>
-                setType(e.target.value === "DT" ? TODO_TYPE.DT : TODO_TYPE.T)
-              }
-            >
-              <option value="T">Once</option>
-              <option value="DT">Repeat</option>
-            </select>
-            <select
-              className="w-4/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
-              value={newMember}
-              onChange={(e) =>
-                setNewMember(e.target.value)
-              }
-            >
-              <option value="">None</option>
-              {memberList?.map(m => <option value={m.seq}>{m.name}</option>
-              )}
-            </select>
-          </div>
-          <div className="flex ">
-            <input
-              value={newTodo}
-              onChange={(e) => setNewTodo(e.target.value)}
-              onKeyDown={(e) => {
-                if (
-                  e.key === "Enter" &&
-                  e.nativeEvent.isComposing === false &&
-                  newTodo.trim() !== ""
-                ) {
-                  e.preventDefault();
-                  saveNewTodo();
+          <div className="border-dashed border-2 border-indigo-600 p-1">
+            <div className="flex items-center justify-between mb-2">
+              <select
+                className="w-5/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
+                value={type}
+                onChange={(e) =>
+                  setType(e.target.value === "DT" ? TODO_TYPE.DT : TODO_TYPE.T)
                 }
-              }}
-              type="text"
-              placeholder="Write a Quest and hit Enter."
-              className="w-9/12 px-2 py-3 border rounded outline-none border-grey-600"
-            />
-            <input
-              value={newPoint}
-              onChange={(e) => setNewPoint(parseInt(e.target.value))}
-              onKeyDown={(e) => {
-                if (
-                  e.key === "Enter" &&
-                  e.nativeEvent.isComposing === false &&
-                  newTodo.trim() !== ""
-                ) {
-                  e.preventDefault();
-                  saveNewTodo();
+              >
+                <option value="T">Once</option>
+                <option value="DT">Repeat</option>
+              </select>
+              <select
+                className="w-5/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
+                value={newMember}
+                onChange={(e) =>
+                  setNewMember(e.target.value)
                 }
-              }}
-              type="number"
-              placeholder="Write Point and hit Enter."
-              className="w-4/12 px-2 py-3 border rounded outline-none border-grey-600"
-            />
+              >
+                <option value="0">None</option>
+                {memberList?.map(m => <option value={m.seq}>{m.name}</option>
+                )}
+              </select>
+            </div>
+            <div className="flex items-center justify-between">
+              <input
+                value={newTodo}
+                onChange={(e) => setNewTodo(e.target.value)}
+                onKeyDown={(e) => {
+                  if (
+                    e.key === "Enter" &&
+                    e.nativeEvent.isComposing === false &&
+                    newTodo.trim() !== ""
+                  ) {
+                    e.preventDefault();
+                    saveNewTodo();
+                  }
+                }}
+                type="text"
+                placeholder="Write a Quest and hit Enter."
+                className="w-8/12 px-2 py-3 border rounded outline-none border-grey-600"
+              />
+              <input
+                value={newPoint}
+                onChange={(e) => setNewPoint(e.target.value)}
+                onKeyDown={(e) => {
+                  if (
+                    e.key === "Enter" &&
+                    e.nativeEvent.isComposing === false &&
+                    newTodo.trim() !== ""
+                  ) {
+                    e.preventDefault();
+                    saveNewTodo();
+                  }
+                }}
+                type="number"
+                placeholder="Write Point and hit Enter."
+                className="w-3/12 px-2 py-3 border rounded outline-none border-grey-600"
+              />
+            </div>
           </div>
           <ul className="list-reset">
             {list &&

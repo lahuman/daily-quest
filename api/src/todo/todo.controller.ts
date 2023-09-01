@@ -32,15 +32,15 @@ export class TodoController {
   @ApiOperation({ summary: '미션 작성' })
   @ApiResponse({ status: 201, type: TodoVo })
   @Post()
-  save(@AuthUser() userVo: UserVO, @Body() createTodo: CreateTodoDto) {
-    return this.service.saveTodo(createTodo, userVo.seq);
+  async save(@AuthUser() userVo: UserVO, @Body() createTodo: CreateTodoDto) {
+    return await this.service.saveTodo(createTodo, userVo.seq);
   }
 
   @Get('/:dateStr')
   @ApiOperation({ summary: '미션 목록 조회' })
   @ApiResponse({ status: 200, type: TodoVo })
-  getList4Date(@AuthUser() userVo: UserVO, @Param('dateStr') dateStr: string) {
-    return this.service.getTodoList(dateStr, userVo.seq);
+  async getList4Date(@AuthUser() userVo: UserVO, @Param('dateStr') dateStr: string) {
+    return await this.service.getTodoList(dateStr, userVo.seq);
   }
 
   @Delete()
@@ -54,7 +54,7 @@ export class TodoController {
   @Put()
   @ApiOperation({ summary: '미션 완료/미완료 처리' })
   @ApiResponse({ status: 200 })
-  update(@AuthUser() userVo: UserVO, @Body() todoDto: TodoDto) {
-    this.service.todoComplete(todoDto, userVo.seq);
+  async update(@AuthUser() userVo: UserVO, @Body() todoDto: TodoDto) {
+    await this.service.todoComplete(todoDto, userVo.seq);
   }
 }

@@ -136,6 +136,9 @@ export class TodoService {
 
     await this.dataSource.transaction(async manager => {
       if (todo) {
+        // 2번 동일 요청의 경우 
+        if(todo.completeYn === todoDto.completeYn) return;
+
         todo.completeYn = todoDto.completeYn;
         todo.todoDay = todoDto.todoDay;
       } else {
@@ -154,6 +157,9 @@ export class TodoService {
           completeYn: todoDto.completeYn,
           todoDay: todoDto.todoDay,
         });
+      }
+      if(!todo.memberSeq) {
+        delete todo.memberSeq;
       }
       await manager.save(todo);
       if (todo.memberSeq) {
