@@ -128,7 +128,7 @@ export default function Member() {
                                     <label
                                         className={`w-4/12 inline-block mt-1 text-gray-600 `}
                                     >
-                                        {numberWithCommas(todo.totalPoint)}
+                                         <span className={todo.totalPoint === 0 ? '' : todo.totalPoint > 0 ? 'text-blue-600' : 'text-red-600'}>{numberWithCommas(todo.totalPoint)}</span>
                                     </label>
                                     <button
                                         type="button"

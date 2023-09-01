@@ -267,7 +267,7 @@ export default function Todo() {
                         }`}
                       htmlFor={`todo${idx}`}
                     >
-                      {todo.content} - <span color={todo.point === 0 ? 'black' : todo.point > 0 ? 'blue' : 'red'}>{numberWithCommas(todo.point)}</span> {findByMemberSeq(todo.memberSeq)}
+                      {todo.content} - <span className={todo.point === 0 ? '' : todo.point > 0 ? 'text-blue-600' : 'text-red-600'}>{numberWithCommas(todo.point)}</span> {findByMemberSeq(todo.memberSeq)}
                     </label>
                   </div>
                   <button
