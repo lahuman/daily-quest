@@ -75,7 +75,8 @@ export default function Todo() {
         getTodoList();
       })
       .catch((e) => {
-        alert(e);
+        console.log(e);
+        alert('Contact your administrator');
       });
   }
 
@@ -93,7 +94,8 @@ export default function Todo() {
         getTodoList();
       })
       .catch((e) => {
-        alert(e);
+        console.log(e);
+        alert('Contact your administrator');
       });
   }
 
@@ -111,7 +113,8 @@ export default function Todo() {
         getTodoList();
       })
       .catch((e) => {
-        alert(e);
+        console.log(e);
+        alert('Contact your administrator');
       });
   }
 
