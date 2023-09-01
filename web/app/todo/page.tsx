@@ -69,6 +69,8 @@ export default function Todo() {
     })
       .then((r) => {
         setNewTodo("");
+        setNewPoint(0);
+        setNewMember("0");
         setLoading(false);
         getTodoList();
       })
@@ -263,7 +265,7 @@ export default function Todo() {
                         }`}
                       htmlFor={`todo${idx}`}
                     >
-                      {todo.content} - <font color="red">{numberWithCommas(todo.point)}</font> {findByMemberSeq(todo.memberSeq)}
+                      {todo.content} - <font color={todo.point === 0 ? 'black' : todo.point > 0 ? 'blue' : 'red'}>{numberWithCommas(todo.point)}</font> {findByMemberSeq(todo.memberSeq)}
                     </label>
                   </div>
                   <button

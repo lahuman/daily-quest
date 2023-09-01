@@ -150,6 +150,7 @@ export class TodoService {
           },
         });
         todo = new Todo({
+          ...newTodo,
           userSeq,
           content: newTodo.content,
           dailyTodoSeq: newTodo.seq,
