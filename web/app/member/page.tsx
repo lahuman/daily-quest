@@ -158,7 +158,7 @@ export default function Member() {
                   className="relative flex items-center justify-between px-2 py-6 border-b"
                 >
                   <div
-                    className="cursor-pointer rounded-lg w-10 h-10 mr-5"
+                    className="cursor-pointer rounded-lg w-8 h-8 mr-1"
                     style={{ backgroundColor: todo.color }}
                     onClick={(e) =>
                       handleListChange(idx, { ...todo, showColor: true })
@@ -181,7 +181,7 @@ export default function Member() {
                   </div>
                   <input
                     type="text"
-                    className="w-6/12 px-2 py-3 border rounded outline-none border-grey-600"
+                    className="w-5/12 mr-1 px-2 py-3 border rounded outline-none border-grey-600"
                     id={`member-${todo.seq}`}
                     value={`${todo.name}`}
                     style={{ color: todo.color }}
@@ -189,7 +189,7 @@ export default function Member() {
                       handleListChange(idx, { ...todo, name: e.target.value })
                     }
                   />
-                  <label className={`w-4/12 inline-block mt-1 text-gray-600 `}>
+                  <label className={`w-5/12 inline-block mt-1 text-gray-600 `}>
                     <span
                       className={
                         todo.totalPoint === 0
