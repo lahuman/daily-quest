@@ -15,7 +15,7 @@ enum TODO_TYPE {
 function MemberTag(prop: any) {
   const member = prop.member;
   return member ? (
-    <span style={{ color: member.color }}>{member.name}</span>
+    <span style={{ color: member.color }}>@{member.name}</span>
   ) : (
     <></>
   );
@@ -279,7 +279,8 @@ export default function Todo() {
                             (m) => m.seq === todo.memberSeq
                           )}
                         />
-                      }{" "}{todo.content} -{" "}
+                      // eslint-disable-next-line react/jsx-no-comment-textnodes
+                      }{" "}{todo.content} //{" "}
                       <span
                         className={
                           todo.point === 0
