@@ -1,5 +1,5 @@
 import { BaseEntity } from 'src/core/base-entity';
-import {  Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('member')
 export class Member extends BaseEntity {
@@ -15,14 +15,16 @@ export class Member extends BaseEntity {
   userSeq: number;
 
   @Column({
-    default: 0
+    default: 0,
   })
   totalPoint: number;
 
   @Column()
   name: string;
 
+  @Column({ default: '#000000' })
+  color: string;
+
   @Column()
   useYn: string;
-
 }

@@ -174,8 +174,7 @@ export class TodoService {
         });
         if (todo.completeYn === 'Y') m.totalPoint += todo.point;
         else m.totalPoint -= todo.point;
-
-        if (isNaN(m.totalPoint)) await manager.save(m);
+        if (!isNaN(m.totalPoint)) await manager.save(m);
       }
     });
   }
