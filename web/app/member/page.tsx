@@ -128,24 +128,27 @@ export default function Member() {
                 </div>
               )}
             </div>
-            <input
-              value={name}
-              style={{ color: color }}
-              onChange={(e) => setName(e.target.value)}
-              onKeyDown={(e) => {
-                if (
-                  e.key === "Enter" &&
-                  e.nativeEvent.isComposing === false &&
-                  name.trim() !== ""
-                ) {
-                  e.preventDefault();
-                  saveMember();
-                }
-              }}
-              type="text"
-              placeholder="Write new name and hit Enter."
-              className="w-9/12 px-2 py-3 border rounded outline-none border-grey-600"
-            />
+            <form>
+              <input
+                value={name}
+                style={{ color: color }}
+                onChange={(e) => setName(e.target.value)}
+                onKeyDown={(e) => {
+                  console.log(e.key);
+                  if (
+                    e.key === "Enter" &&
+                    e.nativeEvent.isComposing === false &&
+                    name.trim() !== ""
+                  ) {
+                    e.preventDefault();
+                    saveMember();
+                  }
+                }}
+                type="search"
+                placeholder="Write new name and hit Enter."
+                className="w-9/12 px-2 py-3 border rounded outline-none border-grey-600"
+              />
+            </form>
           </div>
           <ul className="list-reset">
             {list &&
