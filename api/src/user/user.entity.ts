@@ -15,12 +15,6 @@ export class User extends BaseEntity {
   email: string;
 
   @Column()
-  nickNm: string;
-
-  @Column()
   uid: string;
-
-  @Column({ nullable: true })
-  managerSeq?: number;
 
 }
