@@ -12,8 +12,16 @@ enum TODO_TYPE {
   DT = "DT",
 }
 
+function MemberTag(prop: any) {
+  const member = prop.member;
+  return member ? (
+    <span style={{ color: member.color }}>@{member.name}</span>
+  ) : (
+    <></>
+  );
+}
+
 export default function Todo() {
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [newTodo, setNewTodo] = useState("");
   const [newMember, setNewMember] = useState("");
@@ -24,7 +32,9 @@ export default function Todo() {
   const [memberList, setMemberList] = useState<MemberVo[] | undefined>();
 
   function numberWithCommas(x: number) {
-    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    return (
+      (x && x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")) || 0
+    );
   }
   function getTodoList() {
     setLoading(true);
@@ -37,10 +47,10 @@ export default function Todo() {
     client("/member").then((data) => {
       setMemberList(data);
     });
-  };
+  }
 
   useEffect(() => {
-    getMemberList()
+    getMemberList();
   }, []);
 
   useEffect(() => {
@@ -64,7 +74,7 @@ export default function Todo() {
         content: newTodo,
         todoDay: dateStr,
         memberSeq: newMember,
-        point: newPoint
+        point: newPoint,
       },
     })
       .then((r) => {
@@ -75,7 +85,8 @@ export default function Todo() {
         getTodoList();
       })
       .catch((e) => {
-        alert(e);
+        console.log(e);
+        alert("Contact your administrator");
       });
   }
 
@@ -93,7 +104,8 @@ export default function Todo() {
         getTodoList();
       })
       .catch((e) => {
-        alert(e);
+        console.log(e);
+        alert("Contact your administrator");
       });
   }
 
@@ -111,22 +123,14 @@ export default function Todo() {
         getTodoList();
       })
       .catch((e) => {
-        alert(e);
+        console.log(e);
+        alert("Contact your administrator");
       });
   }
 
-  function findByMemberSeq(memberSeq: number) {
-    if (memberList) {
-      const m = memberList.find(m => m.seq === memberSeq);
-      return m ? ` @${m.name}` : '';
-    }
-    return "";
-  }
   return (
     <>
-      {loading && (
-        <Loadding />
-      )}
+      {loading && <Loadding />}
 
       {/* bg-fixed bg-center bg-cover bg-no-repeat bg-[url('https://lahuman.github.io/assets/img/logo.png')] */}
       <div className="justify-center h-screen  ">
@@ -194,13 +198,14 @@ export default function Todo() {
               <select
                 className="w-5/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
                 value={newMember}
-                onChange={(e) =>
-                  setNewMember(e.target.value)
-                }
+                onChange={(e) => setNewMember(e.target.value)}
               >
                 <option value="0">None</option>
-                {memberList?.map(m => <option key={m.seq} value={m.seq}>{m.name}</option>
-                )}
+                {memberList?.map((m) => (
+                  <option key={m.seq} value={m.seq}>
+                    {m.name}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="flex items-center justify-between">
@@ -224,7 +229,7 @@ export default function Todo() {
               <input
                 value={newPoint}
                 onChange={(e) => {
-                  setNewPoint(e.target.value)
+                  setNewPoint(e.target.value);
                 }}
                 onKeyDown={(e) => {
                   if (
@@ -263,11 +268,30 @@ export default function Todo() {
                       checked={todo.completeYn === "Y"}
                     />
                     <label
-                      className={`inline-block mt-1 text-gray-600  cursor-pointer ${todo.completeYn === "Y" ? "line-through" : ""
-                        }`}
+                      className={`inline-block mt-1 text-gray-600  cursor-pointer ${
+                        todo.completeYn === "Y" ? "line-through" : ""
+                      }`}
                       htmlFor={`todo${idx}`}
                     >
-                      {todo.content} - <span className={todo.point === 0 ? '' : todo.point > 0 ? 'text-blue-600' : 'text-red-600'}>{numberWithCommas(todo.point)}</span> {findByMemberSeq(todo.memberSeq)}
+                      {
+                        <MemberTag
+                          member={memberList?.find(
+                            (m) => m.seq === todo.memberSeq
+                          )}
+                        />
+                      // eslint-disable-next-line react/jsx-no-comment-textnodes
+                      }{" "}{todo.content} //{" "}
+                      <span
+                        className={
+                          todo.point === 0
+                            ? ""
+                            : todo.point > 0
+                            ? "text-blue-600"
+                            : "text-red-600"
+                        }
+                      >
+                        {numberWithCommas(todo.point)}
+                      </span>{" "}
                     </label>
                   </div>
                   <button

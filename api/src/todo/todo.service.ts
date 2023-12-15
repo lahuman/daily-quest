@@ -14,8 +14,8 @@ export class TodoService {
     private readonly todoRepository: Repository<Todo>,
     @InjectRepository(DailyTodo)
     private readonly dailyTodoRepository: Repository<DailyTodo>,
-    private dataSource: DataSource
-  ) { }
+    private dataSource: DataSource,
+  ) {}
 
   async saveTodo(createTodo: CreateTodoDto, userSeq: number) {
     if (createTodo.type === TODO_TYPE.DT) {
@@ -70,15 +70,15 @@ export class TodoService {
           content: d.content,
           todoDay: dateStr,
           point: d.point,
-          memberSeq: d.memberSeq
+          memberSeq: d.memberSeq,
         })),
       ...todo,
       ...todayDaily,
     ];
 
     allTodoList.sort((a, b) => {
-      if (a["completeYn"] === 'Y') return 1;
-      if (a["completeYn"] === 'N') return -1;
+      if (a['completeYn'] === 'Y') return 1;
+      if (a['completeYn'] === 'N') return -1;
       return 0;
     });
 
@@ -96,6 +96,8 @@ export class TodoService {
       });
       if (daily) {
         daily.useYn = 'N';
+        if (isNaN(daily.point)) daily.point = 0;
+
         await this.dailyTodoRepository.save(daily);
       }
     }
@@ -109,6 +111,7 @@ export class TodoService {
     });
     if (todo) {
       todo.useYn = 'N';
+      if (isNaN(todo.point)) todo.point = 0;
       await this.todoRepository.save(todo);
     }
   }
@@ -134,10 +137,10 @@ export class TodoService {
       });
     }
 
-    await this.dataSource.transaction(async manager => {
+    await this.dataSource.transaction(async (manager) => {
       if (todo) {
-        // 2번 동일 요청의 경우 
-        if(todo.completeYn === todoDto.completeYn) return;
+        // 2번 동일 요청의 경우
+        if (todo.completeYn === todoDto.completeYn) return;
 
         todo.completeYn = todoDto.completeYn;
         todo.todoDay = todoDto.todoDay;
@@ -160,18 +163,18 @@ export class TodoService {
           todoDay: todoDto.todoDay,
         });
       }
-      if(!todo.memberSeq) {
+      if (!todo.memberSeq) {
         delete todo.memberSeq;
       }
+      if (isNaN(todo.point)) todo.point = 0;
       await manager.save(todo);
       if (todo.memberSeq) {
-        const m = await manager.findOne(Member, { where: { seq: todo.memberSeq } });
-        if (todo.completeYn === 'Y')
-          m.totalPoint += todo.point;
-        else
-          m.totalPoint -= todo.point;
-
-        await manager.save(m);
+        const m = await manager.findOne(Member, {
+          where: { seq: todo.memberSeq },
+        });
+        if (todo.completeYn === 'Y') m.totalPoint += todo.point;
+        else m.totalPoint -= todo.point;
+        if (!isNaN(m.totalPoint)) await manager.save(m);
       }
     });
   }
