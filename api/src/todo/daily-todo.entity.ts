@@ -26,6 +26,10 @@ export class DailyTodo extends BaseEntity {
   })
   point: number;
 
+  @Column()
+  @Index()
+  type: string; // 매일, 휴일, 주말, 평일
+
   @Index()
   @Column()
   startDay: number;
