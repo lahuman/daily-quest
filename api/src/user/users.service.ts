@@ -78,4 +78,16 @@ export class UserService {
       return this.makeUserTokenVO(user);
     }
   }
+
+  async getEmail(email: string) {
+    const userInfo = await this.userRepository.findOne({
+      where: {
+        email
+      }
+    });
+
+    const user = new UserVO();
+    user.seq = userInfo.seq
+    return user;
+  }
 }

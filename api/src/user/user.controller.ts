@@ -1,4 +1,4 @@
-import { Controller, Inject, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Inject, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 import { FirebaseUser } from '../firebase/firebase-user.decorator';
@@ -6,12 +6,13 @@ import { FirebaseGuard } from '../firebase/firebase.guard';
 import { UserService } from './users.service';
 import { RequestHeaders } from '../core/request-headers.decorator';
 import { RefreshHeaderDTO } from './refresh-header.dto';
+import { UserGuard } from './user.guard';
 
 @Controller('user')
 @ApiTags('회원 처리')
 @ApiBearerAuth()
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post('/signIn')
   @ApiOperation({ summary: '로그인 처리' })
@@ -26,5 +27,12 @@ export class UserController {
     return this.userService.tokenRefresh(
       headers.authorization.split('Bearer ')[1],
     );
+  }
+
+  @ApiOperation({ summary: '이메일 기준 사용자 seq 조회' })
+  @Get('/searchEmail')
+  @UseGuards(UserGuard)
+  async email(@Query('email') email: string) {
+    return await this.userService.getEmail(email);
   }
 }
