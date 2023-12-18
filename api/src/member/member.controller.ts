@@ -15,12 +15,12 @@ export class MemberController {
     constructor(private readonly service: MemberService) {}
 
 
-  @ApiOperation({ summary: '담당자 추가' })
-  @ApiResponse({ status: 201, type: MemberVo })
-  @Post()
-  save(@AuthUser() userVo: UserVO, @Body() createTodo: MemberDto) {
-    return this.service.saveMember(createTodo, userVo.seq);
-  }
+  // @ApiOperation({ summary: '담당자 추가' })
+  // @ApiResponse({ status: 201, type: MemberVo })
+  // @Post()
+  // save(@AuthUser() userVo: UserVO, @Body() createTodo: MemberDto) {
+  //   return this.service.saveMember(createTodo, userVo.seq);
+  // }
 
   @Get()
   @ApiOperation({ summary: '담당자 목록 조회' })

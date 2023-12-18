@@ -28,7 +28,7 @@ export class DailyTodo extends BaseEntity {
 
   @Column()
   @Index()
-  type: string; // 매일, 휴일, 주말, 평일
+  type: string; // 매일(ED), 휴일(HD), 주말(WE), 평일(WD), 한번(OC)
 
   @Index()
   @Column()

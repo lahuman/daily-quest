@@ -18,7 +18,7 @@ export class TodoService {
   ) {}
 
   async saveTodo(createTodo: CreateTodoDto, userSeq: number) {
-    if (createTodo.type === TODO_TYPE.DT) {
+    if (createTodo.type === TODO_TYPE.ED) {
       const dailyTodo = await this.dailyTodoRepository.save(
         new DailyTodo({
           ...createTodo,
@@ -48,10 +48,10 @@ export class TodoService {
   async getTodoList(dateStr: string, userSeq: number) {
     const [todo, todayDaily, dailyTodo] = await Promise.all([
       this.todoRepository.find({
-        where: { type: TODO_TYPE.T, useYn: 'Y', userSeq, todoDay: dateStr },
+        where: { type: TODO_TYPE.OC, useYn: 'Y', userSeq, todoDay: dateStr },
       }),
       this.todoRepository.find({
-        where: { type: TODO_TYPE.DT, todoDay: dateStr, useYn: 'Y', userSeq },
+        where: { type: TODO_TYPE.ED, todoDay: dateStr, useYn: 'Y', userSeq },
       }),
       this.dailyTodoRepository.find({
         where: {
@@ -65,7 +65,7 @@ export class TodoService {
       ...dailyTodo
         .filter((d) => !todayDaily.some((t) => t.dailyTodoSeq === d.seq))
         .map((d) => ({
-          type: TODO_TYPE.DT,
+          type: TODO_TYPE.ED,
           dailyTodoSeq: d.seq,
           content: d.content,
           todoDay: dateStr,
@@ -86,7 +86,7 @@ export class TodoService {
   }
 
   async removeTodo(todoDto: TodoDto, userSeq: number) {
-    if (todoDto.type === TODO_TYPE.DT) {
+    if (todoDto.type === TODO_TYPE.ED) {
       const daily = await this.dailyTodoRepository.findOne({
         where: {
           userSeq,
@@ -158,7 +158,7 @@ export class TodoService {
           dailyTodoSeq: newTodo.seq,
           memberSeq: newTodo.memberSeq,
           point: newTodo.point,
-          type: TODO_TYPE.DT,
+          type: TODO_TYPE.ED,
           completeYn: todoDto.completeYn,
           todoDay: todoDto.todoDay,
         });

@@ -1,9 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
+// 매일(ED), 휴일(HD), 주말(WE), 평일(WD), 한번(OC)
 export enum TODO_TYPE {
-  T = 'T',
-  DT = 'DT',
+  OC = 'OC',
+  ED = 'ED',
+  HD = 'HD',
+  WE = 'WE',
+  WD = 'WD'
 }
 
 export class CreateTodoDto {

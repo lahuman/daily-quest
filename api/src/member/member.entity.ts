@@ -26,10 +26,7 @@ export class Member extends BaseEntity {
   color: string;
 
   @Column()
-  nickNm: string;
-
-  @Column({ nullable: true })
-  managerSeq?: number;
+  managerSeq: number;
 
   @Column()
   useYn: string;
