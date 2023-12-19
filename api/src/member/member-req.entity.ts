@@ -21,11 +21,15 @@ export class MemberReq extends BaseEntity {
   @Column({ default: 'N' })
   acceptYn: string;
 
-  @Column({ default: 'N' })
+  @Column({ default: 'Y' })
   useYn: string;
 
 
   @OneToOne(() => User)
-  @JoinColumn({name: "userSeq", referencedColumnName: "seq"})
-  user: User;
+  @JoinColumn({name: "user_seq", referencedColumnName: "seq"})
+  requesters: User;
+
+  @OneToOne(() => User)
+  @JoinColumn({name: "manager_seq", referencedColumnName: "seq"})
+  managers: User;
 }

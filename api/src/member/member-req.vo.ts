@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { MemberReq } from './member-req.entity';
+import { User } from 'src/user/user.entity';
 
 export class MemberReqVo {
   constructor(data: Partial<MemberReq>) {
@@ -7,6 +8,7 @@ export class MemberReqVo {
     this.userSeq = data.userSeq;
     this.managerSeq = data.managerSeq;
     this.acceptYn = data.acceptYn;
+    this.email = data?.managers?.email;
   }
   @ApiProperty()
   seq: number;
@@ -16,4 +18,6 @@ export class MemberReqVo {
   managerSeq: number;
   @ApiProperty()
   acceptYn: string;
+  @ApiProperty()
+  email: string;
 }

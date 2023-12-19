@@ -79,8 +79,8 @@ export class UserService {
     }
   }
 
-  async getEmail(email: string) {
-    const userInfo = await this.userRepository.findOne({
+  async existEmail(email: string) {
+    const userInfo = await this.userRepository.findOneOrFail({
       where: {
         email
       }
