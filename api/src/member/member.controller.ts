@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserGuard } from 'src/user/user.guard';
 import { MemberService } from './member.service';
@@ -23,16 +23,19 @@ export class MemberController {
   }
 
   @Get("/req")
-  @ApiOperation({ summary: '나에게 요청한 사용자 목록 조회' })
+  @ApiOperation({ summary: '내가 요청한 목록 조회' })
   @ApiResponse({ status: 200, type: MemberVo })
   getList4Date(@AuthUser() userVo: UserVO) {
-    return this.service.getMemberList(userVo.seq);
+    return this.service.getMemberList4Req(userVo.seq);
   }
 
   @ApiOperation({ summary: '매니저 요청' })
   @ApiResponse({ status: 200, type: MemberVo })
   @Post("/req")
   request(@AuthUser() userVo: UserVO, @Body() managerReqDto: ManagerReqDto) {
+    if(userVo.seq === managerReqDto.managerSeq) {
+      throw new HttpException("Can't Request!", HttpStatus.BAD_REQUEST);
+    }
     return this.service.requestManager(managerReqDto, userVo.seq);
   }
 
@@ -43,4 +46,19 @@ export class MemberController {
     return this.service.accpetManager(managerReqDto, userVo.seq);
   }
 
+  @ApiOperation({ summary: '멤버 추가' })
+  @ApiResponse({ status: 200, type: MemberVo })
+  @Post()
+  save(@AuthUser() userVo: UserVO, @Body() memberDto: MemberDto) {
+    return this.service.saveMember(memberDto, userVo.seq);
+  }
+
+  @Get()
+  @ApiOperation({ summary: '관리 목록 조회' })
+  @ApiResponse({ status: 200, type: MemberVo })
+  getMemberList(@AuthUser() userVo: UserVO) {
+    return this.service.getMemberList(userVo.seq);
+  }
+
+  
 }

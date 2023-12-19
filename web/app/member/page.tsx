@@ -134,7 +134,6 @@ export default function Member() {
                 style={{ color: color }}
                 onChange={(e) => setName(e.target.value)}
                 onKeyDown={(e) => {
-                  console.log(e.key);
                   if (
                     e.key === "Enter" &&
                     e.nativeEvent.isComposing === false &&

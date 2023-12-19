@@ -6,7 +6,7 @@ export class CreateMemberReq1693462236481 implements MigrationInterface {
         create table member_req (
             seq integer primary key autoincrement,
             user_seq integer not null,
-            member_seq integer null,
+            manager_seq integer null,
             accept_yn varchar(1) not null default 'N',
             use_yn varchar(1) not null default 'Y',
             reg_dtm datetime,

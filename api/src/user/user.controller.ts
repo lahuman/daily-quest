@@ -32,7 +32,7 @@ export class UserController {
   @ApiOperation({ summary: '이메일 기준 사용자 seq 조회' })
   @Get('/searchEmail')
   @UseGuards(UserGuard)
-  async email(@Query('email') email: string) {
-    return await this.userService.getEmail(email);
+  async existEmail(@Query('email') email: string) {
+    return await this.userService.existEmail(email);
   }
 }

@@ -9,6 +9,7 @@ export class ManagerReqDto {
 
   @ApiProperty({ description: '요청자SEQ', required: false })
   @IsNumber()
+  @IsOptional()
   userSeq?: number;
 
   @ApiProperty({ description: '관리자SEQ', required: true })
@@ -16,7 +17,8 @@ export class ManagerReqDto {
   @IsNumber()
   managerSeq: number;
 
-  @ApiProperty({ description: '승락여부' })
+  @ApiProperty({ description: '승락여부', required: false })
   @IsString()
-  acceptYn: string;
+  @IsOptional()
+  acceptYn?: string;
 }

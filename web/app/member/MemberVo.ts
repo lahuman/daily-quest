@@ -1,6 +1,7 @@
 export interface MemberVo {
     seq: number;
     userSeq: number;
+    managerSeq?: number;
     name: string;
     color: string;
     totalPoint: number;

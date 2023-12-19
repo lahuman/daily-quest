@@ -10,6 +10,15 @@ export class CreateUserTable1682489013534 implements MigrationInterface {
             reg_dtm datetime,
             mod_dtm datetime
         );`);
+
+    for(let i=0; i<10; i++) {
+      await queryRunner.query(`
+      insert into user (
+          uid ,
+          email
+      ) values ('hello${i}', 'lahuman${i}@haha.com');`);
+    }
+    
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
