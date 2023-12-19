@@ -27,9 +27,18 @@ export class MemberService {
         useYn: 'Y'
       }
     });
-    if (alreadyReq > 0) {
+
+    const alreadyMember = await this.memberRepository.count({
+      where: {
+        userSeq: userSeq,
+        managerSeq: managerReq.managerSeq,
+        useYn: 'Y'
+      }
+    })
+    if ((alreadyReq+alreadyMember) > 0) {
       throw new HttpException("Already Exist", HttpStatus.CONFLICT);
     }
+
     const memberReq = await this.memberReqRepository.save(new MemberReq({ ...managerReq, userSeq: userSeq }));
 
     return new MemberReqVo(memberReq);
