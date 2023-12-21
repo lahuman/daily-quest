@@ -16,16 +16,24 @@ export class MemberController {
   constructor(private readonly service: MemberService) { }
 
   @Get("/manager")
-  @ApiOperation({ summary: '매니저 기준 사용자 요청 목록 조회' })
+  @ApiOperation({ summary: '나에게 요청한 목록 조회' })
   @ApiResponse({ status: 200, type: MemberVo })
   getList4ManagerReq(@AuthUser() userVo: UserVO) {
     return this.service.getMemberList4Manager(userVo.seq);
   }
 
+  @Get("/res")
+  @ApiOperation({ summary: '요청 처리 된 사용자' })
+  @ApiResponse({ status: 200, type: MemberVo })
+  getList4Res(@AuthUser() userVo: UserVO) {
+    return this.service.getMemberList4Manager(userVo.seq);
+  }
+
+
   @Get("/req")
   @ApiOperation({ summary: '내가 요청한 목록 조회' })
   @ApiResponse({ status: 200, type: MemberVo })
-  getList4Date(@AuthUser() userVo: UserVO) {
+  getList4Req(@AuthUser() userVo: UserVO) {
     return this.service.getMemberList4Req(userVo.seq);
   }
 

@@ -36,7 +36,7 @@ export default function RootLayout({
                     <Link className="text-blue-500 hover:text-blue-800" href="/member">Member</Link>
                   </li>
                   <li className="mr-6">
-                    <Link className="text-blue-500 hover:text-blue-800" href="/manager">Manager</Link>
+                    <Link className="text-blue-500 hover:text-blue-800" href="/manager/req">Manager</Link>
                   </li>
                 </ul>
               </div>
