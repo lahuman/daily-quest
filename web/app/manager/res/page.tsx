@@ -20,7 +20,7 @@ export default function Member() {
 
   function getManagerReqList() {
     setLoading(true);
-    client("/member").then((data) => {
+    client("/member/res").then((data) => {
       setList(data);
       setLoading(false);
     });

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Member } from './member.entity';
-import { Not, Repository } from 'typeorm';
+import { DataSource, Not, Repository, getConnection } from 'typeorm';
 import { MemberDto } from './member.dto';
 import { MemberVo } from './member.vo';
 import { MemberReq } from './member-req.entity';
@@ -16,6 +16,7 @@ export class MemberService {
     private readonly memberRepository: Repository<Member>,
     @InjectRepository(MemberReq)
     private readonly memberReqRepository: Repository<MemberReq>,
+    private dataSource: DataSource
   ) { }
 
   async requestManager(managerReq: ManagerReqDto, userSeq: number) {
@@ -34,7 +35,7 @@ export class MemberService {
         useYn: 'Y'
       }
     })
-    if ((alreadyReq+alreadyMember) > 0) {
+    if ((alreadyReq + alreadyMember) > 0) {
       throw new HttpException("Already Exist", HttpStatus.CONFLICT);
     }
 
@@ -58,6 +59,7 @@ export class MemberService {
     return targetList.map(t => new MemberReqVo(t));
   }
 
+
   async accpetManager(managerReq: ManagerReqDto, userSeq: number) {
     const targetReq = await this.memberReqRepository.findOne({
       relations: {
@@ -73,18 +75,36 @@ export class MemberService {
 
     targetReq.acceptYn = managerReq.acceptYn;
 
-    if (managerReq.acceptYn === 'Y') {
-      // 응답시 멤버 추가 처리
-      await this.memberRepository.save(
-        new Member({
-          name: targetReq.requesters.email,
-          userSeq: targetReq.userSeq,
-          managerSeq: userSeq,
-          useYn: 'Y'
-        }),
-      );
+    // transaction 처리 
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      if (managerReq.acceptYn === 'Y') {
+        // 응답시 멤버 추가 처리
+        await this.memberRepository.save(
+          new Member({
+            name: targetReq.requesters.email,
+            userSeq: targetReq.userSeq,
+            managerSeq: userSeq,
+            useYn: 'Y'
+          }),
+        );
+      }
+      const memberReqVo = new MemberReqVo(await this.memberReqRepository.save(targetReq));
+
+      await queryRunner.commitTransaction();
+      return memberReqVo;
+    } catch (err) {
+      // since we have errors lets rollback the changes we made
+      await queryRunner.rollbackTransaction();
+    } finally {
+      // you need to release a queryRunner which was manually instantiated
+      await queryRunner.release();
     }
-    return new MemberReqVo(await this.memberReqRepository.save(targetReq));
+
   }
 
   async getMemberList4Manager(userSeq: number) {
@@ -98,9 +118,9 @@ export class MemberService {
   async getMemberList4Res(userSeq: number) {
     const memberList = await this.memberReqRepository.find({
       relations: {
-        managers: true, 
+        managers: true,
       },
-      where: { useYn: 'Y', managerSeq: userSeq, userSeq: Not(userSeq) },
+      where: { useYn: 'Y', acceptYn: 'N', managerSeq: userSeq, userSeq: Not(userSeq) },
     });
 
     return memberList.map((m) => new MemberReqVo(m));
@@ -109,7 +129,7 @@ export class MemberService {
   async getMemberList4Req(userSeq: number) {
     const memberList = await this.memberReqRepository.find({
       relations: {
-        managers: true, 
+        managers: true,
       },
       where: { useYn: 'Y', managerSeq: Not(userSeq), userSeq: userSeq },
     });
