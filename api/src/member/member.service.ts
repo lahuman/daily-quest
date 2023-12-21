@@ -23,7 +23,6 @@ export class MemberService {
       where: {
         userSeq: userSeq,
         managerSeq: managerReq.managerSeq,
-        acceptYn: 'N',
         useYn: 'Y'
       }
     });
@@ -94,6 +93,17 @@ export class MemberService {
     });
 
     return memberList.map((m) => new MemberVo(m));
+  }
+
+  async getMemberList4Res(userSeq: number) {
+    const memberList = await this.memberReqRepository.find({
+      relations: {
+        managers: true, 
+      },
+      where: { useYn: 'Y', managerSeq: userSeq, userSeq: Not(userSeq) },
+    });
+
+    return memberList.map((m) => new MemberReqVo(m));
   }
 
   async getMemberList4Req(userSeq: number) {
