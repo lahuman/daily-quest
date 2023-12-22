@@ -112,11 +112,11 @@ export default function Member() {
       (x && x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")) || 0
     );
   }
-console.log(tab === TABS.REQ ? 'border-blue-500' : 'text-gray-300')
+  console.log(tab === TABS.REQ ? 'border-blue-500' : 'text-gray-300')
   return (
     <>
       {loading && <Loadding />}
-    
+
       <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
         <ul className="flex flex-wrap -mb-px">
           <li className="me-2">
@@ -167,29 +167,17 @@ console.log(tab === TABS.REQ ? 'border-blue-500' : 'text-gray-300')
                   key={idx}
                   className="relative flex items-center justify-between px-2 py-6 border-b"
                 >
-                  <input
-                    type="text"
-                    className="w-5/12 mr-1 px-2 py-3 border rounded outline-none border-grey-600"
-                    defaultValue={`${myReq.email}`}
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-0 flex items-center"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 h-5 text-red-700"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
+                  <span className="w-5/12 mr-1 px-2 py-3">
+                    {myReq.email}
+                  </span>
+                  {myReq.acceptYn === "N" && <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" >
+                    요청중
+                  </button>}
+                  {myReq.acceptYn === "Y" && <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    승인됨
+                  </button>}
+                  <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                    삭제
                   </button>
                 </li>
               ))}

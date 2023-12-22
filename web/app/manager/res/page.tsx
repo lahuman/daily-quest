@@ -123,29 +123,19 @@ export default function Member() {
                   key={idx}
                   className="relative flex items-center justify-between px-2 py-6 border-b"
                 >
-                  <input
-                    type="text"
-                    className="w-5/12 mr-1 px-2 py-3 border rounded outline-none border-grey-600"
-                    defaultValue={`${myReq.email}`}
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-0 flex items-center"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 h-5 text-red-700"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
+                  <span className="w-5/12 mr-1 px-2 py-3">
+                    {myReq.email}
+                  </span>
+                  {myReq.acceptYn === "N" && <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={e => {
+
+                  }}>
+                    요청
+                  </button>}
+                  {myReq.acceptYn === "Y" && <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    승인됨
+                  </button>}
+                  <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                    반려
                   </button>
                 </li>
               ))}
