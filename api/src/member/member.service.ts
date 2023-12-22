@@ -140,7 +140,7 @@ export class MemberService {
 
   async getMemberList(userSeq: number) {
     const memberList = await this.memberRepository.find({
-      where: { useYn: 'Y', managerSeq: userSeq, userSeq: userSeq },
+      where: { useYn: 'Y', managerSeq: userSeq },
     });
 
     return memberList.map((m) => new MemberVo(m));
@@ -153,7 +153,10 @@ export class MemberService {
 
   async modiMember(memberDto: MemberDto, userSeq: number) {
     const m = await this.memberRepository.findOneOrFail({
-      where: { seq: memberDto.seq, managerSeq: userSeq },
+      where: {
+        seq: memberDto.seq,
+        managerSeq: userSeq
+      },
     });
 
     const member = await this.memberRepository.update(m.seq, {

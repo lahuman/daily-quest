@@ -54,6 +54,7 @@ export class MemberController {
     return this.service.accpetManager(managerReqDto, userVo.seq);
   }
 
+  
   @ApiOperation({ summary: '멤버 추가' })
   @ApiResponse({ status: 200, type: MemberVo })
   @Post()
@@ -62,10 +63,17 @@ export class MemberController {
   }
 
   @Get()
-  @ApiOperation({ summary: '관리 목록 조회' })
+  @ApiOperation({ summary: '나의 멤버 목록 조회' })
   @ApiResponse({ status: 200, type: MemberVo })
   getMemberList(@AuthUser() userVo: UserVO) {
     return this.service.getMemberList(userVo.seq);
+  }
+
+  @ApiOperation({ summary: '나의 멤버 수정 요청 처리' })
+  @ApiResponse({ status: 200, type: MemberVo })
+  @Put()
+  update(@AuthUser() userVo: UserVO, @Body() memberDto: MemberDto) {
+    return this.service.modiMember(memberDto, userVo.seq);
   }
 
   

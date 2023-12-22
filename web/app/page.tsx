@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 
 export default function Dashboard() {
   const [error, setError] = useState("");
@@ -36,13 +37,15 @@ export default function Dashboard() {
       })
         .then((response) => response.json())
         .then((data) => {
-          if(data.statusCode === 500){
+          if (data.statusCode === 500) {
             alert('회원 처리에 실패했습니다. 관리자에게 문의 하세요.');
             indexedDB.deleteDatabase('firebaseLocalStorageDb');
             window.localStorage.clear();
             window.location.href = "/";
-          }else {
+          } else {
             window.localStorage.setItem("token", JSON.stringify(data));
+            const decoded = jwtDecode(data.token);
+            window.localStorage.setItem("userSeq", (decoded as any).seq);
             router.push("/todo");
           }
         })
