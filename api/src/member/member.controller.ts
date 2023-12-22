@@ -23,7 +23,7 @@ export class MemberController {
   }
 
   @Get("/res")
-  @ApiOperation({ summary: '요청 처리 된 사용자' })
+  @ApiOperation({ summary: '요청 된 사용자 목록' })
   @ApiResponse({ status: 200, type: MemberVo })
   getList4Res(@AuthUser() userVo: UserVO) {
     return this.service.getMemberList4Res(userVo.seq);

@@ -61,7 +61,7 @@ export class MemberService {
 
 
   async accpetManager(managerReq: ManagerReqDto, userSeq: number) {
-    const targetReq = await this.memberReqRepository.findOne({
+    const targetReq = await this.memberReqRepository.findOneOrFail({
       relations: {
         requesters: true
       },
@@ -74,6 +74,7 @@ export class MemberService {
     });
 
     targetReq.acceptYn = managerReq.acceptYn;
+    targetReq.useYn = "N";
 
     // transaction 처리 
     const queryRunner = this.dataSource.createQueryRunner();
