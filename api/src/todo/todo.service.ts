@@ -18,18 +18,27 @@ export class TodoService {
   ) {}
 
   async saveTodo(createTodo: CreateTodoDto, userSeq: number) {
+    console.log(createTodo.managerSeq === 0)
+    console.log(createTodo.managerSeq)
+    if(createTodo.managerSeq === 0){
+      createTodo.managerSeq = userSeq;
+      createTodo.userSeq = userSeq;  
+    } else {
+      createTodo.userSeq = createTodo.managerSeq;
+      createTodo.managerSeq = userSeq;
+    }
+
+    console.log(createTodo);
     if (createTodo.type === TODO_TYPE.ED) {
       const dailyTodo = await this.dailyTodoRepository.save(
         new DailyTodo({
           ...createTodo,
-          userSeq,
           startDay: parseInt(createTodo.todoDay),
         }),
       );
       const todo = await this.todoRepository.save(
         new Todo({
           ...createTodo,
-          userSeq,
           dailyTodoSeq: dailyTodo.seq,
         }),
       );
@@ -38,7 +47,6 @@ export class TodoService {
       const todo = await this.todoRepository.save(
         new Todo({
           ...createTodo,
-          userSeq,
         }),
       );
       return new TodoVo(todo);
@@ -48,17 +56,24 @@ export class TodoService {
   async getTodoList(dateStr: string, userSeq: number) {
     const [todo, todayDaily, dailyTodo] = await Promise.all([
       this.todoRepository.find({
-        where: { type: TODO_TYPE.OC, useYn: 'Y', userSeq, todoDay: dateStr },
+        where: [{ type: TODO_TYPE.OC, useYn: 'Y', userSeq, todoDay: dateStr },
+        { type: TODO_TYPE.OC, useYn: 'Y', managerSeq: userSeq, todoDay: dateStr },]
       }),
       this.todoRepository.find({
-        where: { type: TODO_TYPE.ED, todoDay: dateStr, useYn: 'Y', userSeq },
+        where: [{ type: TODO_TYPE.ED, todoDay: dateStr, useYn: 'Y', userSeq },
+        { type: TODO_TYPE.ED, todoDay: dateStr, useYn: 'Y', managerSeq: userSeq }],
       }),
       this.dailyTodoRepository.find({
-        where: {
+        where: [{
           useYn: 'Y',
           userSeq,
           startDay: LessThanOrEqual(parseInt(dateStr)),
         },
+        {
+          useYn: 'Y',
+          managerSeq: userSeq,
+          startDay: LessThanOrEqual(parseInt(dateStr)),
+        }],
       }),
     ]);
     const allTodoList = [
@@ -70,7 +85,7 @@ export class TodoService {
           content: d.content,
           todoDay: dateStr,
           point: d.point,
-          memberSeq: d.memberSeq,
+          managerSeq: d.managerSeq,
         })),
       ...todo,
       ...todayDaily,
@@ -89,7 +104,7 @@ export class TodoService {
     if (todoDto.type === TODO_TYPE.ED) {
       const daily = await this.dailyTodoRepository.findOne({
         where: {
-          userSeq,
+          managerSeq: userSeq,
           seq: todoDto.dailyTodoSeq,
           useYn: 'Y',
         },
@@ -103,7 +118,7 @@ export class TodoService {
     }
     const todo = await this.todoRepository.findOne({
       where: {
-        userSeq,
+        managerSeq: userSeq,
         seq: todoDto.seq,
         todoDay: todoDto.todoDay,
         useYn: 'Y',
@@ -156,21 +171,21 @@ export class TodoService {
           userSeq,
           content: newTodo.content,
           dailyTodoSeq: newTodo.seq,
-          memberSeq: newTodo.memberSeq,
+          managerSeq: newTodo.managerSeq,
           point: newTodo.point,
           type: TODO_TYPE.ED,
           completeYn: todoDto.completeYn,
           todoDay: todoDto.todoDay,
         });
       }
-      if (!todo.memberSeq) {
-        delete todo.memberSeq;
+      if (!todo.managerSeq) {
+        delete todo.managerSeq;
       }
       if (isNaN(todo.point)) todo.point = 0;
       await manager.save(todo);
-      if (todo.memberSeq) {
+      if (todo.managerSeq) {
         const m = await manager.findOne(Member, {
-          where: { seq: todo.memberSeq },
+          where: { seq: todo.managerSeq },
         });
         if (todo.completeYn === 'Y') m.totalPoint += todo.point;
         else m.totalPoint -= todo.point;

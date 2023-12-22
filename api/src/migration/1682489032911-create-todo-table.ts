@@ -6,7 +6,7 @@ export class CreateTodoTable1682489032911 implements MigrationInterface {
         create table todo (
             seq integer primary key autoincrement,
             user_seq integer not null,
-            member_seq integer null,
+            manager_seq integer null,
             point integer not null default 0,
             daily_todo_seq integer,
             content varchar(2000),

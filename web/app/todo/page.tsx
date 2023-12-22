@@ -8,10 +8,29 @@ import Loadding from "@/components/Loadding";
 import { MemberVo } from "../member/MemberVo";
 
 enum TODO_TYPE {
-  T = "T",
-  DT = "DT",
+  OC = 'OC',
+  ED = 'ED',
+  HD = 'HD',
+  WE = 'WE',
+  WD = 'WD'
 }
 
+const getTodoType = (value: string): TODO_TYPE => {
+  switch (value) {
+    case "OC":
+      return TODO_TYPE.OC;
+    case "ED":
+      return TODO_TYPE.ED;
+    case "HD":
+      return TODO_TYPE.HD;
+    case "WE":
+      return TODO_TYPE.WE;
+    case "WD":
+      return TODO_TYPE.WD;
+    default:
+      return TODO_TYPE.OC;
+  }
+}
 function MemberTag(prop: any) {
   const member = prop.member;
   return member ? (
@@ -24,12 +43,13 @@ function MemberTag(prop: any) {
 export default function Todo() {
   const [loading, setLoading] = useState(false);
   const [newTodo, setNewTodo] = useState("");
-  const [newMember, setNewMember] = useState("");
+  const [managerSeq, setManagerSeq] = useState("");
   const [newPoint, setNewPoint] = useState<number | string>(0);
-  const [type, setType] = useState<TODO_TYPE>(TODO_TYPE.T);
+  const [type, setType] = useState<TODO_TYPE>(TODO_TYPE.OC);
   const [dateStr, setDateStr] = useState(format(new Date(), "yyyyMMdd"));
   const [list, setList] = useState<TodoVo[] | undefined>();
   const [memberList, setMemberList] = useState<MemberVo[] | undefined>();
+  const userSeq =  parseInt(window.localStorage.getItem("userSeq") || "0");
 
   function numberWithCommas(x: number) {
     return (
@@ -73,14 +93,14 @@ export default function Todo() {
         type,
         content: newTodo,
         todoDay: dateStr,
-        memberSeq: newMember,
+        managerSeq: managerSeq,
         point: newPoint,
       },
     })
       .then((r) => {
         setNewTodo("");
         setNewPoint(0);
-        setNewMember("0");
+        setManagerSeq("0");
         setLoading(false);
         getTodoList();
       })
@@ -189,20 +209,23 @@ export default function Todo() {
                 className="w-5/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
                 value={type}
                 onChange={(e) =>
-                  setType(e.target.value === "DT" ? TODO_TYPE.DT : TODO_TYPE.T)
+                  getTodoType(e.target.value)
                 }
               >
-                <option value="T">Once</option>
-                <option value="DT">Repeat</option>
+                <option value="OC">한번</option>
+                <option value="WD">평일</option>
+                <option value="ED">매일</option>
+                <option value="HD">휴일</option>
+                <option value="WE">주말</option>
               </select>
               <select
                 className="w-5/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
-                value={newMember}
-                onChange={(e) => setNewMember(e.target.value)}
+                value={managerSeq}
+                onChange={(e) => setManagerSeq(e.target.value)}
               >
                 <option value="0">None</option>
                 {memberList?.map((m) => (
-                  <option key={m.seq} value={m.seq}>
+                  <option key={m.userSeq} value={m.userSeq}>
                     {m.name}
                   </option>
                 ))}
@@ -260,7 +283,7 @@ export default function Todo() {
                       type="checkbox"
                       id={`todo${idx}`}
                       onChange={({ target: { checked } }) => {
-                        updateTodoCompleted({
+                        if(todo.userSeq === userSeq) updateTodoCompleted({
                           ...todo,
                           completeYn: checked ? "Y" : "N",
                         });
@@ -268,51 +291,33 @@ export default function Todo() {
                       checked={todo.completeYn === "Y"}
                     />
                     <label
-                      className={`inline-block mt-1 text-gray-600  cursor-pointer ${
-                        todo.completeYn === "Y" ? "line-through" : ""
-                      }`}
+                      className={`inline-block mt-1 text-gray-600  cursor-pointer ${todo.completeYn === "Y" ? "line-through" : ""
+                        }`}
                       htmlFor={`todo${idx}`}
                     >
                       {
                         <MemberTag
                           member={memberList?.find(
-                            (m) => m.seq === todo.memberSeq
+                            (m) => m.managerSeq === todo.managerSeq
                           )}
                         />
-                      // eslint-disable-next-line react/jsx-no-comment-textnodes
+                        // eslint-disable-next-line react/jsx-no-comment-textnodes
                       }{" "}{todo.content} //{" "}
                       <span
                         className={
                           todo.point === 0
                             ? ""
                             : todo.point > 0
-                            ? "text-blue-600"
-                            : "text-red-600"
+                              ? "text-blue-600"
+                              : "text-red-600"
                         }
                       >
                         {numberWithCommas(todo.point)}
                       </span>{" "}
                     </label>
                   </div>
-                  <button
-                    type="button"
-                    className="absolute right-0 flex items-center"
-                    onClick={(e) => deleteTodo(todo)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 h-5 text-red-700"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
+                  <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={(e) => deleteTodo(todo)}>
+                    삭제
                   </button>
                 </li>
               ))}

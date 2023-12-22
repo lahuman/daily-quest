@@ -15,9 +15,14 @@ export class CreateTodoDto {
   @IsOptional()
   dailyTodoSeq?: number;
 
+
+  @ApiProperty({ description: '사용자 SEQ', required: false })
+  @IsOptional()
+  userSeq?: number;
+
   @ApiProperty({ description: '담당자 SEQ', required: false })
   @IsOptional()
-  memberSeq?: number;
+  managerSeq?: number;
 
   @ApiProperty({ description: '포인트', required: false })
   @IsOptional()

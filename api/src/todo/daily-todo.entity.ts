@@ -19,7 +19,7 @@ export class DailyTodo extends BaseEntity {
   userSeq: number;
   
   @Column()
-  memberSeq: number;
+  managerSeq: number;
 
   @Column({
     default: 0

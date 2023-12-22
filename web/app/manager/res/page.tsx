@@ -31,17 +31,17 @@ export default function Member() {
   }, []);
 
 
-  function updateMember(memberVo: MemberVo) {
+  function updateMemberReq(memberReqVo: MemberReqVo) {
     if (
       confirm(
         "If you update a member name, todo also update. Do you want update member?"
       )
     ) {
       setLoading(true);
-      client("/member", {
+      client("/member/req", {
         method: "PUT",
         body: {
-          ...memberVo,
+          ...memberReqVo,
         },
       })
         .then((r) => {
@@ -101,7 +101,7 @@ export default function Member() {
             <Link href="/manager/req" className={`inline-block p-4 border-b-2 ${tab === TABS.REQ ? 'text-blue-600  border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500' : 'border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'}`}>요청내역</Link>
           </li>
           <li className="me-2">
-            <a href="#" className={`inline-block p-4 border-b-2 ${tab === TABS.RES ? 'text-blue-600  border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500' : 'border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'}`}>응답내역</a>
+            <a href="#" className={`inline-block p-4 border-b-2 ${tab === TABS.RES ? 'text-blue-600  border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500' : 'border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'}`}>대기내역</a>
           </li>
           {
             /**
@@ -126,15 +126,10 @@ export default function Member() {
                   <span className="w-5/12 mr-1 px-2 py-3">
                     {myReq.email}
                   </span>
-                  {myReq.acceptYn === "N" && <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={e => {
-
-                  }}>
-                    요청
-                  </button>}
-                  {myReq.acceptYn === "Y" && <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                    승인됨
-                  </button>}
-                  <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={e => updateMemberReq({...myReq, acceptYn: 'Y'})}>
+                    승인
+                  </button>
+                  <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={e => updateMemberReq({...myReq, acceptYn: 'N'})}>
                     반려
                   </button>
                 </li>
