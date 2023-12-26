@@ -18,11 +18,11 @@ export class TodoService {
   ) {}
 
   async saveTodo(createTodo: CreateTodoDto, userSeq: number) {
-    console.log(createTodo.managerSeq === 0)
-    console.log(createTodo.managerSeq)
-    if(createTodo.managerSeq === 0){
+    console.log(createTodo.managerSeq === 0);
+    console.log(createTodo.managerSeq);
+    if (createTodo.managerSeq === 0) {
       createTodo.managerSeq = userSeq;
-      createTodo.userSeq = userSeq;  
+      createTodo.userSeq = userSeq;
     } else {
       createTodo.userSeq = createTodo.managerSeq;
       createTodo.managerSeq = userSeq;
@@ -56,24 +56,40 @@ export class TodoService {
   async getTodoList(dateStr: string, userSeq: number) {
     const [todo, todayDaily, dailyTodo] = await Promise.all([
       this.todoRepository.find({
-        where: [{ type: TODO_TYPE.OC, useYn: 'Y', userSeq, todoDay: dateStr },
-        { type: TODO_TYPE.OC, useYn: 'Y', managerSeq: userSeq, todoDay: dateStr },]
+        where: [
+          { type: TODO_TYPE.OC, useYn: 'Y', userSeq, todoDay: dateStr },
+          {
+            type: TODO_TYPE.OC,
+            useYn: 'Y',
+            managerSeq: userSeq,
+            todoDay: dateStr,
+          },
+        ],
       }),
       this.todoRepository.find({
-        where: [{ type: TODO_TYPE.ED, todoDay: dateStr, useYn: 'Y', userSeq },
-        { type: TODO_TYPE.ED, todoDay: dateStr, useYn: 'Y', managerSeq: userSeq }],
+        where: [
+          { type: TODO_TYPE.ED, todoDay: dateStr, useYn: 'Y', userSeq },
+          {
+            type: TODO_TYPE.ED,
+            todoDay: dateStr,
+            useYn: 'Y',
+            managerSeq: userSeq,
+          },
+        ],
       }),
       this.dailyTodoRepository.find({
-        where: [{
-          useYn: 'Y',
-          userSeq,
-          startDay: LessThanOrEqual(parseInt(dateStr)),
-        },
-        {
-          useYn: 'Y',
-          managerSeq: userSeq,
-          startDay: LessThanOrEqual(parseInt(dateStr)),
-        }],
+        where: [
+          {
+            useYn: 'Y',
+            userSeq,
+            startDay: LessThanOrEqual(parseInt(dateStr)),
+          },
+          {
+            useYn: 'Y',
+            managerSeq: userSeq,
+            startDay: LessThanOrEqual(parseInt(dateStr)),
+          },
+        ],
       }),
     ]);
     const allTodoList = [
@@ -178,19 +194,17 @@ export class TodoService {
           todoDay: todoDto.todoDay,
         });
       }
-      if (!todo.managerSeq) {
-        delete todo.managerSeq;
-      }
+
       if (isNaN(todo.point)) todo.point = 0;
       await manager.save(todo);
-      if (todo.managerSeq) {
-        const m = await manager.findOne(Member, {
-          where: { seq: todo.managerSeq },
-        });
-        if (todo.completeYn === 'Y') m.totalPoint += todo.point;
-        else m.totalPoint -= todo.point;
-        if (!isNaN(m.totalPoint)) await manager.save(m);
-      }
+      // 포인트 관리를 위해, 이후 member는 개인이 추가 할 수 없음...
+      const m = await manager.findOne(Member, {
+        where: { userSeq: todo.userSeq, managerSeq: todo.managerSeq },
+      });
+      if (isNaN(m.totalPoint)) m.totalPoint = 0;
+      if (todo.completeYn === 'Y') m.totalPoint += todo.point;
+      else m.totalPoint -= todo.point;
+      if (!isNaN(m.totalPoint)) await manager.save(m);
     });
   }
 }
