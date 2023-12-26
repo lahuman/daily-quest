@@ -39,7 +39,10 @@ export class TodoController {
   @Get('/:dateStr')
   @ApiOperation({ summary: '미션 목록 조회' })
   @ApiResponse({ status: 200, type: TodoVo })
-  async getList4Date(@AuthUser() userVo: UserVO, @Param('dateStr') dateStr: string) {
+  async getList4Date(
+    @AuthUser() userVo: UserVO,
+    @Param('dateStr') dateStr: string,
+  ) {
     return await this.service.getTodoList(dateStr, userVo.seq);
   }
 

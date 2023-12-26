@@ -1,5 +1,19 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UserGuard } from 'src/user/user.guard';
 import { MemberService } from './member.service';
 import { AuthUser } from 'src/user/user.decorator';
@@ -9,28 +23,27 @@ import { MemberVo } from './member.vo';
 import { ManagerReqDto } from './manager-req.dto';
 
 @Controller('member')
-@ApiTags("담당자")
+@ApiTags('담당자')
 @UseGuards(UserGuard)
 @ApiBearerAuth()
 export class MemberController {
-  constructor(private readonly service: MemberService) { }
+  constructor(private readonly service: MemberService) {}
 
-  @Get("/manager")
+  @Get('/manager')
   @ApiOperation({ summary: '나에게 요청한 목록 조회' })
   @ApiResponse({ status: 200, type: MemberVo })
   getList4ManagerReq(@AuthUser() userVo: UserVO) {
     return this.service.getMemberList4Manager(userVo.seq);
   }
 
-  @Get("/res")
+  @Get('/res')
   @ApiOperation({ summary: '요청 된 사용자 목록' })
   @ApiResponse({ status: 200, type: MemberVo })
   getList4Res(@AuthUser() userVo: UserVO) {
     return this.service.getMemberList4Res(userVo.seq);
   }
 
-
-  @Get("/req")
+  @Get('/req')
   @ApiOperation({ summary: '내가 요청한 목록 조회' })
   @ApiResponse({ status: 200, type: MemberVo })
   getList4Req(@AuthUser() userVo: UserVO) {
@@ -39,9 +52,9 @@ export class MemberController {
 
   @ApiOperation({ summary: '매니저 요청' })
   @ApiResponse({ status: 200, type: MemberVo })
-  @Post("/req")
+  @Post('/req')
   request(@AuthUser() userVo: UserVO, @Body() managerReqDto: ManagerReqDto) {
-    if(userVo.seq === managerReqDto.managerSeq) {
+    if (userVo.seq === managerReqDto.managerSeq) {
       throw new HttpException("Can't Request!", HttpStatus.BAD_REQUEST);
     }
     return this.service.requestManager(managerReqDto, userVo.seq);
@@ -49,12 +62,11 @@ export class MemberController {
 
   @ApiOperation({ summary: '매니저 요청 처리' })
   @ApiResponse({ status: 200, type: MemberVo })
-  @Put("/req")
+  @Put('/req')
   acceptReq(@AuthUser() userVo: UserVO, @Body() managerReqDto: ManagerReqDto) {
     return this.service.accpetManager(managerReqDto, userVo.seq);
   }
 
-  
   @ApiOperation({ summary: '멤버 추가' })
   @ApiResponse({ status: 200, type: MemberVo })
   @Post()
@@ -75,6 +87,4 @@ export class MemberController {
   update(@AuthUser() userVo: UserVO, @Body() memberDto: MemberDto) {
     return this.service.modiMember(memberDto, userVo.seq);
   }
-
-  
 }
