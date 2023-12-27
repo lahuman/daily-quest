@@ -2,6 +2,7 @@ export interface TodoVo {
   seq: number;
   userSeq: number;
   managerSeq: number;
+  memberSeq: number;
   point: number;
   dailyTodoSeq: number;
   missionDay: string;

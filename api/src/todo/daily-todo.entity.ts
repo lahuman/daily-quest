@@ -1,8 +1,11 @@
+import { Member } from 'src/member/member.entity';
 import {
   BaseEntity,
   Column,
   Entity,
   Index,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -20,6 +23,9 @@ export class DailyTodo extends BaseEntity {
   
   @Column()
   managerSeq: number;
+
+  @Column()
+  memberSeq: number;
 
   @Column({
     default: 0
@@ -39,4 +45,8 @@ export class DailyTodo extends BaseEntity {
 
   @Column('varchar', { default: 'Y' })
   useYn: string;
+
+  @ManyToOne(() => Member)
+  @JoinColumn({ name: 'member_seq', referencedColumnName: 'seq' })
+  member?: Member;
 }
