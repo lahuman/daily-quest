@@ -42,38 +42,15 @@ export default function Member() {
         }).then(r2 => {
           setName("");
         }).catch(e => {
-          alert(e.error);
+          alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.message);
         });
       })
       .catch((e) => {
-        alert(e.error);
+        alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.message);
       }).finally(() => {
         setLoading(false);
         setTimeout(() => getManagerReqList(), 300);
       });
-  }
-
-  function updateMember(memberVo: MemberVo) {
-    if (
-      confirm(
-        "If you update a member name, todo also update. Do you want update member?"
-      )
-    ) {
-      setLoading(true);
-      client("/member", {
-        method: "PUT",
-        body: {
-          ...memberVo,
-        },
-      })
-        .then((r) => {
-          setLoading(false);
-          getManagerReqList();
-        })
-        .catch((e) => {
-          alert(e);
-        });
-    }
   }
 
   function deleteMember(memberVo: MemberVo) {
@@ -90,11 +67,12 @@ export default function Member() {
         },
       })
         .then((r) => {
-          setLoading(false);
-          getManagerReqList();
         })
         .catch((e) => {
-          alert(e);
+          alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.message);
+        }).finally(() => {
+          setLoading(false);
+          setTimeout(() => getManagerReqList(), 300);
         });
     }
   }
@@ -112,7 +90,7 @@ export default function Member() {
       (x && x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")) || 0
     );
   }
-  console.log(tab === TABS.REQ ? 'border-blue-500' : 'text-gray-300')
+
   return (
     <>
       {loading && <Loadding />}
@@ -123,15 +101,7 @@ export default function Member() {
             <a href="#" className={`inline-block p-4 border-b-2 ${tab === TABS.REQ ? 'text-blue-600  border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500' : 'border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'}`}>요청내역</a>
           </li>
           <li className="me-2">
-            <Link href="/manager/res" className={`inline-block p-4 border-b-2 ${tab === TABS.RES ? 'text-blue-600  border-blue-600 runded-t-lg active dark:text-blue-500 dark:border-blue-500' : 'border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'}`}>대기내역</Link>          </li>
-          {
-            /**
-           <li>
-            <a className="inline-block p-4 text-gray-400 rounded-t-lg cursor-not-allowed dark:text-gray-500">Disabled</a>
-          </li>
-             */
-          }
-
+            <Link href="/manager/res" className={`inline-block p-4 border-b-2 ${tab === TABS.RES ? 'text-blue-600  border-blue-600 runded-t-lg active dark:text-blue-500 dark:border-blue-500' : 'border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'}`}>대기내역</Link></li>
         </ul>
       </div>
 
@@ -154,7 +124,7 @@ export default function Member() {
                   }
                 }}
                 type="search"
-                placeholder="Write new name and hit Enter."
+                placeholder="이메일을 입력하세요."
                 className="w-9/12 px-2 py-3 border rounded outline-none border-grey-600"
               />
             </form>

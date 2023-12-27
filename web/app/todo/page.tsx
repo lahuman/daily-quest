@@ -100,12 +100,13 @@ export default function Todo() {
       .then((r) => {
         setNewTodo("");
         setNewPoint(0);
-        setLoading(false);
-        getTodoList();
       })
       .catch((e) => {
         console.log(e);
-        alert("Contact your administrator");
+        alert("오류가 발생했습니다. 관리자에게 문의해주세요\n"+e.message);
+      }).finally(() => {
+        setLoading(false);
+        setTimeout(() => getTodoList(), 300);
       });
   }
 
@@ -119,12 +120,13 @@ export default function Todo() {
       },
     })
       .then((r) => {
-        setLoading(false);
-        getTodoList();
       })
       .catch((e) => {
         console.log(e);
-        alert("Contact your administrator");
+        alert("오류가 발생했습니다. 관리자에게 문의해주세요\n"+e.message);
+      }).finally(() => {
+        setLoading(false);
+        setTimeout(() => getTodoList(), 300);
       });
   }
 
@@ -138,12 +140,13 @@ export default function Todo() {
       },
     })
       .then((r) => {
-        setLoading(false);
-        getTodoList();
       })
       .catch((e) => {
         console.log(e);
-        alert("Contact your administrator");
+        alert("오류가 발생했습니다. 관리자에게 문의해주세요\n"+e.message);
+      }).finally(() => {
+        setLoading(false);
+        setTimeout(() => getTodoList(), 300);
       });
   }
 
@@ -245,7 +248,7 @@ export default function Todo() {
                   }
                 }}
                 type="text"
-                placeholder="Write a Quest and hit Enter."
+                placeholder="할일"
                 className="w-8/12 px-2 py-3 border rounded outline-none border-grey-600"
               />
               <input
@@ -264,7 +267,7 @@ export default function Todo() {
                   }
                 }}
                 type="number"
-                placeholder="Write Point and hit Enter."
+                placeholder="포인트"
                 className="w-3/12 px-2 py-3 border rounded outline-none border-grey-600"
               />
             </div>
