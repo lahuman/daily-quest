@@ -45,11 +45,12 @@ export default function Member() {
         },
       })
         .then((r) => {
-          setLoading(false);
-          getManagerReqList();
         })
         .catch((e) => {
-          alert(e);
+          alert("오류가 발생했습니다. 관리자에게 문의해주세요\n"+e.message);
+        }).finally(() => {
+          setLoading(false);
+          setTimeout(() => getManagerReqList(), 300);
         });
     }
   }
@@ -68,11 +69,12 @@ export default function Member() {
         },
       })
         .then((r) => {
-          setLoading(false);
-          getManagerReqList();
         })
         .catch((e) => {
-          alert(e);
+          alert("오류가 발생했습니다. 관리자에게 문의해주세요\n"+e.message);
+        }).finally(() => {
+          setLoading(false);
+          setTimeout(() => getManagerReqList(), 300);
         });
     }
   }

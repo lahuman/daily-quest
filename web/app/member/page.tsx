@@ -36,18 +36,19 @@ export default function Member() {
     })
       .then((r) => {
         setName("");
-        setLoading(false);
-        getMemberList();
       })
       .catch((e) => {
-        alert(e);
+        alert("오류가 발생했습니다. 관리자에게 문의해주세요\n"+e.message);
+      }).finally(() => {
+        setLoading(false);
+        setTimeout(() => getMemberList(), 300);
       });
   }
 
   function updateMember(memberVo: MemberVo) {
     if (
       confirm(
-        "If you update a member name, todo also update. Do you want update member?"
+        "이름과 색상을 변경하면, TODO 목록에 반영됩니다.\n변경하시겠습니까?"
       )
     ) {
       setLoading(true);
@@ -58,11 +59,12 @@ export default function Member() {
         },
       })
         .then((r) => {
-          setLoading(false);
-          getMemberList();
         })
         .catch((e) => {
-          alert(e);
+          alert("오류가 발생했습니다. 관리자에게 문의해주세요\n"+e.message);
+        }).finally(() => {
+          setLoading(false);
+          setTimeout(() => getMemberList(), 300);
         });
     }
   }
@@ -70,7 +72,7 @@ export default function Member() {
   function deleteMember(memberVo: MemberVo) {
     if (
       confirm(
-        "If you delete a member, todo is retained. Do you want remove member?"
+        "삭제하시면, 기존 todo의 멤버만 삭제 됩니다.\n삭제하시겠습니까?"
       )
     ) {
       setLoading(true);
@@ -81,11 +83,12 @@ export default function Member() {
         },
       })
         .then((r) => {
-          setLoading(false);
-          getMemberList();
         })
         .catch((e) => {
-          alert(e);
+          alert("오류가 발생했습니다. 관리자에게 문의해주세요\n"+e.message);
+        }).finally(() => {
+          setLoading(false);
+          setTimeout(() => getMemberList(), 300);
         });
     }
   }
@@ -144,7 +147,7 @@ export default function Member() {
                   }
                 }}
                 type="search"
-                placeholder="Write new name and hit Enter."
+                placeholder="이름을 입력하세요."
                 className="w-9/12 px-2 py-3 border rounded outline-none border-grey-600"
               />
             </form>
