@@ -10,4 +10,5 @@ export interface TodoVo {
   content: string;
   completeYn: string;
   useYn: string;
+  member: any;
 }

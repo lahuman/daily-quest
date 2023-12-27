@@ -296,9 +296,7 @@ export default function Todo() {
                     >
                       {
                         <MemberTag
-                          member={memberList?.find(
-                            (m) => m.seq === todo.memberSeq
-                          )}
+                          member={todo.member}
                         />
                         // eslint-disable-next-line react/jsx-no-comment-textnodes
                       }{" "}{todo.content} {todo.point !== 0  && <>//{" "}
