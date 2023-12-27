@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Member } from 'src/member/member.entity';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('todo')
 export class Todo extends BaseEntity {
@@ -15,6 +16,9 @@ export class Todo extends BaseEntity {
 
   @Column()
   managerSeq: number;
+
+  @Column()
+  memberSeq: number;
 
   @Column({
     default: 0
@@ -38,4 +42,9 @@ export class Todo extends BaseEntity {
 
   @Column('varchar', { default: 'Y' })
   useYn: string;
+
+  @ManyToOne(() => Member)
+  @JoinColumn({ name: 'member_seq', referencedColumnName: 'seq' })
+  member?: Member;
+
 }

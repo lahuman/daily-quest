@@ -14,21 +14,28 @@ export class TodoService {
     private readonly todoRepository: Repository<Todo>,
     @InjectRepository(DailyTodo)
     private readonly dailyTodoRepository: Repository<DailyTodo>,
+    @InjectRepository(Member)
+    private readonly memberRepository: Repository<Member>,
     private dataSource: DataSource,
-  ) {}
+  ) { }
 
   async saveTodo(createTodo: CreateTodoDto, userSeq: number) {
-    console.log(createTodo.managerSeq === 0);
-    console.log(createTodo.managerSeq);
-    if (createTodo.managerSeq === 0) {
-      createTodo.managerSeq = userSeq;
+    
+    if (createTodo.memberSeq) {
+      const memberInfo = await this.memberRepository.findOneOrFail({
+        where: {
+          seq: createTodo.memberSeq,
+          managerSeq: userSeq
+        }
+      });
+      createTodo.managerSeq = memberInfo.managerSeq;
+      createTodo.userSeq = memberInfo.userSeq;
+    }else {
       createTodo.userSeq = userSeq;
-    } else {
-      createTodo.userSeq = createTodo.managerSeq;
       createTodo.managerSeq = userSeq;
+      createTodo.memberSeq = 0;
     }
 
-    console.log(createTodo);
     if (createTodo.type === TODO_TYPE.ED) {
       const dailyTodo = await this.dailyTodoRepository.save(
         new DailyTodo({
@@ -56,6 +63,9 @@ export class TodoService {
   async getTodoList(dateStr: string, userSeq: number) {
     const [todo, todayDaily, dailyTodo] = await Promise.all([
       this.todoRepository.find({
+        relations: {
+          member: true,
+        },
         where: [
           { type: TODO_TYPE.OC, useYn: 'Y', userSeq, todoDay: dateStr },
           {
@@ -67,6 +77,9 @@ export class TodoService {
         ],
       }),
       this.todoRepository.find({
+        relations: {
+          member: true,
+        },
         where: [
           { type: TODO_TYPE.ED, todoDay: dateStr, useYn: 'Y', userSeq },
           {
@@ -78,6 +91,9 @@ export class TodoService {
         ],
       }),
       this.dailyTodoRepository.find({
+        relations: {
+          member: true,
+        },
         where: [
           {
             useYn: 'Y',
@@ -102,6 +118,9 @@ export class TodoService {
           todoDay: dateStr,
           point: d.point,
           managerSeq: d.managerSeq,
+          userSeq: d.userSeq,
+          memberSeq: d.memberSeq,
+          member: d.member
         })),
       ...todo,
       ...todayDaily,
@@ -188,6 +207,7 @@ export class TodoService {
           content: newTodo.content,
           dailyTodoSeq: newTodo.seq,
           managerSeq: newTodo.managerSeq,
+          memberSeq: newTodo.memberSeq,
           point: newTodo.point,
           type: TODO_TYPE.ED,
           completeYn: todoDto.completeYn,
@@ -197,14 +217,15 @@ export class TodoService {
 
       if (isNaN(todo.point)) todo.point = 0;
       await manager.save(todo);
-      // 포인트 관리를 위해, 이후 member는 개인이 추가 할 수 없음...
-      const m = await manager.findOne(Member, {
-        where: { userSeq: todo.userSeq, managerSeq: todo.managerSeq },
-      });
-      if (isNaN(m.totalPoint)) m.totalPoint = 0;
-      if (todo.completeYn === 'Y') m.totalPoint += todo.point;
-      else m.totalPoint -= todo.point;
-      if (!isNaN(m.totalPoint)) await manager.save(m);
+      if (todo.memberSeq) {
+        const m = await manager.findOne(Member, {
+          where: { seq: todo.memberSeq, useYn: 'Y', userSeq },
+        });
+        if (isNaN(m.totalPoint)) m.totalPoint = 0;
+        if (todo.completeYn === 'Y') m.totalPoint += todo.point;
+        else m.totalPoint -= todo.point;
+        if (!isNaN(m.totalPoint)) await manager.save(m);
+      }
     });
   }
 }

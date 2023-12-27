@@ -43,13 +43,13 @@ function MemberTag(prop: any) {
 export default function Todo() {
   const [loading, setLoading] = useState(false);
   const [newTodo, setNewTodo] = useState("");
-  const [managerSeq, setManagerSeq] = useState("");
+  const [memberSeq, setMemberSeq] = useState("");
   const [newPoint, setNewPoint] = useState<number | string>(0);
   const [type, setType] = useState<TODO_TYPE>(TODO_TYPE.OC);
   const [dateStr, setDateStr] = useState(format(new Date(), "yyyyMMdd"));
   const [list, setList] = useState<TodoVo[] | undefined>();
   const [memberList, setMemberList] = useState<MemberVo[] | undefined>();
-  const userSeq =  parseInt(window.localStorage.getItem("userSeq") || "0");
+  const userSeq = parseInt(window.localStorage.getItem("userSeq") || "0");
 
   function numberWithCommas(x: number) {
     return (
@@ -93,14 +93,13 @@ export default function Todo() {
         type,
         content: newTodo,
         todoDay: dateStr,
-        managerSeq: managerSeq,
+        memberSeq: memberSeq,
         point: newPoint,
       },
     })
       .then((r) => {
         setNewTodo("");
         setNewPoint(0);
-        setManagerSeq("0");
         setLoading(false);
         getTodoList();
       })
@@ -209,7 +208,7 @@ export default function Todo() {
                 className="w-5/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
                 value={type}
                 onChange={(e) =>
-                  getTodoType(e.target.value)
+                  setType(getTodoType(e.target.value))
                 }
               >
                 <option value="OC">한번</option>
@@ -220,12 +219,12 @@ export default function Todo() {
               </select>
               <select
                 className="w-5/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
-                value={managerSeq}
-                onChange={(e) => setManagerSeq(e.target.value)}
+                value={memberSeq}
+                onChange={(e) => setMemberSeq(e.target.value)}
               >
                 <option value="0">None</option>
                 {memberList?.map((m) => (
-                  <option key={m.userSeq} value={m.userSeq}>
+                  <option key={m.seq} value={m.seq}>
                     {m.name}
                   </option>
                 ))}
@@ -283,7 +282,7 @@ export default function Todo() {
                       type="checkbox"
                       id={`todo${idx}`}
                       onChange={({ target: { checked } }) => {
-                        if(todo.userSeq === userSeq) updateTodoCompleted({
+                        if (todo.userSeq === userSeq) updateTodoCompleted({
                           ...todo,
                           completeYn: checked ? "Y" : "N",
                         });
@@ -298,11 +297,11 @@ export default function Todo() {
                       {
                         <MemberTag
                           member={memberList?.find(
-                            (m) => m.managerSeq === todo.managerSeq
+                            (m) => m.seq === todo.memberSeq
                           )}
                         />
                         // eslint-disable-next-line react/jsx-no-comment-textnodes
-                      }{" "}{todo.content} //{" "}
+                      }{" "}{todo.content} {todo.point !== 0  && <>//{" "}
                       <span
                         className={
                           todo.point === 0
@@ -313,12 +312,12 @@ export default function Todo() {
                         }
                       >
                         {numberWithCommas(todo.point)}
-                      </span>{" "}
+                      </span>{" "} </>}
                     </label>
                   </div>
-                  <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={(e) => deleteTodo(todo)}>
+                  {todo.managerSeq === userSeq && <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={(e) => deleteTodo(todo)}>
                     삭제
-                  </button>
+                  </button>}
                 </li>
               ))}
           </ul>
