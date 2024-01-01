@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { format, parse, subDays, addDays } from "date-fns";
 import { TodoVo } from "./TodoVo";
 import { client } from "./fetchHelper";
-import Loadding from "@/components/Loadding";
+import Loading from "@/components/Loading";
 import { MemberVo } from "../member/MemberVo";
 
 enum TODO_TYPE {
@@ -152,7 +152,7 @@ export default function Todo() {
 
   return (
     <>
-      {loading && <Loadding />}
+      {loading && <Loading />}
 
       {/* bg-fixed bg-center bg-cover bg-no-repeat bg-[url('https://lahuman.github.io/assets/img/logo.png')] */}
       <div className="justify-center h-screen  ">

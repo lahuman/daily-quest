@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { MemberVo } from "./MemberVo";
 import { client } from "../todo/fetchHelper";
-import Loadding from "@/components/Loadding";
+import Loading from "@/components/Loading";
 import { BlockPicker } from "react-color";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -111,7 +111,7 @@ export default function Member() {
 
   return (
     <>
-      {loading && <Loadding />}
+      {loading && <Loading />}
 
       <div className="justify-center h-screen  ">
         <div className="w-full px-4 py-8 mx-auto shadow lg:w-1/3">
