@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Member } from './member.entity';
+import { User } from 'src/user/user.entity';
 
 export class MemberVo {
   constructor(data: Partial<Member>) {
@@ -9,7 +10,11 @@ export class MemberVo {
     this.name = data.name;
     this.totalPoint = data.totalPoint;
     this.color = data.color;
+    this.user = data.user;
   }
+  @ApiProperty()
+  user?: User;
+
   @ApiProperty()
   seq: number;
   @ApiProperty()

@@ -3,6 +3,7 @@ export interface MemberReqVo {
     userSeq: number;
     managerSeq?: number;
     email: string;
+    userEmail: string;
     acceptYn: string;
   }
   

@@ -1,5 +1,12 @@
 import { BaseEntity } from 'src/core/base-entity';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/user/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('member')
 export class Member extends BaseEntity {
@@ -30,4 +37,8 @@ export class Member extends BaseEntity {
 
   @Column()
   useYn: string;
+
+  @OneToOne(() => User)
+  @JoinColumn({ name: 'user_seq', referencedColumnName: 'seq' })
+  user: User;
 }
