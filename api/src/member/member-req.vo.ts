@@ -8,7 +8,8 @@ export class MemberReqVo {
     this.userSeq = data.userSeq;
     this.managerSeq = data.managerSeq;
     this.acceptYn = data.acceptYn;
-    this.email = data?.managers?.email;
+    this.email = data?.manager?.email;
+    this.userEmail = data?.requester?.email;
   }
   @ApiProperty()
   seq: number;
@@ -20,4 +21,6 @@ export class MemberReqVo {
   acceptYn: string;
   @ApiProperty()
   email: string;
+  @ApiProperty()
+  userEmail: string;
 }

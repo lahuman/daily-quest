@@ -13,7 +13,6 @@ export default function Member() {
   const [name, setName] = useState("");
   const [tab, setTab] = useState<TABS>(TABS.REQ);
   const [color, setColor] = useState("#000000");
-  const [showColor, setShowColor] = useState(false);
   const [list, setList] = useState<MemberReqVo[] | undefined>();
 
   function getManagerReqList() {
@@ -35,19 +34,22 @@ export default function Member() {
     })
       .then((r) => {
         client(`/member/req`, {
-          method: 'POST',
+          method: "POST",
           body: {
-            managerSeq: r.seq
-          }
-        }).then(r2 => {
-          setName("");
-        }).catch(e => {
-          alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.message);
-        });
+            managerSeq: r.seq,
+          },
+        })
+          .then((r2) => {
+            setName("");
+          })
+          .catch((e) => {
+            alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.message);
+          });
       })
       .catch((e) => {
         alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.message);
-      }).finally(() => {
+      })
+      .finally(() => {
         setLoading(false);
         setTimeout(() => getManagerReqList(), 300);
       });
@@ -66,11 +68,11 @@ export default function Member() {
           ...memberVo,
         },
       })
-        .then((r) => {
-        })
+        .then((r) => {})
         .catch((e) => {
           alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.message);
-        }).finally(() => {
+        })
+        .finally(() => {
           setLoading(false);
           setTimeout(() => getManagerReqList(), 300);
         });
@@ -98,10 +100,29 @@ export default function Member() {
       <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
         <ul className="flex flex-wrap -mb-px">
           <li className="me-2">
-            <a href="#" className={`inline-block p-4 border-b-2 ${tab === TABS.REQ ? 'text-blue-600  border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500' : 'border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'}`}>요청내역</a>
+            <a
+              href="#"
+              className={`inline-block p-4 border-b-2 ${
+                tab === TABS.REQ
+                  ? "text-blue-600  border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
+                  : "border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+              }`}
+            >
+              요청내역
+            </a>
           </li>
           <li className="me-2">
-            <Link href="/manager/res" className={`inline-block p-4 border-b-2 ${tab === TABS.RES ? 'text-blue-600  border-blue-600 runded-t-lg active dark:text-blue-500 dark:border-blue-500' : 'border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'}`}>대기내역</Link></li>
+            <Link
+              href="/manager/res"
+              className={`inline-block p-4 border-b-2 ${
+                tab === TABS.RES
+                  ? "text-blue-600  border-blue-600 runded-t-lg active dark:text-blue-500 dark:border-blue-500"
+                  : "border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+              }`}
+            >
+              대기내역
+            </Link>
+          </li>
         </ul>
       </div>
 
@@ -136,18 +157,22 @@ export default function Member() {
                   key={idx}
                   className="relative flex items-center justify-between px-2 py-6 border-b"
                 >
-                  <span className="w-5/12 mr-1 px-2 py-3">
-                    {myReq.email}
-                  </span>
-                  {myReq.acceptYn === "N" && <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" >
-                    요청중
-                  </button>}
-                  {myReq.acceptYn === "Y" && <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                    승인됨
-                  </button>}
-                  <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                    삭제
-                  </button>
+                  <span className="w-5/12 mr-1 px-2 py-3">{myReq.email}</span>
+                  {myReq.acceptYn === "N" && (
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                      요청중
+                    </button>
+                  )}
+                  {myReq.acceptYn === "Y" && (
+                    <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                      승인됨
+                    </button>
+                  )}
+                  {myReq.acceptYn === "N" && (
+                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                      삭제
+                    </button>
+                  )}
                 </li>
               ))}
           </ul>

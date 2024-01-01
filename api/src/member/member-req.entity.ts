@@ -1,6 +1,12 @@
 import { BaseEntity } from 'src/core/base-entity';
 import { User } from 'src/user/user.entity';
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('member_req')
 export class MemberReq extends BaseEntity {
@@ -24,12 +30,11 @@ export class MemberReq extends BaseEntity {
   @Column({ default: 'Y' })
   useYn: string;
 
+  @OneToOne(() => User)
+  @JoinColumn({ name: 'user_seq', referencedColumnName: 'seq' })
+  requester: User;
 
   @OneToOne(() => User)
-  @JoinColumn({name: "user_seq", referencedColumnName: "seq"})
-  requesters: User;
-
-  @OneToOne(() => User)
-  @JoinColumn({name: "manager_seq", referencedColumnName: "seq"})
-  managers: User;
+  @JoinColumn({ name: 'manager_seq', referencedColumnName: 'seq' })
+  manager: User;
 }

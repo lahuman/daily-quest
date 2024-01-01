@@ -55,7 +55,7 @@ export class MemberController {
   @Post('/req')
   request(@AuthUser() userVo: UserVO, @Body() managerReqDto: ManagerReqDto) {
     if (userVo.seq === managerReqDto.managerSeq) {
-      throw new HttpException("Can't Request!", HttpStatus.BAD_REQUEST);
+      throw new HttpException('잘못된 요청입니다.', HttpStatus.BAD_REQUEST);
     }
     return this.service.requestManager(managerReqDto, userVo.seq);
   }
@@ -64,7 +64,7 @@ export class MemberController {
   @ApiResponse({ status: 200, type: MemberVo })
   @Put('/req')
   acceptReq(@AuthUser() userVo: UserVO, @Body() managerReqDto: ManagerReqDto) {
-    return this.service.accpetManager(managerReqDto, userVo.seq);
+    return this.service.acceptManager(managerReqDto, userVo.seq);
   }
 
   @ApiOperation({ summary: '멤버 추가' })
@@ -81,7 +81,7 @@ export class MemberController {
     return this.service.getMemberList(userVo.seq);
   }
 
-  @ApiOperation({ summary: '나의 멤버 수정 요청 처리' })
+  @ApiOperation({ summary: '나의 멤버 수정 처리' })
   @ApiResponse({ status: 200, type: MemberVo })
   @Put()
   update(@AuthUser() userVo: UserVO, @Body() memberDto: MemberDto) {

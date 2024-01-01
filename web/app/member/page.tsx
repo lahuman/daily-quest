@@ -5,6 +5,7 @@ import { MemberVo } from "./MemberVo";
 import { client } from "../todo/fetchHelper";
 import Loadding from "@/components/Loadding";
 import { BlockPicker } from "react-color";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Member() {
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,7 @@ export default function Member() {
   const [color, setColor] = useState("#000000");
   const [showColor, setShowColor] = useState(false);
   const [list, setList] = useState<MemberVo[] | undefined>();
+  const { currentUser } = useAuth();
 
   function getMemberList() {
     setLoading(true);
@@ -181,9 +183,11 @@ export default function Member() {
                       </div>
                     )}
                   </div>
+                  <div className="w-5/12 mr-1 leading-3	">
+                    
                   <input
                     type="text"
-                    className="w-5/12 mr-1 px-2 py-3 border rounded outline-none border-grey-600"
+                    className={`${currentUser && todo?.user?.email === currentUser.email && "px-2 py-3" || "px-1 py-1"} border rounded outline-none border-grey-600`}
                     id={`member-${todo.seq}`}
                     value={`${todo.name}`}
                     style={{ color: todo.color }}
@@ -191,6 +195,9 @@ export default function Member() {
                       handleListChange(idx, { ...todo, name: e.target.value })
                     }
                   />
+                  {currentUser && todo?.user?.email !== currentUser.email && <><br /><span   className="text-xs mr-1">{todo?.user?.email}</span></>}
+                  </div>
+                  
                   <label className={`w-5/12 inline-block mt-1 text-gray-600 `}>
                     <span
                       className={

@@ -30,11 +30,12 @@ export default function Member() {
     getManagerReqList();
   }, []);
 
-
   function updateMemberReq(memberReqVo: MemberReqVo) {
     if (
       confirm(
-        "If you update a member name, todo also update. Do you want update member?"
+        (memberReqVo.acceptYn === "Y" &&
+          "요청을 수락시 회원 메뉴에서 관리합니다.\n수락하시나요?") ||
+          "반려시 목록에서 삭제됩니다.\n반려하시나요?"
       )
     ) {
       setLoading(true);
@@ -44,11 +45,11 @@ export default function Member() {
           ...memberReqVo,
         },
       })
-        .then((r) => {
-        })
+        .then((r) => {})
         .catch((e) => {
-          alert("오류가 발생했습니다. 관리자에게 문의해주세요\n"+e.message);
-        }).finally(() => {
+          alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.message);
+        })
+        .finally(() => {
           setLoading(false);
           setTimeout(() => getManagerReqList(), 300);
         });
@@ -68,11 +69,11 @@ export default function Member() {
           ...memberVo,
         },
       })
-        .then((r) => {
-        })
+        .then((r) => {})
         .catch((e) => {
-          alert("오류가 발생했습니다. 관리자에게 문의해주세요\n"+e.message);
-        }).finally(() => {
+          alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.message);
+        })
+        .finally(() => {
           setLoading(false);
           setTimeout(() => getManagerReqList(), 300);
         });
@@ -92,7 +93,7 @@ export default function Member() {
       (x && x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")) || 0
     );
   }
-  console.log(tab === TABS.REQ ? 'border-blue-500' : 'text-gray-300')
+
   return (
     <>
       {loading && <Loadding />}
@@ -100,19 +101,34 @@ export default function Member() {
       <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
         <ul className="flex flex-wrap -mb-px">
           <li className="me-2">
-            <Link href="/manager/req" className={`inline-block p-4 border-b-2 ${tab === TABS.REQ ? 'text-blue-600  border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500' : 'border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'}`}>요청내역</Link>
+            <Link
+              href="/manager/req"
+              className={`inline-block p-4 border-b-2 ${
+                tab === TABS.REQ
+                  ? "text-blue-600  border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
+                  : "border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+              }`}
+            >
+              요청내역
+            </Link>
           </li>
           <li className="me-2">
-            <a href="#" className={`inline-block p-4 border-b-2 ${tab === TABS.RES ? 'text-blue-600  border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500' : 'border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'}`}>대기내역</a>
+            <a
+              href="#"
+              className={`inline-block p-4 border-b-2 ${
+                tab === TABS.RES
+                  ? "text-blue-600  border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
+                  : "border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+              }`}
+            >
+              대기내역
+            </a>
           </li>
-          {
-            /**
+          {/**
            <li>
             <a className="inline-block p-4 text-gray-400 rounded-t-lg cursor-not-allowed dark:text-gray-500">Disabled</a>
           </li>
-             */
-          }
-
+             */}
         </ul>
       </div>
 
@@ -125,15 +141,34 @@ export default function Member() {
                   key={idx}
                   className="relative flex items-center justify-between px-2 py-6 border-b"
                 >
-                  <span className="w-5/12 mr-1 px-2 py-3">
-                    {myReq.email}
-                  </span>
-                  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={e => updateMemberReq({...myReq, acceptYn: 'Y'})}>
-                    승인
-                  </button>
-                  <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={e => updateMemberReq({...myReq, acceptYn: 'N'})}>
-                    반려
-                  </button>
+                  <span className="w-5/12 mr-1 px-2 py-3">{myReq.acceptYn !== "Y" ?  myReq.email : myReq.userEmail}</span>
+                  {myReq.acceptYn !== "Y" && (
+                    <>
+                      <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={(e) =>
+                          updateMemberReq({ ...myReq, acceptYn: "Y" })
+                        }
+                      >
+                        승인
+                      </button>
+                      <button
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={(e) =>
+                          updateMemberReq({ ...myReq, acceptYn: "N" })
+                        }
+                      >
+                        반려
+                      </button>
+                    </>
+                  ) || <button
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={(e) =>
+                    alert("지원 예정입니다.")
+                  }
+                >
+                  삭제
+                </button>}
                 </li>
               ))}
           </ul>
