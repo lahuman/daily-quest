@@ -116,7 +116,7 @@ export default function Member() {
                   : "border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
               }`}
             >
-              대기내역
+              응답내역
             </a>
           </li>
           {/**
