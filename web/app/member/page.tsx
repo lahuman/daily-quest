@@ -183,8 +183,7 @@ export default function Member() {
                       </div>
                     )}
                   </div>
-                  <div className="w-5/12 mr-1 leading-3	">
-                    
+                  <div className=" mr-1 leading-3	">
                   <input
                     type="text"
                     className={`${currentUser && todo?.user?.email === currentUser.email && "px-2 py-3" || "px-1 py-1"} border rounded outline-none border-grey-600`}
