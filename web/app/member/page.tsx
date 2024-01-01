@@ -183,7 +183,7 @@ export default function Member() {
                       </div>
                     )}
                   </div>
-                  <div className=" mr-1 leading-3	">
+                  <div className="w-7/12 mr-1 leading-3	">
                   <input
                     type="text"
                     className={`${currentUser && todo?.user?.email === currentUser.email && "px-2 py-3" || "px-1 py-1"} border rounded outline-none border-grey-600`}
@@ -197,7 +197,7 @@ export default function Member() {
                   {currentUser && todo?.user?.email !== currentUser.email && <><br /><span   className="text-xs mr-1">{todo?.user?.email}</span></>}
                   </div>
                   
-                  <label className={`w-5/12 inline-block mt-1 text-gray-600 `}>
+                  <label className={`w-3/12 inline-block mt-1 text-gray-600 `}>
                     <span
                       className={
                         todo.totalPoint === 0
