@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Loadding from "@/components/Loadding";
-import { BlockPicker } from "react-color";
+import Loading from "@/components/Loading";
 import { MemberVo } from "../../member/MemberVo";
 import { client } from "../../todo/fetchHelper";
 import { MemberReqVo } from "../MemberReqVo";
@@ -11,11 +10,7 @@ import Link from "next/link";
 
 export default function Member() {
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState("");
-
   const [tab, setTab] = useState<TABS>(TABS.RES);
-  const [color, setColor] = useState("#000000");
-  const [showColor, setShowColor] = useState(false);
   const [list, setList] = useState<MemberReqVo[] | undefined>();
 
   function getManagerReqList() {
@@ -96,7 +91,7 @@ export default function Member() {
 
   return (
     <>
-      {loading && <Loadding />}
+      {loading && <Loading />}
 
       <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
         <ul className="flex flex-wrap -mb-px">
