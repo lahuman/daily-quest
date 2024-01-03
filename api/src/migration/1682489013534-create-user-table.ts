@@ -7,6 +7,7 @@ export class CreateUserTable1682489013534 implements MigrationInterface {
             seq integer primary key autoincrement,
             uid  varchar(150) not null unique,
             email  varchar(300) not null unique,
+            device_token varchar(500),
             reg_dtm datetime,
             mod_dtm datetime
         );`);
