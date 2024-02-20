@@ -43,11 +43,11 @@ export default function Member() {
             setName("");
           })
           .catch((e) => {
-            alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.message);
+            alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.error);
           });
       })
       .catch((e) => {
-        alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.message);
+        alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.error);
       })
       .finally(() => {
         setLoading(false);
@@ -70,7 +70,7 @@ export default function Member() {
       })
         .then((r) => {})
         .catch((e) => {
-          alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.message);
+          alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.error);
         })
         .finally(() => {
           setLoading(false);

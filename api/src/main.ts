@@ -29,7 +29,7 @@ async function bootstrap() {
 
   app.use(helmet());
   const corsOptions = {
-    origin: ['http://localhost:3001', 'http://localhost:3002'],
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'],
     methods: 'GET,PUT,POST,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 204,

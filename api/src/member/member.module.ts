@@ -4,10 +4,10 @@ import { MemberService } from './member.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Member } from './member.entity';
 import { MemberReq } from './member-req.entity';
-import { User } from 'src/user/user.entity';
+import { User } from '../user/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Member, MemberReq])],
+  imports: [TypeOrmModule.forFeature([Member, MemberReq, User])],
   controllers: [MemberController],
   providers: [MemberService]
 })

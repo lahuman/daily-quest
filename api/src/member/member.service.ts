@@ -16,6 +16,8 @@ export class MemberService {
     private readonly memberRepository: Repository<Member>,
     @InjectRepository(MemberReq)
     private readonly memberReqRepository: Repository<MemberReq>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private dataSource: DataSource,
   ) {}
 
@@ -39,8 +41,15 @@ export class MemberService {
       throw new HttpException('Already Exist', HttpStatus.CONFLICT);
     }
 
+
+    const user = await this.userRepository.findOneOrFail({
+      where : {
+        seq : managerReq.managerSeq,
+      }
+    });
+
     const memberReq = await this.memberReqRepository.save(
-      new MemberReq({ ...managerReq, userSeq: userSeq }),
+      new MemberReq({ ...managerReq, name: user.email, userSeq: userSeq }),
     );
 
     return new MemberReqVo(memberReq);
@@ -145,6 +154,20 @@ export class MemberService {
     });
 
     return memberList.map((m) => new MemberReqVo(m));
+  }
+
+
+  async updateMemberReqName(userSeq: number, reqSeq: number, name: string) {
+    const reqData = await this.memberReqRepository.findOneOrFail({
+      relations: {
+        manager: true,
+      },
+      where: { useYn: 'Y', acceptYn: 'Y', seq: reqSeq, managerSeq: Not(userSeq), userSeq: userSeq },
+    });
+
+    reqData.name = name;
+    await this.memberReqRepository.save(reqData);
+    return new MemberReqVo(reqData);
   }
 
   async getMemberList(userSeq: number) {
