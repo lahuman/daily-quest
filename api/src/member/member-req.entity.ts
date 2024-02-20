@@ -24,6 +24,9 @@ export class MemberReq extends BaseEntity {
   @Column()
   managerSeq: number;
 
+  @Column()
+  name: string;
+
   @Column({ default: 'N' })
   acceptYn: string;
 

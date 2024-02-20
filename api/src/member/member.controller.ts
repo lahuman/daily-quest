@@ -4,6 +4,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
   Put,
   UseGuards,
@@ -48,6 +49,13 @@ export class MemberController {
   @ApiResponse({ status: 200, type: MemberVo })
   getList4Req(@AuthUser() userVo: UserVO) {
     return this.service.getMemberList4Req(userVo.seq);
+  }
+
+  @Put('/req/:id')
+  @ApiOperation({ summary: '내가 요청한 목록 조회' })
+  @ApiResponse({ status: 200, type: MemberVo })
+  modifyUserName(@AuthUser() userVo: UserVO, @Param('id') reqId: number, @Body("name") name: string) {
+    return this.service.updateMemberReqName(userVo.seq, reqId, name);
   }
 
   @ApiOperation({ summary: '매니저 요청' })

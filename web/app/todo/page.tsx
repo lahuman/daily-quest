@@ -14,6 +14,32 @@ enum TODO_TYPE {
   WE = 'WE',
   WD = 'WD'
 }
+enum TODO_TYPE_STRING {
+  OC = '한번',
+  ED = '매일',
+  HD = '휴일',
+  WE = '주말',
+  WD = '평일'
+}
+
+
+
+const getTodoTypeString = (value: string): string => {
+  switch (value) {
+    case "OC":
+      return "한번";
+    case "ED":
+      return "매일";
+    case "HD":
+      return "휴일";
+    case "WE":
+      return "주말";
+    case "WD":
+      return "평일";
+    default:
+      return "기타";
+  }
+}
 
 const getTodoType = (value: string): TODO_TYPE => {
   switch (value) {
@@ -102,8 +128,7 @@ export default function Todo() {
         setNewPoint(0);
       })
       .catch((e) => {
-        console.log(e);
-        alert("오류가 발생했습니다. 관리자에게 문의해주세요\n"+e.message);
+        alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.error);
       }).finally(() => {
         setLoading(false);
         setTimeout(() => getTodoList(), 300);
@@ -123,7 +148,7 @@ export default function Todo() {
       })
       .catch((e) => {
         console.log(e);
-        alert("오류가 발생했습니다. 관리자에게 문의해주세요\n"+e.message);
+        alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.error);
       }).finally(() => {
         setLoading(false);
         setTimeout(() => getTodoList(), 300);
@@ -143,7 +168,7 @@ export default function Todo() {
       })
       .catch((e) => {
         console.log(e);
-        alert("오류가 발생했습니다. 관리자에게 문의해주세요\n"+e.message);
+        alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.error);
       }).finally(() => {
         setLoading(false);
         setTimeout(() => getTodoList(), 300);
@@ -154,6 +179,7 @@ export default function Todo() {
     <>
       {loading && <Loading />}
 
+		
       {/* bg-fixed bg-center bg-cover bg-no-repeat bg-[url('https://lahuman.github.io/assets/img/logo.png')] */}
       <div className="justify-center h-screen  ">
         <div className="w-full px-4 py-8 mx-auto shadow lg:w-1/3">
@@ -272,56 +298,78 @@ export default function Todo() {
               />
             </div>
           </div>
-          <ul className="list-reset">
+
+
+          <div className="card px-4 pt-2 pb-4">
+          
+
+
+          
             {list &&
               list.map((todo, idx) => (
-                <li
-                  key={idx}
-                  className="relative flex items-center justify-between px-2 py-6 border-b"
-                >
-                  <div>
-                    <input
-                      className="relative float-left mr-[6px] mt-[0.3rem] h-[1.125rem] w-[1.125rem] "
-                      type="checkbox"
-                      id={`todo${idx}`}
-                      onChange={({ target: { checked } }) => {
-                        if (todo.userSeq === userSeq) updateTodoCompleted({
-                          ...todo,
-                          completeYn: checked ? "Y" : "N",
-                        });
-                      }}
-                      checked={todo.completeYn === "Y"}
-                    />
-                    <label
+
+                <div key={idx} className="border-b border-slate-150 py-3 dark:border-navy-500" >
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <label className="flex">
+                    <input type="checkbox"
+                     id={`todo${idx}`}
+                     onChange={({ target: { checked } }) => {
+                       if (todo.userSeq === userSeq) updateTodoCompleted({
+                         ...todo,
+                         completeYn: checked ? "Y" : "N",
+                       });
+                     }}
+                     checked={todo.completeYn === "Y"}
+                    className="form-checkbox is-outline size-5 rounded-full border-slate-400/70 before:bg-primary checked:border-primary hover:border-primary focus:border-primary dark:border-navy-400 dark:before:bg-accent dark:checked:border-accent dark:hover:border-accent dark:focus:border-accent" />
+                  </label>
+                  <label
                       className={`inline-block mt-1 text-gray-600  cursor-pointer ${todo.completeYn === "Y" ? "line-through" : ""
-                        }`}
-                      htmlFor={`todo${idx}`}
+                    }`}
+                    htmlFor={`todo${idx}`}
                     >
-                      {
-                        <MemberTag
-                          member={todo.member}
+                  <h2 className="cursor-pointer text-slate-600 line-clamp-1 dark:text-navy-100">
+                    {todo.content}
+                  </h2>
+                  </label>
+                </div>
+                <div className="mt-1 flex items-end justify-between">
+                  <div className="flex flex-wrap items-center font-inter text-xs">
+                  
+
+                    {
+                      getTodoTypeString(todo.type)
+                    }
+                    <div className="m-1.5 w-px self-stretch bg-slate-200 dark:bg-navy-500"></div>
+                    <span className="flex items-center space-x-1">
+                      <MemberTag
+                        member={todo.member}
                         />
-                        // eslint-disable-next-line react/jsx-no-comment-textnodes
-                      }{" "}{todo.content} {todo.point !== 0  && <>//{" "}
+                    </span>
+                    
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <div className="m-1.5 w-px self-stretch bg-slate-200 dark:bg-navy-500"></div>
+                    <div className="badge space-x-2.5 px-1 text-success">
+                      <div className="size-2 rounded-full bg-current"></div>
                       <span
                         className={
                           todo.point === 0
-                            ? ""
-                            : todo.point > 0
-                              ? "text-blue-600"
-                              : "text-red-600"
+                          ? ""
+                          : todo.point > 0
+                          ? "text-blue-600"
+                          : "text-red-600"
                         }
-                      >
+                        >
                         {numberWithCommas(todo.point)}
-                      </span>{" "} </>}
-                    </label>
+                      </span>
+                    </div>
                   </div>
-                  {todo.managerSeq === userSeq && <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={(e) => deleteTodo(todo)}>
-                    삭제
-                  </button>}
-                </li>
+                </div>
+              </div>
+
               ))}
-          </ul>
+
+              </div>
         </div>
       </div>
     </>

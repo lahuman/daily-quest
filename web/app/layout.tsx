@@ -20,13 +20,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <main>
         <AuthProvider>
           <header>
             <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
               <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
                 <a href="/" className="flex items-center">
                   <Image src="/ironMan.png" height={9} width={20} className="mr-3 h-6 sm:h-9" alt="Flowbite Logo" />
-                  <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">데일리퀘스트</span>
+                  <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Dq</span>
                 </a>
                 <ul className="flex">
                   <li className="mr-6">
@@ -43,6 +44,7 @@ export default function RootLayout({
             </nav>
           </header>
           {children}</AuthProvider>
+          </main>
       </body>
     </html>
   )
