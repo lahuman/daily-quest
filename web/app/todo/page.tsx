@@ -59,8 +59,9 @@ const getTodoType = (value: string): TODO_TYPE => {
 }
 function MemberTag(prop: any) {
   const member = prop.member;
+  const userSeq = prop.userSeq;
   return member ? (
-    <span style={{ color: member.color }}>@{member.name}</span>
+    <span style={{ color: member.color }}>@{userSeq === member.managerSeq ? member.name : member.managerName}</span>
   ) : (
     <></>
   );
@@ -179,7 +180,7 @@ export default function Todo() {
     <>
       {loading && <Loading />}
 
-		
+
       {/* bg-fixed bg-center bg-cover bg-no-repeat bg-[url('https://lahuman.github.io/assets/img/logo.png')] */}
       <div className="justify-center h-screen  ">
         <div className="w-full px-4 py-8 mx-auto shadow lg:w-1/3">
@@ -301,75 +302,74 @@ export default function Todo() {
 
 
           <div className="card px-4 pt-2 pb-4">
-          
 
 
-          
+
+
             {list &&
               list.map((todo, idx) => (
 
                 <div key={idx} className="border-b border-slate-150 py-3 dark:border-navy-500" >
-                <div className="flex items-center space-x-2 sm:space-x-3">
-                  <label className="flex">
-                    <input type="checkbox"
-                     id={`todo${idx}`}
-                     onChange={({ target: { checked } }) => {
-                       if (todo.userSeq === userSeq) updateTodoCompleted({
-                         ...todo,
-                         completeYn: checked ? "Y" : "N",
-                       });
-                     }}
-                     checked={todo.completeYn === "Y"}
-                    className="form-checkbox is-outline size-5 rounded-full border-slate-400/70 before:bg-primary checked:border-primary hover:border-primary focus:border-primary dark:border-navy-400 dark:before:bg-accent dark:checked:border-accent dark:hover:border-accent dark:focus:border-accent" />
-                  </label>
-                  <label
+                  <div className="flex items-center space-x-2 sm:space-x-3">
+                    <label className="flex">
+                      <input type="checkbox"
+                        id={`todo${idx}`}
+                        onChange={({ target: { checked } }) => {
+                          if (todo.userSeq === userSeq) updateTodoCompleted({
+                            ...todo,
+                            completeYn: checked ? "Y" : "N",
+                          });
+                        }}
+                        checked={todo.completeYn === "Y"}
+                        className="form-checkbox is-outline size-5 rounded-full border-slate-400/70 before:bg-primary checked:border-primary hover:border-primary focus:border-primary dark:border-navy-400 dark:before:bg-accent dark:checked:border-accent dark:hover:border-accent dark:focus:border-accent" />
+                    </label>
+                    <label
                       className={`inline-block mt-1 text-gray-600  cursor-pointer ${todo.completeYn === "Y" ? "line-through" : ""
-                    }`}
-                    htmlFor={`todo${idx}`}
+                        }`}
+                      htmlFor={`todo${idx}`}
                     >
-                  <h2 className="cursor-pointer text-slate-600 line-clamp-1 dark:text-navy-100">
-                    {todo.content}
-                  </h2>
-                  </label>
-                </div>
-                <div className="mt-1 flex items-end justify-between">
-                  <div className="flex flex-wrap items-center font-inter text-xs">
-                  
-
-                    {
-                      getTodoTypeString(todo.type)
-                    }
-                    <div className="m-1.5 w-px self-stretch bg-slate-200 dark:bg-navy-500"></div>
-                    <span className="flex items-center space-x-1">
-                      <MemberTag
-                        member={todo.member}
-                        />
-                    </span>
-                    
+                      <h2 className="cursor-pointer text-slate-600 line-clamp-1 dark:text-navy-100">
+                        {todo.content}
+                      </h2>
+                    </label>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <div className="m-1.5 w-px self-stretch bg-slate-200 dark:bg-navy-500"></div>
-                    <div className="badge space-x-2.5 px-1 text-success">
-                      <div className="size-2 rounded-full bg-current"></div>
-                      <span
-                        className={
-                          todo.point === 0
-                          ? ""
-                          : todo.point > 0
-                          ? "text-blue-600"
-                          : "text-red-600"
-                        }
-                        >
-                        {numberWithCommas(todo.point)}
+                  <div className="mt-1 flex items-end justify-between">
+                    <div className="flex flex-wrap items-center font-inter text-xs">
+
+
+                      {
+                        getTodoTypeString(todo.type)
+                      }
+                      <div className="m-1.5 w-px self-stretch bg-slate-200 dark:bg-navy-500"></div>
+                      <span className="flex items-center space-x-1">
+                        <MemberTag userSeq={userSeq} member={todo.member}
+                        />
                       </span>
+
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <div className="m-1.5 w-px self-stretch bg-slate-200 dark:bg-navy-500"></div>
+                      <div className="badge space-x-2.5 px-1 text-success">
+                        <div className="size-2 rounded-full bg-current"></div>
+                        <span
+                          className={
+                            todo.point === 0
+                              ? ""
+                              : todo.point > 0
+                                ? "text-blue-600"
+                                : "text-red-600"
+                          }
+                        >
+                          {numberWithCommas(todo.point)}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
               ))}
 
-              </div>
+          </div>
         </div>
       </div>
     </>
