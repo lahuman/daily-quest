@@ -12,6 +12,11 @@ export class MemberDto {
   @IsString()
   name: string;
 
+  @ApiProperty({ description: '매니저 이름', required: true })
+  @IsNotEmpty()
+  @IsString()
+  managerName: string;
+
   @ApiProperty({ description: '색상', required: true })
   @IsNotEmpty()
   @IsString()

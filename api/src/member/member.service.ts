@@ -19,7 +19,7 @@ export class MemberService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private dataSource: DataSource,
-  ) {}
+  ) { }
 
   async requestManager(managerReq: ManagerReqDto, userSeq: number) {
     const alreadyReq = await this.memberReqRepository.count({
@@ -41,15 +41,8 @@ export class MemberService {
       throw new HttpException('Already Exist', HttpStatus.CONFLICT);
     }
 
-
-    const user = await this.userRepository.findOneOrFail({
-      where : {
-        seq : managerReq.managerSeq,
-      }
-    });
-
     const memberReq = await this.memberReqRepository.save(
-      new MemberReq({ ...managerReq, name: user.email, userSeq: userSeq }),
+      new MemberReq({ ...managerReq, userSeq: userSeq }),
     );
 
     return new MemberReqVo(memberReq);
@@ -96,12 +89,20 @@ export class MemberService {
 
     try {
       if (managerReq.acceptYn === 'Y') {
+
+        const user = await this.userRepository.findOneOrFail({
+          where: {
+            seq: managerReq.managerSeq,
+          }
+        });
+
         // 응답시 멤버 추가 처리
         await this.memberRepository.save(
           new Member({
             name: targetReq.requester.email,
             userSeq: targetReq.userSeq,
             managerSeq: userSeq,
+            managerName: user.email,
             useYn: 'Y',
           }),
         );
@@ -152,8 +153,22 @@ export class MemberService {
       },
       where: { useYn: 'Y', managerSeq: Not(userSeq), userSeq: userSeq },
     });
+    const managerList = await Promise.all(memberList.filter(m => m.acceptYn === 'Y').map(m =>
+      this.memberRepository.findOne({
+        where: {
+          userSeq: m.userSeq,
+          managerSeq: m.managerSeq,
+          useYn: 'Y'
+        }
+      })
+    ));
 
-    return memberList.map((m) => new MemberReqVo(m));
+    return memberList.map((m) => new MemberReqVo(m)).map(mr => {
+      const filterd = managerList.filter(m => m.managerSeq === mr.managerSeq && m.userSeq === mr.userSeq)
+      if (filterd) mr.managerName = filterd[0].managerName;
+      return mr;
+    });
+
   }
 
 
@@ -165,9 +180,17 @@ export class MemberService {
       where: { useYn: 'Y', acceptYn: 'Y', seq: reqSeq, managerSeq: Not(userSeq), userSeq: userSeq },
     });
 
-    reqData.name = name;
-    await this.memberReqRepository.save(reqData);
-    return new MemberReqVo(reqData);
+    const member = await this.memberRepository.findOneOrFail({
+      where: {
+        managerSeq: reqData.managerSeq,
+        useYn: 'Y'
+      }
+    })
+
+    member.managerName = name;
+
+    await this.memberRepository.save(member);
+    return new MemberVo(member);
   }
 
   async getMemberList(userSeq: number) {

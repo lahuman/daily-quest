@@ -8,6 +8,7 @@ export class CreateMember1693462236480 implements MigrationInterface {
             user_seq integer not null,
             manager_seq integer not null,
             name varchar(100) not null,
+            manager_name varchar(100) not null,
             color varchar(7) not null default '#000000',
             total_point integer not null default 0,
             use_yn varchar(1) not null default 'Y',
