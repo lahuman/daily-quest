@@ -116,6 +116,7 @@ export default function Member() {
       <div className="justify-center h-screen  ">
         <div className="w-full px-4 py-8 mx-auto shadow lg:w-1/3">
           <div className="flex items-center justify-center">
+
             <div
               className="cursor-pointer	rounded-lg w-10 h-10 mr-5"
               style={{ backgroundColor: color }}
@@ -133,7 +134,7 @@ export default function Member() {
                 </div>
               )}
             </div>
-            <form>
+            <form className="w-full">
               <input
                 value={name}
                 style={{ color: color }}
@@ -154,6 +155,7 @@ export default function Member() {
               />
             </form>
           </div>
+          <hr className="mt-5"/>
           <ul className="list-reset">
             {list &&
               list.map((todo, idx) => (
