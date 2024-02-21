@@ -209,6 +209,7 @@ export class MemberService {
       new Member({
         ...memberDto,
         userSeq: userSeq,
+        managerName: '',
         managerSeq: userSeq,
         useYn: 'Y',
       }),
