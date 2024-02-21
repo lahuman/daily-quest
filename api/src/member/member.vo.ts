@@ -8,6 +8,7 @@ export class MemberVo {
     this.userSeq = data.userSeq;
     this.managerSeq = data.managerSeq;
     this.name = data.name;
+    this.managerName = data.managerName;
     this.totalPoint = data.totalPoint;
     this.color = data.color;
     this.user = data.user;
@@ -20,9 +21,11 @@ export class MemberVo {
   @ApiProperty()
   userSeq: number;
   @ApiProperty()
+  name: string;
+  @ApiProperty()
   managerSeq: number;
   @ApiProperty()
-  name: string;
+  managerName: string;
   @ApiProperty()
   color: string;
   @ApiProperty()

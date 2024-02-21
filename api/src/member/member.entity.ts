@@ -29,6 +29,9 @@ export class Member extends BaseEntity {
   @Column()
   name: string;
 
+  @Column()
+  managerName: string;
+
   @Column({ default: '#000000' })
   color: string;
 
