@@ -165,7 +165,7 @@ export class MemberService {
 
     return memberList.map((m) => new MemberReqVo(m)).map(mr => {
       const filterd = managerList.filter(m => m.managerSeq === mr.managerSeq && m.userSeq === mr.userSeq)
-      if (filterd) mr.managerName = filterd[0].managerName;
+      if (filterd.length > 0) mr.managerName = filterd[0].managerName;
       return mr;
     });
 
