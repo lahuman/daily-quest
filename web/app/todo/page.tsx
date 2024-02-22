@@ -113,6 +113,10 @@ export default function Todo() {
   }
 
   function saveNewTodo() {
+    if (newTodo.trim() === "") {
+      alert("할일을 작성해주세요.");
+      return;
+    }
     setLoading(true);
     client("/todo", {
       method: "POST",
@@ -298,14 +302,14 @@ export default function Todo() {
                 className="w-3/12 px-2 py-3 border rounded outline-none border-grey-600"
               />
             </div>
+            <button className="w-full mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={e => saveNewTodo()}>
+              등록
+            </button>
           </div>
 
 
           <div className="card px-4 pt-2 pb-4">
-
-
-
-
+            {list && list.length === 0 && <span className="text-gray-400">내역이 없습니다.</span>}
             {list &&
               list.map((todo, idx) => (
 

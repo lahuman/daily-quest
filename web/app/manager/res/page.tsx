@@ -166,6 +166,7 @@ export default function Member() {
                 </button>}
                 </li>
               ))}
+              {list && list.length === 0 && <span className="text-gray-400">내역이 없습니다.</span>}
           </ul>
         </div>
       </div>

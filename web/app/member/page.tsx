@@ -28,6 +28,10 @@ export default function Member() {
   }, []);
 
   function saveMember() {
+    if (name.trim() === "") {
+      alert("내용을 입력하세요.");
+      return;
+    }
     setLoading(true);
     client("/member", {
       method: "POST",
@@ -111,11 +115,12 @@ export default function Member() {
 
   return (
     <>
+
       {loading && <Loading />}
 
       <div className="justify-center h-screen  ">
         <div className="w-full px-4 py-8 mx-auto shadow lg:w-1/3">
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center border-dashed border-2 border-indigo-600 p-1">
 
             <div
               className="cursor-pointer	rounded-lg w-10 h-10 mr-5"
@@ -134,7 +139,7 @@ export default function Member() {
                 </div>
               )}
             </div>
-            <form className="w-full">
+            <form className="w-9/12 pr-3">
               <input
                 value={name}
                 style={{ color: color }}
@@ -151,12 +156,16 @@ export default function Member() {
                 }}
                 type="search"
                 placeholder="이름을 입력하세요."
-                className="w-9/12 px-2 py-3 border rounded outline-none border-grey-600"
+                className="w-full px-2 py-3 border rounded outline-none border-grey-600"
               />
             </form>
+            <button className="w-3/12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={e => saveMember()}>
+              등록
+            </button>
           </div>
-          <hr className="mt-5"/>
+          <hr className="mt-5" />
           <ul className="list-reset">
+            {list && list.length === 0 && <span className="text-gray-400">내역이 없습니다.</span>}
             {list &&
               list.map((todo, idx) => (
                 <li
@@ -185,69 +194,36 @@ export default function Member() {
                       </div>
                     )}
                   </div>
-                  <div className="w-7/12 mr-1 leading-3	">
-                  <input
-                    type="text"
-                    className={`${currentUser && todo?.user?.email === currentUser.email && "px-2 py-3" || "px-1 py-1"} border rounded outline-none border-grey-600`}
-                    id={`member-${todo.seq}`}
-                    value={`${todo.name}`}
-                    style={{ color: todo.color }}
-                    onChange={(e) =>
-                      handleListChange(idx, { ...todo, name: e.target.value })
-                    }
-                  />
-                  {currentUser && todo?.user?.email !== currentUser.email && <><br /><span   className="text-xs mr-1">{todo?.user?.email}</span></>}
+                  <div className="w-5/12 mr-1 leading-3	">
+                    <input
+                      type="text"
+                      className={`${currentUser && todo?.user?.email === currentUser.email && "px-2 py-3" || "px-1 py-1"} border rounded outline-none border-grey-600 w-full`}
+                      id={`member-${todo.seq}`}
+                      value={`${todo.name}`}
+                      style={{ color: todo.color }}
+                      onChange={(e) =>
+                        handleListChange(idx, { ...todo, name: e.target.value })
+                      }
+                    />
+                    {currentUser && todo?.user?.email !== currentUser.email && <><br /><span className="text-xs mr-1">{todo?.user?.email}</span></>}
                   </div>
-                  
-                  <label className={`w-3/12 inline-block mt-1 text-gray-600 `}>
+
+                  <label className={`w-2/12 inline-block mt-1 text-gray-600 text-right`}>
                     <span
                       className={
                         todo.totalPoint === 0
                           ? ""
                           : todo.totalPoint > 0
-                          ? "text-blue-600"
-                          : "text-red-600"
+                            ? "text-blue-600"
+                            : "text-red-600"
                       }
                     >
                       {numberWithCommas(todo.totalPoint)}
                     </span>
                   </label>
-                  <button
-                    type="button"
-                    className="absolute right-5 flex items-center"
-                    onClick={(e) => updateMember(todo)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 h-5 text-red-700"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="green"
-                      strokeWidth="1"
-                    >
-                      <path d="M10.219,1.688c-4.471,0-8.094,3.623-8.094,8.094s3.623,8.094,8.094,8.094s8.094-3.623,8.094-8.094S14.689,1.688,10.219,1.688 M10.219,17.022c-3.994,0-7.242-3.247-7.242-7.241c0-3.994,3.248-7.242,7.242-7.242c3.994,0,7.241,3.248,7.241,7.242C17.46,13.775,14.213,17.022,10.219,17.022 M15.099,7.03c-0.167-0.167-0.438-0.167-0.604,0.002L9.062,12.48l-2.269-2.277c-0.166-0.167-0.437-0.167-0.603,0c-0.166,0.166-0.168,0.437-0.002,0.603l2.573,2.578c0.079,0.08,0.188,0.125,0.3,0.125s0.222-0.045,0.303-0.125l5.736-5.751C15.268,7.466,15.265,7.196,15.099,7.03"></path>
-                    </svg>
+                  <button className="w-3/12 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={(e) => updateMember(todo)}>
+                    수정
                   </button>
-                  {/* <button
-                                        type="button"
-                                        className="absolute right-0 flex items-center"
-                                        onClick={(e) => deleteMember(todo)}
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="w-5 h-5 text-red-700"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M6 18L18 6M6 6l12 12"
-                                            />
-                                        </svg>
-                                    </button> */}
                 </li>
               ))}
           </ul>
