@@ -19,7 +19,7 @@ export class MemberService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private dataSource: DataSource,
-  ) { }
+  ) {}
 
   async requestManager(managerReq: ManagerReqDto, userSeq: number) {
     const alreadyReq = await this.memberReqRepository.count({
@@ -46,6 +46,22 @@ export class MemberService {
     );
 
     return new MemberReqVo(memberReq);
+  }
+
+  async deleteMemberReq(userSeq: number, reqId: number) {
+    const targetReq = await this.memberReqRepository.findOneOrFail({
+      relations: {
+        requester: true,
+      },
+      where: {
+        seq: reqId,
+        userSeq: userSeq,
+        acceptYn: 'N',
+        useYn: 'Y',
+      },
+    });
+    targetReq.useYn = 'N';
+    await this.memberReqRepository.save(targetReq);
   }
 
   async requestMemberList(userSeq: number) {
@@ -89,11 +105,10 @@ export class MemberService {
 
     try {
       if (managerReq.acceptYn === 'Y') {
-
         const user = await this.userRepository.findOneOrFail({
           where: {
             seq: managerReq.managerSeq,
-          }
+          },
         });
 
         // 응답시 멤버 추가 처리
@@ -153,39 +168,49 @@ export class MemberService {
       },
       where: { useYn: 'Y', managerSeq: Not(userSeq), userSeq: userSeq },
     });
-    const managerList = await Promise.all(memberList.filter(m => m.acceptYn === 'Y').map(m =>
-      this.memberRepository.findOne({
-        where: {
-          userSeq: m.userSeq,
-          managerSeq: m.managerSeq,
-          useYn: 'Y'
-        }
-      })
-    ));
+    const managerList = await Promise.all(
+      memberList
+        .filter((m) => m.acceptYn === 'Y')
+        .map((m) =>
+          this.memberRepository.findOne({
+            where: {
+              userSeq: m.userSeq,
+              managerSeq: m.managerSeq,
+              useYn: 'Y',
+            },
+          }),
+        ),
+    );
 
-    return memberList.map((m) => new MemberReqVo(m)).map(mr => {
-      const filterd = managerList.filter(m => m.managerSeq === mr.managerSeq && m.userSeq === mr.userSeq)
-      if (filterd.length > 0) mr.managerName = filterd[0].managerName;
-      return mr;
-    });
-
+    return memberList
+      .map((m) => new MemberReqVo(m))
+      .map((mr) => {
+        const filterd = managerList.filter(
+          (m) => m.managerSeq === mr.managerSeq && m.userSeq === mr.userSeq,
+        );
+        if (filterd.length > 0) mr.managerName = filterd[0].managerName;
+        return mr;
+      });
   }
-
 
   async updateMemberReqName(userSeq: number, reqSeq: number, name: string) {
     const reqData = await this.memberReqRepository.findOneOrFail({
-      relations: {
-        manager: true,
+      where: {
+        useYn: 'Y',
+        acceptYn: 'Y',
+        seq: reqSeq,
+        managerSeq: Not(userSeq),
+        userSeq: userSeq,
       },
-      where: { useYn: 'Y', acceptYn: 'Y', seq: reqSeq, managerSeq: Not(userSeq), userSeq: userSeq },
     });
 
     const member = await this.memberRepository.findOneOrFail({
       where: {
         managerSeq: reqData.managerSeq,
-        useYn: 'Y'
-      }
-    })
+        userSeq: userSeq,
+        useYn: 'Y',
+      },
+    });
 
     member.managerName = name;
 

@@ -83,14 +83,14 @@ export default function Member() {
       });
   }
 
-  function deleteMember(memberVo: MemberVo) {
+  function deleteMember(memberVo: MemberReqVo) {
     if (
       confirm(
-        "If you delete a member, todo is retained. Do you want remove member?"
+        "요청을 취소 하겠습니까?"
       )
     ) {
       setLoading(true);
-      client("/member", {
+      client(`/member/req/${memberVo.seq}`, {
         method: "DELETE",
         body: {
           ...memberVo,
@@ -199,7 +199,7 @@ export default function Member() {
                   <div className="w-4/12 flex items-center justify-between">
                     {myReq.acceptYn === "N" && (
                       <><span className="text-xs mr-1 font-semibold">요청중</span>
-                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={e => deleteMember(myReq)}>
                           취소
                         </button></>
                     )}
