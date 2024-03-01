@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
   HttpException,
   HttpStatus,
   Param,
@@ -51,10 +53,22 @@ export class MemberController {
     return this.service.getMemberList4Req(userVo.seq);
   }
 
+  @Delete('/req/:id')
+  @ApiOperation({ summary: '요청 취소' })
+  @ApiResponse({ status: 204 })
+  @HttpCode(204)
+  removeUserName(@AuthUser() userVo: UserVO, @Param('id') reqId: number) {
+    this.service.deleteMemberReq(userVo.seq, reqId);
+  }
+
   @Put('/req/:id')
-  @ApiOperation({ summary: '내가 요청한 목록 조회' })
+  @ApiOperation({ summary: '매니저 이름 변경' })
   @ApiResponse({ status: 200, type: MemberVo })
-  modifyUserName(@AuthUser() userVo: UserVO, @Param('id') reqId: number, @Body("name") name: string) {
+  modifyUserName(
+    @AuthUser() userVo: UserVO,
+    @Param('id') reqId: number,
+    @Body('name') name: string,
+  ) {
     return this.service.updateMemberReqName(userVo.seq, reqId, name);
   }
 
