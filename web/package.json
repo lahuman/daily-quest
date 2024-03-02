@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p ${PORT-3001}",
-    "build": "next build",
+    "dev": "node  --env-file=.env  swEnvBuild.js && next dev -p ${PORT-3001}",
+    "build": "next build && node  --env-file=.env  swEnvBuild.js",
     "start": "next start",
     "lint": "next lint"
   },
@@ -20,6 +20,7 @@
     "firebase": "^10.0.0",
     "jwt-decode": "^4.0.0",
     "next": "13.4.10",
+    "next-pwa": "^5.6.0",
     "postcss": "8.4.26",
     "react": "18.2.0",
     "react-color": "^2.19.3",

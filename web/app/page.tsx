@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 
-export default function Dashboard() {
+export default function Home() {
   const [error, setError] = useState("");
   const { currentUser, logout } = useAuth();
   const router = useRouter();
@@ -23,7 +23,22 @@ export default function Dashboard() {
     }
   }
 
+  function requestPermission() {
+    console.log("권한 요청 중...");
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        console.log("알림 권한이 허용됨");
+  
+        // FCM 메세지 처리
+      } else {
+        console.log("알림 권한 허용 안됨");
+      }
+    });
+  }
+
   useEffect(() => {
+    requestPermission();
+    
     if (!currentUser) {
       router.push("/login");
     } else {
