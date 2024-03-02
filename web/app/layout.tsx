@@ -37,7 +37,7 @@ export default function RootLayout({
                     <Link className="text-blue-500 hover:text-blue-800" href="/member">회원</Link>
                   </li>
                   <li className="mr-6">
-                    <Link className="text-blue-500 hover:text-blue-800" href="/manager/req">회원관리</Link>
+                    <Link className="text-blue-500 hover:text-blue-800" href="/manager/req">관리</Link>
                   </li>
                 </ul>
               </div>

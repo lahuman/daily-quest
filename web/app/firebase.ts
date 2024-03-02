@@ -5,6 +5,8 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
+// import { getAnalytics } from "firebase/analytics";
 
 const app = initializeApp({
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -16,10 +18,53 @@ const app = initializeApp({
   measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID,
 });
 
+if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
+  const messaging = getMessaging(app);
+  Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+      console.log("알림 권한이 허용됨");
+
+      // FCM 메세지 처리
+    } else {
+      console.log("알림 권한 허용 안됨");
+    }
+  });
+
+  getToken(messaging, { vapidKey: process.env.NEXT_PUBLIC_APP_VAPID_KEY })
+    .then((currentToken) => {
+      if (currentToken) {
+        // 정상적으로 토큰이 발급되면 콘솔에 출력합니다.
+        console.log(currentToken);
+      } else {
+        console.log(
+          "No registration token available. Request permission to generate one."
+        );
+      }
+    })
+    .catch((err) => {
+      console.log("An error occurred while retrieving token. ", err);
+    });
+
+  // 메세지가 수신되면 역시 콘솔에 출력합니다.
+  onMessage(messaging, (payload) => {
+    console.log("Message received. ", payload);
+  });
+  
+}
+
+export async function getMessageToken() {
+  const messaging = getMessaging(app);
+  const token = await getToken(messaging, {
+    vapidKey: process.env.NEXT_PUBLIC_APP_VAPID_KEY,
+  });
+
+  return token;
+}
+
 export const auth = getAuth(app);
 
 export const signOutAccount = async () => {
-  await signOut(auth)
+  await signOut(auth);
   return auth.signOut();
 };
 
