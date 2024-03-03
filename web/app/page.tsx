@@ -63,9 +63,12 @@ export default function Home() {
             const decoded = jwtDecode(data.token);
             window.localStorage.setItem("userSeq", (decoded as any).seq);
             getFirebaseToken().then((deviceToken) => {
-              client(
-                `/user/settingDeviceToken?deviceToken=${deviceToken}`
-              ).then(() => {
+              client(`/user/settingDeviceToken`, {
+                method: "POST",
+                body: {
+                  deviceToken,
+                },
+              }).then(() => {
                 console.log("setting deviceToken");
               });
             });

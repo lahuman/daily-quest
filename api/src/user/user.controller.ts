@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 import { FirebaseUser } from '../firebase/firebase-user.decorator';
@@ -39,11 +39,11 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '이메일 기준 사용자 seq 조회' })
-  @Get('/settingDeviceToken')
+  @Post('/settingDeviceToken')
   @UseGuards(UserGuard)
   async deviceToken(
     @AuthUser() userVo: UserVO,
-    @Query('deviceToken') deviceToken: string,
+    @Body('deviceToken') deviceToken: string,
   ) {
     return await this.userService.updateDeviceToken(userVo.seq, deviceToken);
   }
