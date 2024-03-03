@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, getFirebaseToken } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
+import { client } from "./todo/fetchHelper";
 
 export default function Home() {
   const [error, setError] = useState("");
@@ -28,7 +29,7 @@ export default function Home() {
     Notification.requestPermission().then((permission) => {
       if (permission === "granted") {
         console.log("알림 권한이 허용됨");
-  
+
         // FCM 메세지 처리
       } else {
         console.log("알림 권한 허용 안됨");
@@ -38,7 +39,7 @@ export default function Home() {
 
   useEffect(() => {
     requestPermission();
-    
+
     if (!currentUser) {
       router.push("/login");
     } else {
@@ -53,20 +54,27 @@ export default function Home() {
         .then((response) => response.json())
         .then((data) => {
           if (data.statusCode === 500) {
-            alert('회원 처리에 실패했습니다. 관리자에게 문의 하세요.');
-            indexedDB.deleteDatabase('firebaseLocalStorageDb');
+            alert("회원 처리에 실패했습니다. 관리자에게 문의 하세요.");
+            indexedDB.deleteDatabase("firebaseLocalStorageDb");
             window.localStorage.clear();
             window.location.href = "/";
           } else {
             window.localStorage.setItem("token", JSON.stringify(data));
             const decoded = jwtDecode(data.token);
             window.localStorage.setItem("userSeq", (decoded as any).seq);
+            getFirebaseToken().then((deviceToken) => {
+              client(
+                `/user/settingDeviceToken?deviceToken=${deviceToken}`
+              ).then(() => {
+                console.log("setting deviceToken");
+              });
+            });
             router.push("/todo");
           }
         })
         .catch((err) => {
-          alert('회원 처리에 실패했습니다. 관리자에게 문의 하세요.');
-          indexedDB.deleteDatabase('firebaseLocalStorageDb');
+          alert("회원 처리에 실패했습니다. 관리자에게 문의 하세요.");
+          indexedDB.deleteDatabase("firebaseLocalStorageDb");
           window.localStorage.clear();
           router.push("/");
         });

@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useState, useEffect, ReactNode } from "react";
-import { auth, signInWithGoogle, signOutAccount } from "@/app/firebase";
+import { auth, signInWithGoogle, signOutAccount, getMessageToken } from "@/app/firebase";
 import { User } from "firebase/auth";
 
 
@@ -16,6 +16,9 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
+export function getFirebaseToken() {
+  return getMessageToken();
+}
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [loading, setLoading] = useState(true);
@@ -29,6 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Send token to your backend via HTTPS
         // ...
         // console.log(idToken);
+        console.log(getMessageToken())
       })
       .catch(function (error) {
         // Handle error
@@ -43,6 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
+      
       setLoading(false);
     });
     return unsubscribe;

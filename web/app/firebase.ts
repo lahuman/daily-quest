@@ -30,20 +30,20 @@ if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
     }
   });
 
-  getToken(messaging, { vapidKey: process.env.NEXT_PUBLIC_APP_VAPID_KEY })
-    .then((currentToken) => {
-      if (currentToken) {
-        // 정상적으로 토큰이 발급되면 콘솔에 출력합니다.
-        console.log(currentToken);
-      } else {
-        console.log(
-          "No registration token available. Request permission to generate one."
-        );
-      }
-    })
-    .catch((err) => {
-      console.log("An error occurred while retrieving token. ", err);
-    });
+  // getToken(messaging, { vapidKey: process.env.NEXT_PUBLIC_APP_VAPID_KEY })
+  //   .then((currentToken) => {
+  //     if (currentToken) {
+  //       // 정상적으로 토큰이 발급되면 콘솔에 출력합니다.
+
+  //     } else {
+  //       console.log(
+  //         "No registration token available. Request permission to generate one."
+  //       );
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     console.log("An error occurred while retrieving token. ", err);
+  //   });
 
   // 메세지가 수신되면 역시 콘솔에 출력합니다.
   onMessage(messaging, (payload) => {
