@@ -47,9 +47,6 @@ self.addEventListener("push", function (e) {
     tag: resultData.tag,
   };
 
-  console.log("WHY??");
-  console.log(resultData.body);
-
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
 

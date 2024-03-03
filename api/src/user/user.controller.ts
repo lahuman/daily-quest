@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 import { FirebaseUser } from '../firebase/firebase-user.decorator';
@@ -7,12 +7,14 @@ import { UserService } from './users.service';
 import { RequestHeaders } from '../core/request-headers.decorator';
 import { RefreshHeaderDTO } from './refresh-header.dto';
 import { UserGuard } from './user.guard';
+import { AuthUser } from './user.decorator';
+import { UserVO } from './user.vo';
 
 @Controller('user')
 @ApiTags('회원 처리')
 @ApiBearerAuth()
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post('/signIn')
   @ApiOperation({ summary: '로그인 처리' })
@@ -34,5 +36,15 @@ export class UserController {
   @UseGuards(UserGuard)
   async existEmail(@Query('email') email: string) {
     return await this.userService.existEmail(email);
+  }
+
+  @ApiOperation({ summary: '이메일 기준 사용자 seq 조회' })
+  @Get('/settingDeviceToken')
+  @UseGuards(UserGuard)
+  async deviceToken(
+    @AuthUser() userVo: UserVO,
+    @Query('deviceToken') deviceToken: string,
+  ) {
+    return await this.userService.updateDeviceToken(userVo.seq, deviceToken);
   }
 }

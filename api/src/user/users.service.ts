@@ -12,15 +12,15 @@ const JWT_REFRESH_SECRET = 'lahumanJwtRefreshToken';
 
 @Injectable()
 export class UserService {
-  logger: Logger = new Logger(UserService.name);
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
 
+  logger: Logger = new Logger(UserService.name);
   tokenValidate(token: string): UserVO {
     try {
-      return jwt.verify(token, JWT_SECRET) as UserVO
+      return jwt.verify(token, JWT_SECRET) as UserVO;
     } catch (e) {
       this.logger.error(e);
       throw new HttpException('Token is invalid.', HttpStatus.UNAUTHORIZED);
@@ -82,12 +82,23 @@ export class UserService {
   async existEmail(email: string) {
     const userInfo = await this.userRepository.findOneOrFail({
       where: {
-        email
-      }
+        email,
+      },
     });
 
     const user = new UserVO();
-    user.seq = userInfo.seq
+    user.seq = userInfo.seq;
     return user;
+  }
+
+  async updateDeviceToken(seq: number, deviceToken: string) {
+    const user = await this.userRepository.findOneOrFail({
+      where: {
+        seq,
+      },
+    });
+
+    user.deviceToken = deviceToken;
+    await this.userRepository.save(user);
   }
 }
