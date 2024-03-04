@@ -69,7 +69,7 @@ export class TodoService {
       await this.sendMessage(
         userInfo.deviceToken,
         `[${createTodo.todoDay}] ${memberInfo.managerName} 님으로부터`,
-        `할일 "${createTodo.content}"이 등록 되었습니다.`,
+        `할일 "${createTodo.content}"가 등록 되었습니다.`,
         `/todo?today=${createTodo.todoDay}`,
       );
     } else {
