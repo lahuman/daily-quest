@@ -68,8 +68,8 @@ export class TodoService {
 
       await this.sendMessage(
         userInfo.deviceToken,
-        `${memberInfo.managerName} 님으로부터`,
-        `할일 "${createTodo.completeYn}"이 등록 되었습니다.`,
+        `[${createTodo.todoDay}] ${memberInfo.managerName} 님으로부터`,
+        `할일 "${createTodo.content}"이 등록 되었습니다.`,
         `/todo?today=${createTodo.todoDay}`,
       );
     } else {
@@ -281,7 +281,7 @@ export class TodoService {
 
           await this.sendMessage(
             userInfo.deviceToken,
-            `${manager.managerName} 님이`,
+            `[${todo.todoDay}] ${manager.managerName} 님이`,
             `"${todo.content}"를 ${
               todo.completeYn === 'Y' ? '완료' : '취소'
             } 했습니다. `,
