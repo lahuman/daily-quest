@@ -4,8 +4,9 @@ import * as admin from 'firebase-admin';
 import { UserRecord } from 'firebase-admin/lib/auth/user-record';
 import * as firebaseConfig from './firebase.config.json';
 import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
+import { Message, TokenMessage } from 'firebase-admin/lib/messaging/messaging-api';
 
-const firebase_params = {
+const firebaseInfo = {
   type: firebaseConfig.type,
   projectId: firebaseConfig.project_id,
   privateKeyId: firebaseConfig.private_key_id,
@@ -24,8 +25,12 @@ export class FirebaseService {
 
   constructor() {
     admin.initializeApp({
-      credential: admin.credential.cert(firebase_params),
+      credential: admin.credential.cert(firebaseInfo),
     });
+  }
+  
+  async sendMessage(message: TokenMessage) {
+    if (message.token) await admin.messaging().send(message);
   }
 
   // 토큰 검증
