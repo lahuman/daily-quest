@@ -8,21 +8,19 @@ import Loading from "@/components/Loading";
 import { MemberVo } from "../member/MemberVo";
 
 enum TODO_TYPE {
-  OC = 'OC',
-  ED = 'ED',
-  HD = 'HD',
-  WE = 'WE',
-  WD = 'WD'
+  OC = "OC",
+  ED = "ED",
+  HD = "HD",
+  WE = "WE",
+  WD = "WD",
 }
 enum TODO_TYPE_STRING {
-  OC = '한번',
-  ED = '매일',
-  HD = '휴일',
-  WE = '주말',
-  WD = '평일'
+  OC = "한번",
+  ED = "매일",
+  HD = "휴일",
+  WE = "주말",
+  WD = "평일",
 }
-
-
 
 const getTodoTypeString = (value: string): string => {
   switch (value) {
@@ -39,7 +37,7 @@ const getTodoTypeString = (value: string): string => {
     default:
       return "기타";
   }
-}
+};
 
 const getTodoType = (value: string): TODO_TYPE => {
   switch (value) {
@@ -56,12 +54,14 @@ const getTodoType = (value: string): TODO_TYPE => {
     default:
       return TODO_TYPE.OC;
   }
-}
+};
 function MemberTag(prop: any) {
   const member = prop.member;
   const userSeq = prop.userSeq;
   return member ? (
-    <span style={{ color: member.color }}>@{userSeq === member.managerSeq ? member.name : member.managerName}</span>
+    <span style={{ color: member.color }}>
+      @{userSeq === member.managerSeq ? member.name : member.managerName}
+    </span>
   ) : (
     <></>
   );
@@ -134,7 +134,8 @@ export default function Todo() {
       })
       .catch((e) => {
         alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.error);
-      }).finally(() => {
+      })
+      .finally(() => {
         setLoading(false);
         setTimeout(() => getTodoList(), 300);
       });
@@ -149,12 +150,12 @@ export default function Todo() {
         ...row,
       },
     })
-      .then((r) => {
-      })
+      .then((r) => {})
       .catch((e) => {
         console.log(e);
         alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.error);
-      }).finally(() => {
+      })
+      .finally(() => {
         setLoading(false);
         setTimeout(() => getTodoList(), 300);
       });
@@ -169,12 +170,12 @@ export default function Todo() {
         ...row,
       },
     })
-      .then((r) => {
-      })
+      .then((r) => {})
       .catch((e) => {
         console.log(e);
         alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.error);
-      }).finally(() => {
+      })
+      .finally(() => {
         setLoading(false);
         setTimeout(() => getTodoList(), 300);
       });
@@ -183,7 +184,6 @@ export default function Todo() {
   return (
     <>
       {loading && <Loading />}
-
 
       {/* bg-fixed bg-center bg-cover bg-no-repeat bg-[url('https://lahuman.github.io/assets/img/logo.png')] */}
       <div className="justify-center h-screen  ">
@@ -241,15 +241,15 @@ export default function Todo() {
               <select
                 className="w-5/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
                 value={type}
-                onChange={(e) =>
-                  setType(getTodoType(e.target.value))
-                }
+                onChange={(e) => setType(getTodoType(e.target.value))}
               >
                 <option value="OC">한번</option>
-                <option value="WD">평일</option>
                 <option value="ED">매일</option>
+                {/* 
+                <option value="WD">평일</option>
                 <option value="HD">휴일</option>
                 <option value="WE">주말</option>
+                */}
               </select>
               <select
                 className="w-5/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
@@ -302,54 +302,70 @@ export default function Todo() {
                 className="w-3/12 px-2 py-3 border rounded outline-none border-grey-600"
               />
             </div>
-            <button className="w-full mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={e => saveNewTodo()}>
+            <button
+              className="w-full mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={(e) => saveNewTodo()}
+            >
               등록
             </button>
           </div>
 
-
           <div className="card px-4 pt-2 pb-4">
-            {list && list.length === 0 && <span className="text-gray-400">내역이 없습니다.</span>}
+            {list && list.length === 0 && (
+              <span className="text-gray-400">내역이 없습니다.</span>
+            )}
             {list &&
               list.map((todo, idx) => (
-
-                <div key={idx} className="border-b border-slate-150 py-3 dark:border-navy-500" >
-                  <div className="flex items-center space-x-2 sm:space-x-3">
-                    <label className="flex">
-                      <input type="checkbox"
-                        id={`todo${idx}`}
-                        onChange={({ target: { checked } }) => {
-                          if (todo.userSeq === userSeq) updateTodoCompleted({
-                            ...todo,
-                            completeYn: checked ? "Y" : "N",
-                          });
-                        }}
-                        checked={todo.completeYn === "Y"}
-                        className="form-checkbox is-outline size-5 rounded-full border-slate-400/70 before:bg-primary checked:border-primary hover:border-primary focus:border-primary dark:border-navy-400 dark:before:bg-accent dark:checked:border-accent dark:hover:border-accent dark:focus:border-accent" />
-                    </label>
-                    <label
-                      className={`inline-block mt-1 text-gray-600  cursor-pointer ${todo.completeYn === "Y" ? "line-through" : ""
+                <div
+                  key={idx}
+                  className="border-b border-slate-150 py-3 dark:border-navy-500"
+                >
+                  <div className="flex justify-between space-x-2 sm:space-x-3">
+                    <div className="flex items-end">
+                      <label className="mr-2">
+                        <input
+                          type="checkbox"
+                          id={`todo${idx}`}
+                          onChange={({ target: { checked } }) => {
+                            if (todo.userSeq === userSeq)
+                              updateTodoCompleted({
+                                ...todo,
+                                completeYn: checked ? "Y" : "N",
+                              });
+                          }}
+                          checked={todo.completeYn === "Y"}
+                          className="form-checkbox is-outline size-5 rounded-full border-slate-400/70 before:bg-primary checked:border-primary hover:border-primary focus:border-primary dark:border-navy-400 dark:before:bg-accent dark:checked:border-accent dark:hover:border-accent dark:focus:border-accent"
+                        />
+                      </label>
+                      <label
+                        className={`inline-block mt-1 text-gray-600  cursor-pointer ${
+                          todo.completeYn === "Y" ? "line-through" : ""
                         }`}
-                      htmlFor={`todo${idx}`}
-                    >
-                      <h2 className="cursor-pointer text-slate-600 line-clamp-1 dark:text-navy-100">
-                        {todo.content}
-                      </h2>
+                        htmlFor={`todo${idx}`}
+                      >
+                        <h2 className="cursor-pointer text-slate-600 line-clamp-1 dark:text-navy-100">
+                          {todo.content}
+                        </h2>
+                      </label>
+                    </div>
+                    <label>
+                      {(!todo.member || userSeq === todo.member.managerSeq) && (
+                        <button
+                          className="w-full mt-1 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                          onClick={(e) => deleteTodo(todo)}
+                        >
+                          삭제
+                        </button>
+                      )}
                     </label>
                   </div>
                   <div className="mt-1 flex items-end justify-between">
                     <div className="flex flex-wrap items-center font-inter text-xs">
-
-
-                      {
-                        getTodoTypeString(todo.type)
-                      }
+                      {getTodoTypeString(todo.type)}
                       <div className="m-1.5 w-px self-stretch bg-slate-200 dark:bg-navy-500"></div>
                       <span className="flex items-center space-x-1">
-                        <MemberTag userSeq={userSeq} member={todo.member}
-                        />
+                        <MemberTag userSeq={userSeq} member={todo.member} />
                       </span>
-
                     </div>
                     <div className="flex items-center space-x-1">
                       <div className="m-1.5 w-px self-stretch bg-slate-200 dark:bg-navy-500"></div>
@@ -360,8 +376,8 @@ export default function Todo() {
                             todo.point === 0
                               ? ""
                               : todo.point > 0
-                                ? "text-blue-600"
-                                : "text-red-600"
+                              ? "text-blue-600"
+                              : "text-red-600"
                           }
                         >
                           {numberWithCommas(todo.point)}
@@ -370,9 +386,7 @@ export default function Todo() {
                     </div>
                   </div>
                 </div>
-
               ))}
-
           </div>
         </div>
       </div>
