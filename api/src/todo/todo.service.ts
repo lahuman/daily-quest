@@ -78,7 +78,7 @@ export class TodoService {
 
       await this.sendMessage(
         userInfo.deviceToken,
-        `${memberInfo.managerName} 님으로부터F`,
+        `${memberInfo.managerName} 님으로부터`,
         '오늘의 할일이 등록 되었습니다.',
         '/todo',
       );
