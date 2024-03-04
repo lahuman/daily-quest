@@ -180,8 +180,8 @@ export class MemberService {
       );
 
       await this.sendMessage(
-        userInfo.deviceToken,
-        `${managerInfo.email} 으로 부터`,
+        managerInfo.deviceToken,
+        `${userInfo.email} 으로 부터`,
         `관리자 요청이 ${
           managerReq.acceptYn === 'Y' ? '수락' : '거절'
         } 되었습니다.`,
