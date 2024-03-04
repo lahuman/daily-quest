@@ -36,13 +36,11 @@ self.addEventListener("activate", function (e) {
 self.addEventListener("push", function (e) {
   console.log("push message!!");
   const data = e.data?.json() ?? {};
-  console.log(JSON.stringify(data, null, 4));
-
   const resultData = data.notification;
   const notificationTitle = resultData.title;
   const notificationOptions = {
     body: resultData.body,
-    icon: resultData.image, // 웹 푸시 이미지는 icon
+    icon: '/ironMan.png', // 웹 푸시 이미지는 icon
     tag: resultData.tag,
   };
 
@@ -51,7 +49,8 @@ self.addEventListener("push", function (e) {
 
 self.addEventListener("notificationclick", function (event) {
   console.log("notification click");
-  const url = event?.data?.url || "/";
+  const data = e.data?.json() ?? {};
+  const url = data.data?.url || "/";
   event.notification.close();
   event.waitUntil(clients.openWindow(url));
 });
@@ -65,13 +64,12 @@ messaging.onBackgroundMessage((notification) => {
     const notificationTitle = notification.title;
     const notificationOptions = {
       body: notification.body,
+      icon: '/ironMan.png', // 웹 푸시 이미지는 icon
     };
-    console.time("showNotification");
     const voidPromise = self.registration?.showNotification(
       notificationTitle,
       notificationOptions
     );
-    console.timeEnd("showNotification");
     return voidPromise;
   }
 });
