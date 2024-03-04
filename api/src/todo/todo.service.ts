@@ -24,19 +24,12 @@ export class TodoService {
     private firebaseService: FirebaseService,
   ) {}
 
-  private async getUserInfos(managerSeq, userSeq) {
-    return Promise.all([
-      this.userRepository.findOneOrFail({
-        where: {
-          seq: managerSeq,
-        },
-      }),
-      this.userRepository.findOneOrFail({
-        where: {
-          seq: userSeq,
-        },
-      }),
-    ]);
+  private async getUserInfos(userSeq) {
+    return await this.userRepository.findOneOrFail({
+      where: {
+        seq: userSeq,
+      },
+    });
   }
 
   private async sendMessage(
@@ -71,16 +64,13 @@ export class TodoService {
       createTodo.managerSeq = memberInfo.managerSeq;
       createTodo.userSeq = memberInfo.userSeq;
 
-      const [managerInfo, userInfo] = await this.getUserInfos(
-        memberInfo.managerSeq,
-        memberInfo.userSeq,
-      );
+      const userInfo = await this.getUserInfos(memberInfo.userSeq);
 
       await this.sendMessage(
         userInfo.deviceToken,
         `${memberInfo.managerName} 님으로부터`,
-        '오늘의 할일이 등록 되었습니다.',
-        '/todo',
+        `할일 "${createTodo.completeYn}"이 등록 되었습니다.`,
+        `/todo?today=${createTodo.todoDay}`,
       );
     } else {
       createTodo.userSeq = userSeq;
@@ -277,6 +267,27 @@ export class TodoService {
         if (todo.completeYn === 'Y') m.totalPoint += todo.point;
         else m.totalPoint -= todo.point;
         if (!isNaN(m.totalPoint)) await manager.save(m);
+
+        if (todo.managerSeq !== userSeq) {
+          const userInfo = await this.getUserInfos(todo.managerSeq);
+
+          const manager = await this.memberRepository.findOneOrFail({
+            where: {
+              managerSeq: todo.managerSeq,
+              userSeq: userSeq,
+              useYn: 'Y',
+            },
+          });
+
+          await this.sendMessage(
+            userInfo.deviceToken,
+            `${manager.managerName} 님이`,
+            `"${todo.content}"를 ${
+              todo.completeYn === 'Y' ? '완료' : '취소'
+            } 했습니다. `,
+            `/todo?today=${todo.todoDay}`,
+          );
+        }
       }
     });
   }

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { format, parse, subDays, addDays } from "date-fns";
 import { TodoVo } from "./TodoVo";
 import { client } from "./fetchHelper";
@@ -68,12 +69,15 @@ function MemberTag(prop: any) {
 }
 
 export default function Todo() {
+  const params = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [newTodo, setNewTodo] = useState("");
   const [memberSeq, setMemberSeq] = useState("");
   const [newPoint, setNewPoint] = useState<number | string>(0);
   const [type, setType] = useState<TODO_TYPE>(TODO_TYPE.OC);
-  const [dateStr, setDateStr] = useState(format(new Date(), "yyyyMMdd"));
+  const [dateStr, setDateStr] = useState(
+    params.get("today") || format(new Date(), "yyyyMMdd")
+  );
   const [list, setList] = useState<TodoVo[] | undefined>();
   const [memberList, setMemberList] = useState<MemberVo[] | undefined>();
   const userSeq = parseInt(window.localStorage.getItem("userSeq") || "0");
