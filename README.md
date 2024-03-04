@@ -1,12 +1,19 @@
-# [Daily Quests](http://52.78.54.82:6001/) 
+# [Daily Quests](https://217.142.255.104.nip.io/) 
 
+> 일일 퀘스트를 실행하여, 훌륭한 내가 되기를 바랍니다.
 
-> 일일 퀘스트를 실행하여, 훌륭한 내가 되기를 바랍니다 .
-
-[Daily Quests 바로 가기](http://52.78.54.82:6001/)
+[Daily Quests 바로 가기](https://217.142.255.104.nip.io/)
 
 ## 업데이트 이력
 
+
+### *2024-03-04*
+- web push 기능 추가
+  + 관리 요청 / 수락 / 반려 시 알림 발송
+  + todo 등록 / 완료 / 취소 시 알림 발송
+- 계정 간 관리자 명칭 기능 제공
+- 운영 서버 변경
+- 디자인 고도화
 
 ### *2023-12-31*
 - 계정간 담당자 지정 기능 추가
@@ -90,6 +97,7 @@ $ npm run dev
 
 ## 스크린 샷
 
-![](/screenshot/quest.png)
+![](/screenshot/todo.png)
 ![](/screenshot/member.png)
+![](/screenshot/manager.png)
 
