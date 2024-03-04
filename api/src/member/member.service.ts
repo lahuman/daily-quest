@@ -8,6 +8,7 @@ import { MemberReq } from './member-req.entity';
 import { ManagerReqDto } from './manager-req.dto';
 import { MemberReqVo } from './member-req.vo';
 import { User } from 'src/user/user.entity';
+import { FirebaseService } from 'src/firebase/firebase.service';
 
 @Injectable()
 export class MemberService {
@@ -19,30 +20,80 @@ export class MemberService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private dataSource: DataSource,
+    private firebaseService: FirebaseService,
   ) {}
 
-  async requestManager(managerReq: ManagerReqDto, userSeq: number) {
-    const alreadyReq = await this.memberReqRepository.count({
-      where: {
-        userSeq: userSeq,
-        managerSeq: managerReq.managerSeq,
-        useYn: 'Y',
-      },
-    });
+  private async getUserInfos(managerSeq, userSeq) {
+    return Promise.all([
+      this.userRepository.findOneOrFail({
+        where: {
+          seq: managerSeq,
+        },
+      }),
+      this.userRepository.findOneOrFail({
+        where: {
+          seq: userSeq,
+        },
+      }),
+    ]);
+  }
 
-    const alreadyMember = await this.memberRepository.count({
-      where: {
-        userSeq: userSeq,
-        managerSeq: managerReq.managerSeq,
-        useYn: 'Y',
-      },
-    });
+  private async sendMessage(
+    deviceToken: string,
+    title: string,
+    body: string,
+    url: string,
+  ) {
+    if (deviceToken) {
+      await this.firebaseService.sendMessage({
+        notification: {
+          title,
+          body,
+        },
+        data: {
+          url,
+        },
+        token: deviceToken,
+      });
+    }
+  }
+
+  async requestManager(managerReq: ManagerReqDto, userSeq: number) {
+    const [alreadyReq, alreadyMember] = await Promise.all([
+      this.memberReqRepository.count({
+        where: {
+          userSeq: userSeq,
+          managerSeq: managerReq.managerSeq,
+          useYn: 'Y',
+        },
+      }),
+      this.memberRepository.count({
+        where: {
+          userSeq: userSeq,
+          managerSeq: managerReq.managerSeq,
+          useYn: 'Y',
+        },
+      }),
+    ]);
+
     if (alreadyReq + alreadyMember > 0) {
       throw new HttpException('Already Exist', HttpStatus.CONFLICT);
     }
 
     const memberReq = await this.memberReqRepository.save(
       new MemberReq({ ...managerReq, userSeq: userSeq }),
+    );
+
+    const [managerInfo, userInfo] = await this.getUserInfos(
+      managerReq.managerSeq,
+      userSeq,
+    );
+
+    await this.sendMessage(
+      managerInfo.deviceToken,
+      `${userInfo.email} 으로 부터`,
+      `관리자 요청을 받았습니다.`,
+      '/manager/res',
     );
 
     return new MemberReqVo(memberReq);
@@ -122,6 +173,21 @@ export class MemberService {
           }),
         );
       }
+
+      const [managerInfo, userInfo] = await this.getUserInfos(
+        managerReq.managerSeq,
+        userSeq,
+      );
+
+      await this.sendMessage(
+        userInfo.deviceToken,
+        `${managerInfo.email} 으로 부터`,
+        `관리자 요청이 ${
+          managerReq.acceptYn === 'Y' ? '수락' : '거절'
+        } 되었습니다.`,
+        '/manager/req',
+      );
+
       const memberReqVo = new MemberReqVo(
         await this.memberReqRepository.save(targetReq),
       );
