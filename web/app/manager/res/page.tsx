@@ -51,18 +51,11 @@ export default function Member() {
     }
   }
 
-  function deleteMember(memberVo: MemberVo) {
-    if (
-      confirm(
-        "If you delete a member, todo is retained. Do you want remove member?"
-      )
-    ) {
+  function deleteMember(memberReqVo: MemberReqVo) {
+    if (confirm(`${memberReqVo.userEmail}님의 관리를 그만 두시겠습니까?`)) {
       setLoading(true);
-      client("/member", {
+      client(`/member/res/${memberReqVo.seq}`, {
         method: "DELETE",
-        body: {
-          ...memberVo,
-        },
       })
         .then((r) => {})
         .catch((e) => {
@@ -73,20 +66,6 @@ export default function Member() {
           setTimeout(() => getManagerReqList(), 300);
         });
     }
-  }
-
-  const handleListChange = (index: number, memberVo: MemberReqVo) => {
-    if (list) {
-      const updatedValues = [...list];
-      updatedValues[index] = memberVo;
-      setList(updatedValues);
-    }
-  };
-
-  function numberWithCommas(x: number) {
-    return (
-      (x && x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")) || 0
-    );
   }
 
   return (
@@ -136,8 +115,10 @@ export default function Member() {
                   key={idx}
                   className="relative flex items-center justify-between px-2 py-6 border-b"
                 >
-                  <span className="w-5/12 mr-1 px-2 py-3">{myReq.acceptYn !== "Y" ?  myReq.email : myReq.userEmail}</span>
-                  {myReq.acceptYn !== "Y" && (
+                  <span className="w-5/12 mr-1 px-2 py-3">
+                    {myReq.acceptYn !== "Y" ? myReq.email : myReq.userEmail}
+                  </span>
+                  {(myReq.acceptYn !== "Y" && (
                     <>
                       <button
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -156,17 +137,19 @@ export default function Member() {
                         반려
                       </button>
                     </>
-                  ) || <button
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                  onClick={(e) =>
-                    alert("지원 예정입니다.")
-                  }
-                >
-                  삭제
-                </button>}
+                  )) || (
+                    <button
+                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                      onClick={(e) => deleteMember(myReq)}
+                    >
+                      삭제
+                    </button>
+                  )}
                 </li>
               ))}
-              {list && list.length === 0 && <span className="text-gray-400">내역이 없습니다.</span>}
+            {list && list.length === 0 && (
+              <span className="text-gray-400">내역이 없습니다.</span>
+            )}
           </ul>
         </div>
       </div>

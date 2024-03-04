@@ -72,6 +72,13 @@ export class MemberController {
     return this.service.updateMemberReqName(userVo.seq, reqId, name);
   }
 
+  @Delete('/res/:id')
+  @ApiOperation({ summary: '매니저 삭제' })
+  @ApiResponse({ status: 201 })
+  removeMember(@AuthUser() userVo: UserVO, @Param('id') reqId: number) {
+    return this.service.deleteMember(reqId, userVo.seq);
+  }
+
   @ApiOperation({ summary: '매니저 요청' })
   @ApiResponse({ status: 200, type: MemberVo })
   @Post('/req')

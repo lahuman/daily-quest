@@ -313,6 +313,7 @@ export class MemberService {
       where: {
         seq: memberDto.seq,
         managerSeq: userSeq,
+        useYn: 'Y',
       },
     });
 
@@ -324,12 +325,22 @@ export class MemberService {
     return new MemberVo(memberDto);
   }
 
-  async removeMember(memberSeq: number, userSeq: number) {
-    await this.memberRepository.findOneOrFail({
-      where: { seq: memberSeq, managerSeq: userSeq },
+  async deleteMember(seq: number, userSeq: number) {
+    const memberReq = await this.memberReqRepository.findOneOrFail({
+      where: { seq, managerSeq: userSeq, useYn: 'Y' },
     });
-    await this.memberRepository.update(memberSeq, {
-      useYn: 'N',
+    const member = await this.memberRepository.findOneOrFail({
+      where: {
+        userSeq: memberReq.userSeq,
+        managerSeq: userSeq,
+        useYn: 'Y',
+      },
     });
+    member.useYn = 'N';
+    memberReq.useYn = 'N';
+    await Promise.all([
+      this.memberReqRepository.save(memberReq),
+      this.memberRepository.save(member),
+    ]);
   }
 }
