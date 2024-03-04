@@ -100,4 +100,5 @@ $ npm run dev
 ![](/screenshot/todo.png)
 ![](/screenshot/member.png)
 ![](/screenshot/manager.png)
+![](/screenshot/push.jpg)
 
