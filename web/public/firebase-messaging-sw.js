@@ -40,8 +40,11 @@ self.addEventListener("push", function (e) {
   const notificationTitle = resultData.title;
   const notificationOptions = {
     body: resultData.body,
-    icon: "/ironMan.png", // 웹 푸시 이미지는 icon
-    tag: resultData.tag,
+    icon: "https://217.142.255.104.nip.io/ironMan.png", // 웹 푸시 이미지는 icon
+    // tag: resultData.tag,
+    data: {
+      url: data.data.url,
+    },
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
@@ -49,22 +52,21 @@ self.addEventListener("push", function (e) {
 
 self.addEventListener("notificationclick", function (event) {
   console.log("notification click");
-  const data = e.data?.json() ?? {};
-  const url = data?.notification?.data?.url || "/";
+  const url = event?.notification?.data?.url || "/";
   event.notification.close();
   event.waitUntil(clients.openWindow(url));
 });
 
-messaging.onBackgroundMessage((notification) => {
-  console.log(
-    "[firebase-messaging-sw.js] Received background message ",
-    notification
-  );
-  if (notification && notification.title) {
-    const notificationTitle = notification.title;
+messaging.onBackgroundMessage((event) => {
+  console.log("[firebase-messaging-sw.js] Received background message ", event);
+  if (event && event?.notification) {
+    const notificationTitle = event.notification.title;
     const notificationOptions = {
-      body: notification.body,
+      body: event.notification.body,
       icon: "https://217.142.255.104.nip.io/ironMan.png", // 웹 푸시 이미지는 icon
+      data: {
+        url: event.data.url,
+      },
     };
     const voidPromise = self.registration?.showNotification(
       notificationTitle,
