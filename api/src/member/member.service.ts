@@ -175,7 +175,7 @@ export class MemberService {
       }
 
       const [managerInfo, userInfo] = await this.getUserInfos(
-        managerReq.managerSeq,
+        managerReq.userSeq,
         userSeq,
       );
 
