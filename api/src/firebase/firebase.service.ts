@@ -28,7 +28,7 @@ export class FirebaseService {
       credential: admin.credential.cert(firebaseInfo),
     });
   }
-  
+
   async sendMessage(message: TokenMessage) {
     if (message.token) await admin.messaging().send(message);
   }

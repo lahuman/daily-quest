@@ -5,7 +5,9 @@ import { DailyTodo } from './daily-todo.entity';
 import { DataSource, LessThanOrEqual, Repository } from 'typeorm';
 import { CreateTodoDto, TODO_TYPE, TodoDto } from './todo.dto';
 import { TodoVo } from './todo.vo';
-import { Member } from 'src/member/member.entity';
+import { Member } from '../member/member.entity';
+import { FirebaseService } from '../firebase/firebase.service';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class TodoService {
@@ -16,21 +18,71 @@ export class TodoService {
     private readonly dailyTodoRepository: Repository<DailyTodo>,
     @InjectRepository(Member)
     private readonly memberRepository: Repository<Member>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private dataSource: DataSource,
-  ) { }
+    private firebaseService: FirebaseService,
+  ) {}
+
+  private async getUserInfos(managerSeq, userSeq) {
+    return Promise.all([
+      this.userRepository.findOneOrFail({
+        where: {
+          seq: managerSeq,
+        },
+      }),
+      this.userRepository.findOneOrFail({
+        where: {
+          seq: userSeq,
+        },
+      }),
+    ]);
+  }
+
+  private async sendMessage(
+    deviceToken: string,
+    title: string,
+    body: string,
+    url: string,
+  ) {
+    if (deviceToken) {
+      await this.firebaseService.sendMessage({
+        notification: {
+          title,
+          body,
+        },
+        data: {
+          url,
+        },
+        token: deviceToken,
+      });
+    }
+  }
 
   async saveTodo(createTodo: CreateTodoDto, userSeq: number) {
-    
     if (createTodo.memberSeq) {
       const memberInfo = await this.memberRepository.findOneOrFail({
         where: {
           seq: createTodo.memberSeq,
-          managerSeq: userSeq
-        }
+          managerSeq: userSeq,
+          useYn: 'Y',
+        },
       });
       createTodo.managerSeq = memberInfo.managerSeq;
       createTodo.userSeq = memberInfo.userSeq;
-    }else {
+
+      const [managerInfo, userInfo] = await this.getUserInfos(
+        memberInfo.managerSeq,
+        memberInfo.userSeq,
+      );
+
+      await this.sendMessage(
+        userInfo.deviceToken,
+        `${memberInfo.managerName} 님으로부터F`,
+        '오늘의 할일이 등록 되었습니다.',
+        '/todo',
+      );
+    } else {
       createTodo.userSeq = userSeq;
       createTodo.managerSeq = userSeq;
       createTodo.memberSeq = 0;
@@ -120,7 +172,7 @@ export class TodoService {
           managerSeq: d.managerSeq,
           userSeq: d.userSeq,
           memberSeq: d.memberSeq,
-          member: d.member
+          member: d.member,
         })),
       ...todo,
       ...todayDaily,

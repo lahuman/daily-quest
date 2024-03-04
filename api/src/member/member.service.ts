@@ -7,8 +7,8 @@ import { MemberVo } from './member.vo';
 import { MemberReq } from './member-req.entity';
 import { ManagerReqDto } from './manager-req.dto';
 import { MemberReqVo } from './member-req.vo';
-import { User } from 'src/user/user.entity';
-import { FirebaseService } from 'src/firebase/firebase.service';
+import { User } from '../user/user.entity';
+import { FirebaseService } from '../firebase/firebase.service';
 
 @Injectable()
 export class MemberService {
