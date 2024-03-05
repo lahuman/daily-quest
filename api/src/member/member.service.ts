@@ -44,18 +44,20 @@ export class MemberService {
     body: string,
     url: string,
   ) {
-    if (deviceToken) {
-      await this.firebaseService.sendMessage({
-        notification: {
-          title,
-          body,
-        },
-        data: {
-          url,
-        },
-        token: deviceToken,
-      });
-    }
+    try {
+      if (deviceToken) {
+        await this.firebaseService.sendMessage({
+          notification: {
+            title,
+            body,
+          },
+          data: {
+            url,
+          },
+          token: deviceToken,
+        });
+      }
+    } catch (e) {}
   }
 
   async requestManager(managerReq: ManagerReqDto, userSeq: number) {
