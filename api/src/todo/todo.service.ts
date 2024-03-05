@@ -32,29 +32,27 @@ export class TodoService {
     });
   }
 
-  isSupported = () =>
-    'Notification' in window &&
-    'serviceWorker' in navigator &&
-    'PushManager' in window;
-
   private async sendMessage(
     deviceToken: string,
     title: string,
     body: string,
     url: string,
   ) {
-    if (this.isSupported() && deviceToken) {
-      await this.firebaseService.sendMessage({
-        notification: {
-          title,
-          body,
-        },
-        data: {
-          url,
-        },
-        token: deviceToken,
-      });
-    }
+    try {
+      //메시지 발송시 오류는 무시.
+      if (deviceToken) {
+        await this.firebaseService.sendMessage({
+          notification: {
+            title,
+            body,
+          },
+          data: {
+            url,
+          },
+          token: deviceToken,
+        });
+      }
+    } catch (e) {}
   }
 
   async saveTodo(createTodo: CreateTodoDto, userSeq: number) {
