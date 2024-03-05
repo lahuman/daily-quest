@@ -17,39 +17,29 @@ const app = initializeApp({
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 });
+const isSupported = () =>
+  "Notification" in window &&
+  "serviceWorker" in navigator &&
+  "PushManager" in window;
 
 if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
   const messaging = getMessaging(app);
-  Notification.requestPermission().then((permission) => {
-    if (permission === "granted") {
-      console.log("알림 권한이 허용됨");
+  if (isSupported()) {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        console.log("알림 권한이 허용됨");
 
-      // FCM 메세지 처리
-    } else {
-      console.log("알림 권한 허용 안됨");
-    }
-  });
-
-  // getToken(messaging, { vapidKey: process.env.NEXT_PUBLIC_APP_VAPID_KEY })
-  //   .then((currentToken) => {
-  //     if (currentToken) {
-  //       // 정상적으로 토큰이 발급되면 콘솔에 출력합니다.
-
-  //     } else {
-  //       console.log(
-  //         "No registration token available. Request permission to generate one."
-  //       );
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     console.log("An error occurred while retrieving token. ", err);
-  //   });
+        // FCM 메세지 처리
+      } else {
+        console.log("알림 권한 허용 안됨");
+      }
+    });
+  }
 
   // 메세지가 수신되면 역시 콘솔에 출력합니다.
   onMessage(messaging, (payload) => {
     console.log("Message received. ", payload);
   });
-  
 }
 
 export async function getMessageToken() {
