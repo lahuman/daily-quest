@@ -32,13 +32,18 @@ export class TodoService {
     });
   }
 
+  isSupported = () =>
+    'Notification' in window &&
+    'serviceWorker' in navigator &&
+    'PushManager' in window;
+
   private async sendMessage(
     deviceToken: string,
     title: string,
     body: string,
     url: string,
   ) {
-    if (deviceToken) {
+    if (this.isSupported() && deviceToken) {
       await this.firebaseService.sendMessage({
         notification: {
           title,
