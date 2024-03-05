@@ -22,9 +22,9 @@ const isSupported = () =>
   "serviceWorker" in navigator &&
   "PushManager" in window;
 
-if (isSupported()) {
+if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
   const messaging = getMessaging(app);
-
+  if (isSupported()) {
     Notification.requestPermission().then((permission) => {
       if (permission === "granted") {
         console.log("알림 권한이 허용됨");
@@ -34,6 +34,7 @@ if (isSupported()) {
         console.log("알림 권한 허용 안됨");
       }
     });
+  }
 
   // 메세지가 수신되면 역시 콘솔에 출력합니다.
   onMessage(messaging, (payload) => {
