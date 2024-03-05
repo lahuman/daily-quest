@@ -116,7 +116,7 @@ export default function Member() {
                   className="relative flex items-center justify-between px-2 py-6 border-b"
                 >
                   <span className="w-5/12 mr-1 px-2 py-3">
-                    {myReq.acceptYn !== "Y" ? myReq.email : myReq.userEmail}
+                    {myReq.userEmail}
                   </span>
                   {(myReq.acceptYn !== "Y" && (
                     <>
