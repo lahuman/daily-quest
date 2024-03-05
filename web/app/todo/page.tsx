@@ -78,6 +78,7 @@ export default function Todo() {
   const [dateStr, setDateStr] = useState(
     params.get("today") || format(new Date(), "yyyyMMdd")
   );
+
   const [list, setList] = useState<TodoVo[] | undefined>();
   const [memberList, setMemberList] = useState<MemberVo[] | undefined>();
   const userSeq = parseInt(window.localStorage.getItem("userSeq") || "0");
