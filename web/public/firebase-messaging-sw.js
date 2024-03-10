@@ -2,9 +2,9 @@ importScripts("swenv.js"); // this file should have all the environment variable
 // Give the service worker access to Firebase Messaging.
 // Note that you can only use Firebase Messaging here. Other Firebase libraries
 // are not available in the service worker.
-importScripts("https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js");
+importScripts("https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js");
 importScripts(
-  "https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"
+  "https://www.gstatic.com/firebasejs/10.8.1/firebase-messaging.js"
 );
 
 // Initialize the Firebase app in the service worker by passing in
@@ -33,22 +33,22 @@ self.addEventListener("activate", function (e) {
   console.log("fcm sw activate..");
 });
 
-self.addEventListener("push", function (e) {
-  console.log("push message!!");
-  const data = e.data?.json() ?? {};
-  const resultData = data.notification;
-  const notificationTitle = resultData.title;
-  const notificationOptions = {
-    body: resultData.body,
-    icon: "https://217.142.255.104.nip.io/ironMan.png", // 웹 푸시 이미지는 icon
-    // tag: resultData.tag,
-    data: {
-      url: data.data.url,
-    },
-  };
+// self.addEventListener("push", function (e) {
+//   console.log("push message!!");
+//   const data = e.data?.json() ?? {};
+//   const resultData = data.notification;
+//   const notificationTitle = resultData.title;
+//   const notificationOptions = {
+//     body: resultData.body,
+//     icon: "https://217.142.255.104.nip.io/ironMan.png", // 웹 푸시 이미지는 icon
+//     // tag: resultData.tag,
+//     data: {
+//       url: data.data.url,
+//     },
+//   };
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
-});
+//   self.registration.showNotification(notificationTitle, notificationOptions);
+// });
 
 self.addEventListener("notificationclick", function (event) {
   console.log("notification click");
@@ -57,21 +57,21 @@ self.addEventListener("notificationclick", function (event) {
   event.waitUntil(clients.openWindow(url));
 });
 
-messaging.onBackgroundMessage((event) => {
-  console.log("[firebase-messaging-sw.js] Received background message ", event);
-  if (event && event?.notification) {
-    const notificationTitle = event.notification.title;
-    const notificationOptions = {
-      body: event.notification.body,
-      icon: "https://217.142.255.104.nip.io/ironMan.png", // 웹 푸시 이미지는 icon
-      data: {
-        url: event.data.url,
-      },
-    };
-    const voidPromise = self.registration?.showNotification(
-      notificationTitle,
-      notificationOptions
-    );
-    return voidPromise;
-  }
-});
+// messaging.onBackgroundMessage((event) => {
+//   console.log("[firebase-messaging-sw.js] Received background message ", event);
+//   if (event && event?.notification) {
+//     const notificationTitle = event.notification.title;
+//     const notificationOptions = {
+//       body: event.notification.body,
+//       icon: "https://217.142.255.104.nip.io/ironMan.png", // 웹 푸시 이미지는 icon
+//       data: {
+//         url: event.data.url,
+//       },
+//     };
+//     const voidPromise = self.registration?.showNotification(
+//       notificationTitle,
+//       notificationOptions
+//     );
+//     return voidPromise;
+//   }
+// });
