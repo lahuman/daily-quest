@@ -36,6 +36,16 @@ export class TodoController {
     return await this.service.saveTodo(createTodo, userVo.seq);
   }
 
+  @Get('/isHoliday/:dateStr')
+  @ApiOperation({ summary: '평일 / 휴일 조회' })
+  @ApiResponse({ status: 200, type: TodoVo })
+  async getIsHoliday(
+    @Param('dateStr') dateStr: string,
+  ) {
+    return await this.service.isHoliHoliday(dateStr);
+  }
+
+
   @Get('/:dateStr')
   @ApiOperation({ summary: '미션 목록 조회' })
   @ApiResponse({ status: 200, type: TodoVo })

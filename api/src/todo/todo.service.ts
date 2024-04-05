@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Todo } from './todo.entity';
 import { DailyTodo } from './daily-todo.entity';
-import { DataSource, LessThanOrEqual, Repository } from 'typeorm';
+import { DataSource, LessThanOrEqual, Not, Repository } from 'typeorm';
 import { CreateTodoDto, TODO_TYPE, TodoDto } from './todo.dto';
 import { TodoVo } from './todo.vo';
 import { Member } from '../member/member.entity';
@@ -22,7 +22,7 @@ export class TodoService {
     private readonly userRepository: Repository<User>,
     private dataSource: DataSource,
     private firebaseService: FirebaseService,
-  ) {}
+  ) { }
 
   private async getUserInfos(userSeq) {
     return await this.userRepository.findOneOrFail({
@@ -52,7 +52,7 @@ export class TodoService {
           token: deviceToken,
         });
       }
-    } catch (e) {}
+    } catch (e) { }
   }
 
   async saveTodo(createTodo: CreateTodoDto, userSeq: number) {
@@ -81,20 +81,13 @@ export class TodoService {
       createTodo.memberSeq = 0;
     }
 
-    if (createTodo.type === TODO_TYPE.ED) {
+    if (createTodo.type !== TODO_TYPE.OC) {
       const dailyTodo = await this.dailyTodoRepository.save(
         new DailyTodo({
           ...createTodo,
           startDay: parseInt(createTodo.todoDay),
         }),
       );
-      const todo = await this.todoRepository.save(
-        new Todo({
-          ...createTodo,
-          dailyTodoSeq: dailyTodo.seq,
-        }),
-      );
-      return new TodoVo(todo);
     } else {
       const todo = await this.todoRepository.save(
         new Todo({
@@ -105,8 +98,26 @@ export class TodoService {
     }
   }
 
+  async isHoliHoliday(dateStr: string): Promise<boolean> {
+    const isHolidayBody = await fetch(`https://lahuman.vercel.app/api/isHoliday/${dateStr}`)
+    const { holiday } = await isHolidayBody.json()
+    return holiday
+  }
+
   async getTodoList(dateStr: string, userSeq: number) {
-    const [todo, todayDaily, dailyTodo] = await Promise.all([
+    // 금일이 평일 일 경우 OC, ED, WD
+    // 금일이 주말아닌 휴일 일 경우 OC, ED, HO
+    // https://lahuman.vercel.app/api/isHoliday/${date}
+
+    let addType = TODO_TYPE.WD;
+    let ignoreType = TODO_TYPE.HD
+    if (await this.isHoliHoliday(dateStr)) {
+      addType = TODO_TYPE.HD;
+      ignoreType = TODO_TYPE.WD
+    }
+
+
+    const [todo, todayDaily,todayAdd, dailyTodo] = await Promise.all([
       this.todoRepository.find({
         relations: {
           member: true,
@@ -135,17 +146,33 @@ export class TodoService {
           },
         ],
       }),
+      this.todoRepository.find({
+        relations: {
+          member: true,
+        },
+        where: [
+          { type: addType, todoDay: dateStr, useYn: 'Y', userSeq },
+          {
+            type: addType,
+            todoDay: dateStr,
+            useYn: 'Y',
+            managerSeq: userSeq,
+          },
+        ],
+      }),
       this.dailyTodoRepository.find({
         relations: {
           member: true,
         },
         where: [
           {
+            type: Not(ignoreType),
             useYn: 'Y',
             userSeq,
             startDay: LessThanOrEqual(parseInt(dateStr)),
           },
           {
+            type: Not(ignoreType),
             useYn: 'Y',
             managerSeq: userSeq,
             startDay: LessThanOrEqual(parseInt(dateStr)),
@@ -157,7 +184,7 @@ export class TodoService {
       ...dailyTodo
         .filter((d) => !todayDaily.some((t) => t.dailyTodoSeq === d.seq))
         .map((d) => ({
-          type: TODO_TYPE.ED,
+          type: d.type,
           dailyTodoSeq: d.seq,
           content: d.content,
           todoDay: dateStr,
@@ -169,6 +196,7 @@ export class TodoService {
         })),
       ...todo,
       ...todayDaily,
+      ...todayAdd,
     ];
 
     allTodoList.sort((a, b) => {
@@ -285,8 +313,7 @@ export class TodoService {
           await this.sendMessage(
             userInfo.deviceToken,
             `[${todo.todoDay}] ${manager.managerName} 님이`,
-            `"${todo.content}"를 ${
-              todo.completeYn === 'Y' ? '완료' : '취소'
+            `"${todo.content}"를 ${todo.completeYn === 'Y' ? '완료' : '취소'
             } 했습니다. `,
             `/todo?today=${todo.todoDay}`,
           );
