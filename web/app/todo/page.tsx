@@ -71,6 +71,7 @@ function MemberTag(prop: any) {
 export default function Todo() {
   const params = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const [isHoliday, setIsHoliday] = useState(false);
   const [newTodo, setNewTodo] = useState("");
   const [memberSeq, setMemberSeq] = useState("");
   const [newPoint, setNewPoint] = useState<number | string>(0);
@@ -107,6 +108,10 @@ export default function Todo() {
 
   useEffect(() => {
     getTodoList();
+    client(`/todo/isHoliday/${dateStr}`).then((data) => {
+      setIsHoliday(data)
+    })
+
   }, [dateStr]);
 
   function changeDate(isNext: boolean) {
@@ -155,7 +160,7 @@ export default function Todo() {
         ...row,
       },
     })
-      .then((r) => {})
+      .then((r) => { })
       .catch((e) => {
         console.log(e);
         alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.error);
@@ -175,7 +180,7 @@ export default function Todo() {
         ...row,
       },
     })
-      .then((r) => {})
+      .then((r) => { })
       .catch((e) => {
         console.log(e);
         alert("오류가 발생했습니다. 관리자에게 문의해주세요\n" + e.error);
@@ -243,6 +248,7 @@ export default function Todo() {
           </div>
           <div className="border-dashed border-2 border-indigo-600 p-1">
             <div className="flex items-center justify-between mb-2">
+              {isHoliday}
               <select
                 className="w-5/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
                 value={type}
@@ -250,11 +256,7 @@ export default function Todo() {
               >
                 <option value="OC">한번</option>
                 <option value="ED">매일</option>
-                {/* 
-                <option value="WD">평일</option>
-                <option value="HD">휴일</option>
-                <option value="WE">주말</option>
-                */}
+                {isHoliday && <option value="HD">휴일</option> || <option value="WD">평일</option>}
               </select>
               <select
                 className="w-5/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
@@ -343,9 +345,8 @@ export default function Todo() {
                         />
                       </label>
                       <label
-                        className={`inline-block mt-1 text-gray-600  cursor-pointer ${
-                          todo.completeYn === "Y" ? "line-through" : ""
-                        }`}
+                        className={`inline-block mt-1 text-gray-600  cursor-pointer ${todo.completeYn === "Y" ? "line-through" : ""
+                          }`}
                         htmlFor={`todo${idx}`}
                       >
                         <h2 className="cursor-pointer text-slate-600 line-clamp-1 dark:text-navy-100">
@@ -381,8 +382,8 @@ export default function Todo() {
                             todo.point === 0
                               ? ""
                               : todo.point > 0
-                              ? "text-blue-600"
-                              : "text-red-600"
+                                ? "text-blue-600"
+                                : "text-red-600"
                           }
                         >
                           {numberWithCommas(todo.point)}
