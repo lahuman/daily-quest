@@ -209,7 +209,7 @@ export class TodoService {
   }
 
   async removeTodo(todoDto: TodoDto, userSeq: number) {
-    if (todoDto.type === TODO_TYPE.ED) {
+    if (todoDto.type !== TODO_TYPE.OC) {
       const daily = await this.dailyTodoRepository.findOne({
         where: {
           managerSeq: userSeq,
