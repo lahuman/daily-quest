@@ -19,9 +19,15 @@
     "eslint-config-next": "13.4.10",
     "firebase": "^10.0.0",
     "jwt-decode": "^4.0.0",
+<<<<<<< HEAD
     "next": "13.4.10",
     "next-pwa": "^5.6.0",
     "postcss": "8.4.26",
+=======
+    "next": "13.5.1",
+    "next-pwa": "^5.6.0",
+    "postcss": "8.4.31",
+>>>>>>> 604eb7781889430471538944ff6aeb32a37ade0d
     "react": "18.2.0",
     "react-color": "^2.19.3",
     "react-dom": "18.2.0",
