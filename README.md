@@ -2,7 +2,7 @@
 
 > 일일 퀘스트를 실행하여, 훌륭한 내가 되기를 바랍니다.
 
-[Daily Quests 바로 가기](https://217.142.255.104.nip.io/)
+[Daily Quests 바로 가기](https://d-q.duckdns.org)
 
 ## 업데이트 이력
 
