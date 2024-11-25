@@ -5,11 +5,21 @@ const withPWA = require('next-pwa')({
   register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === 'development',
-  runtimeCaching: require('next-pwa/cache')
+  runtimeCaching: require('next-pwa/cache'),
+  buildExcludes: [/firebase-messaging-sw\.js$/],
+  customWorkerDir: 'public'
 });
 
 const nextConfig = {
-  // experimental 섹션 제거
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+    }
+    return config;
+  },
 }
 
 module.exports = withPWA(nextConfig);
