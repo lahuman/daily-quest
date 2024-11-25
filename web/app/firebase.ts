@@ -43,9 +43,9 @@ if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
         onMessage(messaging, (payload) => {
           console.log("메세지 수신됨: ", payload);
           // 알림 표시
-          new Notification(payload.notification.title, {
-            body: payload.notification.body,
-            icon: payload.notification.icon,
+          new Notification(payload?.notification?.title || 'Title', {
+            body: payload?.notification?.body,
+            icon: payload?.notification?.icon,
           });
         });
       } else {
