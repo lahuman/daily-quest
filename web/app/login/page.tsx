@@ -1,9 +1,65 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import styled from "styled-components";
+import Loading from "@/components/Loading";
+
+const LoginContainer = styled.div`
+  width: 100%;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 2rem;
+  
+  @media (min-width: 768px) {
+    max-width: 480px;
+  }
+`;
+
+const LoginHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+`;
+
+const LoginContent = styled.div`
+  background: #f3f4f6;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+`;
+
+const GoogleButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #1a73e8;
+  color: white;
+  border-radius: 12px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    background: #1557b0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+`;
 
 export default function Login() {
   const { loginGoogle, currentUser } = useAuth();
@@ -42,65 +98,56 @@ export default function Login() {
 
   return (
     <>
-      <section className="h-screen">
-        <div className="container h-full px-6 py-24">
-          <div className="g-6 flex h-full flex-wrap items-center justify-center lg:justify-between">
-            {/* <!-- Left column container with background--> */}
-            <div className="mb-12 md:mb-0 md:w-8/12 lg:w-6/12">
-              <h4 className="mb-6 text-xl font-semibold">
-                <Image
-                  className="inline-block h-12 w-12 rounded-full ring-2 ring-white"
-                  src="/ironMan.png"
-                  alt="lahuman"
-                  width={100}
-                  height={100}
-                />
-                Daily Quests
-              </h4>
+      {loading && <Loading />}
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <LoginContainer>
+          <LoginHeader>
+            <Image
+              className="h-12 w-12 rounded-full ring-2 ring-indigo-600"
+              src="/ironMan.png"
+              alt="lahuman"
+              width={48}
+              height={48}
+            />
+            <h1 className="text-2xl font-semibold text-gray-900">Daily Quests</h1>
+          </LoginHeader>
 
-              <p className="text-sm">
-                The program designed for daily missions is an innovative tool
-                developed to aid in individual growth and goal attainment. Its
-                core focus revolves around helping users set new challenges and
-                objectives each day and assisting them in accomplishing those
-                goals. With a user-friendly interface and personalized features,
-                the program is designed to seamlessly integrate into users daily
-                routines.
-              </p>
+          <LoginContent>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              The program designed for daily missions is an innovative tool
+              developed to aid in individual growth and goal attainment. Its
+              core focus revolves around helping users set new challenges and
+              objectives each day and assisting them in accomplishing those
+              goals.
+            </p>
+          </LoginContent>
+
+          {error && (
+            <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-sm">
+              {error}
             </div>
+          )}
 
-            {/* <!-- Right column container with form --> */}
-            <div className="md:w-8/12 lg:ml-6 lg:w-5/12">
-              {/* <!-- Email input --> */}
-              {error && <div className="text-rose-600	">{error}</div>}
-
-              {/* <!-- Social login buttons --> */}
-              <button
-                className="mb-3 flex w-full items-center justify-center rounded bg-primary px-7 pb-2.5 pt-3 text-center text-sm font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                style={{ backgroundColor: "#1a73e8" }}
-                onClick={onLoginGoogle}
-                disabled={loading}
-              >
-                {/* <!-- google --> */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-7 w-7"
-                  fill="currentColor"
-                  style={{ color: "#ea4335" }}
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M7 11v2.4h3.97c-.16 1.029-1.2 3.02-3.97 3.02-2.39 0-4.34-1.979-4.34-4.42 0-2.44 1.95-4.42 4.34-4.42 1.36 0 2.27.58 2.79 1.08l1.9-1.83c-1.22-1.14-2.8-1.83-4.69-1.83-3.87 0-7 3.13-7 7s3.13 7 7 7c4.04 0 6.721-2.84 6.721-6.84 0-.46-.051-.81-.111-1.16h-6.61zm0 0 17"
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Continue with Google
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+          <GoogleButton
+            onClick={onLoginGoogle}
+            disabled={loading}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M7 11v2.4h3.97c-.16 1.029-1.2 3.02-3.97 3.02-2.39 0-4.34-1.979-4.34-4.42 0-2.44 1.95-4.42 4.34-4.42 1.36 0 2.27.58 2.79 1.08l1.9-1.83c-1.22-1.14-2.8-1.83-4.69-1.83-3.87 0-7 3.13-7 7s3.13 7 7 7c4.04 0 6.721-2.84 6.721-6.84 0-.46-.051-.81-.111-1.16h-6.61zm0 0 17"
+                fillRule="evenodd"
+                clipRule="evenodd"
+              />
+            </svg>
+            Continue with Google
+          </GoogleButton>
+        </LoginContainer>
+      </div>
     </>
   );
 }
