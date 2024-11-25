@@ -6,6 +6,41 @@ import { client } from "../todo/fetchHelper";
 import Loading from "@/components/Loading";
 import { BlockPicker } from "react-color";
 import { useAuth } from "@/contexts/AuthContext";
+import styled from "styled-components";
+
+const MemberContainer = styled.div`
+  width: 100%;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  
+  @media (min-width: 768px) {
+    max-width: 480px;
+    padding: 2rem;
+  }
+`;
+
+const MemberInput = styled.div`
+  background: #f3f4f6;
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+`;
+
+const MemberItem = styled.div`
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+`;
 
 export default function Member() {
   const [loading, setLoading] = useState(false);
@@ -115,15 +150,12 @@ export default function Member() {
 
   return (
     <>
-
       {loading && <Loading />}
-
-      <div className="justify-center h-screen  ">
-        <div className="w-full px-4 py-8 mx-auto shadow lg:w-1/3">
-          <div className="flex items-center justify-center border-dashed border-2 border-indigo-600 p-1">
-
+      <MemberContainer>
+        <MemberInput>
+          <div className="flex items-center gap-3">
             <div
-              className="cursor-pointer	rounded-lg w-10 h-10 mr-5"
+              className="cursor-pointer rounded-lg w-10 h-10 flex-shrink-0"
               style={{ backgroundColor: color }}
               onClick={(e) => setShowColor(true)}
             >
@@ -139,96 +171,84 @@ export default function Member() {
                 </div>
               )}
             </div>
-            <form className="w-9/12 pr-3">
-              <input
-                value={name}
-                style={{ color: color }}
-                onChange={(e) => setName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (
-                    e.key === "Enter" &&
-                    e.nativeEvent.isComposing === false &&
-                    name.trim() !== ""
-                  ) {
-                    e.preventDefault();
-                    saveMember();
-                  }
-                }}
-                type="search"
-                placeholder="이름을 입력하세요."
-                className="w-full px-2 py-3 border rounded outline-none border-grey-600"
-              />
-            </form>
-            <button className="w-3/12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={e => saveMember()}>
+            <input
+              value={name}
+              style={{ color: color }}
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.nativeEvent.isComposing && name.trim() !== "") {
+                  e.preventDefault();
+                  saveMember();
+                }
+              }}
+              placeholder="이름을 입력하세요"
+              className="flex-1 px-4 py-2 rounded-lg bg-white border-0 focus:ring-2 focus:ring-indigo-500"
+            />
+            <button 
+              onClick={saveMember}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors whitespace-nowrap"
+            >
               등록
             </button>
           </div>
-          <hr className="mt-5" />
-          <ul className="list-reset">
-            {list && list.length === 0 && <span className="text-gray-400">내역이 없습니다.</span>}
-            {list &&
-              list.map((todo, idx) => (
-                <li
-                  key={idx}
-                  className="relative flex items-center justify-between px-2 py-6 border-b"
-                >
-                  <div
-                    className="cursor-pointer rounded-lg w-8 h-8 mr-1"
-                    style={{ backgroundColor: todo.color }}
-                    onClick={(e) =>
-                      handleListChange(idx, { ...todo, showColor: true })
-                    }
-                  >
-                    {todo.showColor && (
-                      <div className="absolute z-10">
-                        <BlockPicker
-                          color={todo.color}
-                          onChangeComplete={(e) => {
-                            handleListChange(idx, {
-                              ...todo,
-                              color: e.hex,
-                              showColor: false,
-                            });
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                  <div className="w-5/12 mr-1 leading-3	">
-                    <input
-                      type="text"
-                      className={`${currentUser && todo?.user?.email === currentUser.email && "px-2 py-3" || "px-1 py-1"} border rounded outline-none border-grey-600 w-full`}
-                      id={`member-${todo.seq}`}
-                      value={`${todo.name}`}
-                      style={{ color: todo.color }}
-                      onChange={(e) =>
-                        handleListChange(idx, { ...todo, name: e.target.value })
-                      }
-                    />
-                    {currentUser && todo?.user?.email !== currentUser.email && <><br /><span className="text-xs mr-1">{todo?.user?.email}</span></>}
-                  </div>
+        </MemberInput>
 
-                  <label className={`w-2/12 inline-block mt-1 text-gray-600 text-right`}>
-                    <span
-                      className={
-                        todo.totalPoint === 0
-                          ? ""
-                          : todo.totalPoint > 0
-                            ? "text-blue-600"
-                            : "text-red-600"
-                      }
-                    >
-                      {numberWithCommas(todo.totalPoint)}
-                    </span>
-                  </label>
-                  <button className="w-3/12 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={(e) => updateMember(todo)}>
-                    수정
-                  </button>
-                </li>
-              ))}
-          </ul>
+        <div className="space-y-3">
+          {list && list.length === 0 && (
+            <div className="text-center text-gray-500">내역이 없습니다.</div>
+          )}
+          {list?.map((member, idx) => (
+            <MemberItem key={idx}>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <div
+                  className="cursor-pointer rounded-lg w-8 h-8 flex-shrink-0"
+                  style={{ backgroundColor: member.color }}
+                  onClick={() => handleListChange(idx, { ...member, showColor: true })}
+                >
+                  {member.showColor && (
+                    <div className="absolute z-10">
+                      <BlockPicker
+                        color={member.color}
+                        onChangeComplete={(e) => {
+                          handleListChange(idx, {
+                            ...member,
+                            color: e.hex,
+                            showColor: false,
+                          });
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+                <input
+                  type="text"
+                  className="w-full sm:w-auto flex-1 px-3 py-2 rounded-lg bg-white border border-gray-200 focus:ring-2 focus:ring-indigo-500"
+                  value={member.name}
+                  style={{ color: member.color }}
+                  onChange={(e) => handleListChange(idx, { ...member, name: e.target.value })}
+                />
+                <span className={`whitespace-nowrap text-sm font-medium ${
+                  member.totalPoint === 0 ? 'text-gray-500' :
+                  member.totalPoint > 0 ? 'text-blue-600' : 'text-red-600'
+                }`}>
+                  {numberWithCommas(member.totalPoint)} pts
+                </span>
+                <button 
+                  onClick={() => updateMember(member)}
+                  className="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                >
+                  수정
+                </button>
+              </div>
+              {currentUser && member?.user?.email !== currentUser.email && (
+                <div className="mt-2 text-sm text-gray-500">
+                  {member?.user?.email}
+                </div>
+              )}
+            </MemberItem>
+          ))}
         </div>
-      </div>
+      </MemberContainer>
     </>
   );
 }

@@ -9,30 +9,27 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/node": "20.4.2",
-    "@types/react": "18.2.15",
-    "@types/react-dom": "18.2.7",
-    "autoprefixer": "10.4.14",
+    "@heroicons/react": "^2.2.0",
+    "@types/node": "^20.4.2",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "autoprefixer": "^10.4.14",
     "date-fns": "^2.30.0",
     "encoding": "^0.1.13",
-    "eslint": "8.45.0",
-    "eslint-config-next": "13.4.10",
+    "eslint": "^8.45.0",
+    "eslint-config-next": "^14.2.1",
     "firebase": "^10.0.0",
     "jwt-decode": "^4.0.0",
-<<<<<<< HEAD
-    "next": "13.4.10",
+    "next": "^14.2.1",
     "next-pwa": "^5.6.0",
-    "postcss": "8.4.26",
-=======
-    "next": "13.5.1",
-    "next-pwa": "^5.6.0",
-    "postcss": "8.4.31",
->>>>>>> 604eb7781889430471538944ff6aeb32a37ade0d
-    "react": "18.2.0",
+    "next-transpile-modules": "^10.0.1",
+    "postcss": "^8.4.31",
+    "react": "^18.2.0",
     "react-color": "^2.19.3",
-    "react-dom": "18.2.0",
-    "tailwindcss": "3.3.3",
-    "typescript": "5.1.6"
+    "react-dom": "^18.2.0",
+    "styled-components": "^6.1.13",
+    "tailwindcss": "^3.3.3",
+    "typescript": "^5.1.6"
   },
   "devDependencies": {
     "@types/react-color": "^3.0.6"

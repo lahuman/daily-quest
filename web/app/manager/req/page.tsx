@@ -7,6 +7,45 @@ import Loading from "@/components/Loading";
 import { MemberReqVo } from "../MemberReqVo";
 import { TABS } from "../constants";
 import Link from "next/link";
+import styled from "styled-components";
+
+const ManagerContainer = styled.div`
+  width: 100%;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  
+  @media (min-width: 768px) {
+    max-width: 480px;
+    padding: 2rem;
+  }
+`;
+
+const TabContainer = styled.div`
+  margin-bottom: 2rem;
+`;
+
+const InputSection = styled.div`
+  background: #f3f4f6;
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+`;
+
+const ManagerItem = styled.div`
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+`;
 
 export default function Member() {
   const [loading, setLoading] = useState(false);
@@ -124,97 +163,90 @@ export default function Member() {
   return (
     <>
       {loading && <Loading />}
+      <ManagerContainer>
+        <TabContainer>
+          <ul className="flex border-b">
+            <li className="mr-2">
+              <a href="#" className={`inline-block p-4 border-b-2 ${
+                tab === TABS.REQ ? "text-indigo-600 border-indigo-600" : "border-transparent"
+              }`}>
+                요청내역
+              </a>
+            </li>
+            <li className="mr-2">
+              <Link href="/manager/res" className="inline-block p-4 border-b-2 border-transparent hover:text-gray-600">
+                응답내역
+              </Link>
+            </li>
+          </ul>
+        </TabContainer>
 
-      <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
-        <ul className="flex flex-wrap -mb-px">
-          <li className="me-2">
-            <a
-              href="#"
-              className={`inline-block p-4 border-b-2 ${tab === TABS.REQ
-                ? "text-blue-600  border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
-                : "border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-                }`}
+        <InputSection>
+          <div className="flex gap-2">
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.nativeEvent.isComposing && name.trim() !== "") {
+                  e.preventDefault();
+                  requestManager();
+                }
+              }}
+              placeholder="이메일을 입력하세요"
+              className="flex-1 px-4 py-2 rounded-lg bg-white border-0 focus:ring-2 focus:ring-indigo-500"
+            />
+            <button 
+              onClick={requestManager}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors whitespace-nowrap"
             >
-              요청내역
-            </a>
-          </li>
-          <li className="me-2">
-            <Link
-              href="/manager/res"
-              className={`inline-block p-4 border-b-2 ${tab === TABS.RES
-                ? "text-blue-600  border-blue-600 runded-t-lg active dark:text-blue-500 dark:border-blue-500"
-                : "border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-                }`}
-            >
-              응답내역
-            </Link>
-          </li>
-        </ul>
-      </div>
-
-      <div className="justify-center h-screen  ">
-        <div className="w-full px-4 py-8 mx-auto shadow lg:w-1/3">
-          <div className="flex items-center justify-center border-dashed border-2 border-indigo-600 p-1">
-            <form className="w-9/12 pr-3">
-              <input
-                value={name}
-                style={{ color: color }}
-                onChange={(e) => setName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (
-                    e.key === "Enter" &&
-                    e.nativeEvent.isComposing === false &&
-                    name.trim() !== ""
-                  ) {
-                    e.preventDefault();
-                    requestManager();
-                  }
-                }}
-                type="search"
-                placeholder="이메일을 입력하세요."
-                className="w-full px-2 py-3 border rounded outline-none border-grey-600"
-              />
-            </form>
-            <button className="w-3/12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={e => requestManager()}>
               등록
             </button>
           </div>
-          <hr className="mt-5" />
-          <ul className="list-reset">
-            {list &&
-              list.map((myReq, idx) => (
-                <li
-                  key={idx}
-                  className="relative flex items-center justify-between px-2 py-6 border-b"
-                >
-                  <div className="w-5/12 mr-1 leading-3	">
-                    {myReq.acceptYn === "Y" && <><input
+        </InputSection>
+
+        <div className="space-y-3">
+          {list?.map((myReq, idx) => (
+            <ManagerItem key={idx}>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <div className="flex-1">
+                  {myReq.acceptYn === "Y" && (
+                    <input
                       type="text"
                       value={myReq.managerName}
                       onChange={e => handleListChange(idx, { ...myReq, managerName: e.target.value })}
-                      className={`px-1 py-1 border rounded outline-none border-grey-600 w-full`}
-                    /> <br /></>}
-                    <span className="text-xs mr-1">{myReq.email}</span>
-                  </div>
-                  <div className="w-4/12 flex items-center justify-between">
-                    {myReq.acceptYn === "N" && (
-                      <><span className="text-xs mr-1 font-semibold">요청중</span>
-                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={e => deleteMember(myReq)}>
-                          취소
-                        </button></>
-                    )}
-                    {myReq.acceptYn === "Y" && (
-                      <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={e => updateName(myReq)}>
-                        수정
+                      className="w-full px-3 py-2 mb-2 rounded-lg bg-white border border-gray-200 focus:ring-2 focus:ring-indigo-500"
+                    />
+                  )}
+                  <span className="text-sm text-gray-500">{myReq.email}</span>
+                </div>
+                <div className="flex gap-2">
+                  {myReq.acceptYn === "N" ? (
+                    <>
+                      <span className="text-sm font-medium text-gray-500 mr-2">요청중</span>
+                      <button 
+                        onClick={() => deleteMember(myReq)}
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                      >
+                        취소
                       </button>
-                    )}
-                  </div>
-                </li>
-              ))}
-            {list && list.length === 0 && <span className="text-gray-400">내역이 없습니다.</span>}
-          </ul>
+                    </>
+                  ) : (
+                    <button 
+                      onClick={() => updateName(myReq)}
+                      className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                    >
+                      수정
+                    </button>
+                  )}
+                </div>
+              </div>
+            </ManagerItem>
+          ))}
+          {list && list.length === 0 && (
+            <div className="text-center text-gray-500">내역이 없습니다.</div>
+          )}
         </div>
-      </div>
+      </ManagerContainer>
     </>
   );
 }

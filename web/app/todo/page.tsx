@@ -7,6 +7,8 @@ import { TodoVo } from "./TodoVo";
 import { client } from "./fetchHelper";
 import Loading from "@/components/Loading";
 import { MemberVo } from "../member/MemberVo";
+import styled from "styled-components";
+import { ChevronLeftIcon, ChevronRightIcon, TrashIcon } from "@heroicons/react/20/solid";
 
 enum TODO_TYPE {
   OC = "OC",
@@ -67,6 +69,63 @@ function MemberTag(prop: any) {
     <></>
   );
 }
+
+const TodoContainer = styled.div`
+  width: 100%;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  
+  @media (min-width: 768px) {
+    max-width: 480px;
+    padding: 2rem;
+  }
+`;
+
+const TodoHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  
+  @media (min-width: 768px) {
+    padding: 0;
+    margin-bottom: 2rem;
+    border-bottom: none;
+  }
+`;
+
+const DateNavigator = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #6366f1;
+`;
+
+const TodoInput = styled.div`
+  background: #f3f4f6;
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+`;
+
+const TodoItem = styled.div<{ completed: boolean }>`
+  background: ${props => props.completed ? '#f8fafc' : '#ffffff'};
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+`;
 
 export default function Todo() {
   const params = useSearchParams();
@@ -193,209 +252,126 @@ export default function Todo() {
 
   return (
     <>
-      {loading && <Loading />}
+    {loading && <Loading />}
+    <TodoContainer className="md:mx-auto">
+      <TodoHeader>
+        <DateNavigator>
+          <button 
+            onClick={() => changeDate(false)}
+            className="p-2 rounded-full hover:bg-indigo-100"
+          >
+            <ChevronLeftIcon className="w-6 h-6 text-indigo-600" />
+          </button>
+          <span>{format(parse(dateStr, "yyyyMMdd", new Date()), "MMM d, yyyy")}</span>
+          <button 
+            onClick={() => changeDate(true)}
+            className="p-2 rounded-full hover:bg-indigo-100"
+          >
+            <ChevronRightIcon className="w-6 h-6 text-indigo-600" />
+          </button>
+        </DateNavigator>
+      </TodoHeader>
 
-      {/* bg-fixed bg-center bg-cover bg-no-repeat bg-[url('https://lahuman.github.io/assets/img/logo.png')] */}
-      <div className="justify-center h-screen  ">
-        <div className="w-full px-4 py-8 mx-auto shadow lg:w-1/3">
-          <div className="flex justify-center  mb-6">
-            <h1 className="text-2xl font-bold text-purple-600">
-              {" "}
-              <button
-                type="button"
-                onClick={(e) => changeDate(false)}
-                className="bg-purple-300 text-white rounded-l-md border-r border-gray-100 py-2 hover:bg-purple-400 hover:text-white px-3"
-              >
-                <div className="flex flex-row align-middle">
-                  <svg
-                    className="w-5 mr-2"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                  <p className="ml-2"></p>
-                </div>
-              </button>{" "}
-              {format(parse(dateStr, "yyyyMMdd", new Date()), "yyyy-MM-dd EEE")}{" "}
-              <button
-                type="button"
-                onClick={(e) => changeDate(true)}
-                className="bg-purple-300 text-white rounded-r-md py-2 border-l border-gray-200 hover:bg-purple-400 hover:text-white px-3"
-              >
-                <div className="flex flex-row align-middle">
-                  <span className="mr-2"></span>
-                  <svg
-                    className="w-5 ml-2"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                </div>
-              </button>
-            </h1>
-          </div>
-          <div className="border-dashed border-2 border-indigo-600 p-1">
-            <div className="flex items-center justify-between mb-2">
-              {isHoliday}
-              <select
-                className="w-5/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
-                value={type}
-                onChange={(e) => setType(getTodoType(e.target.value))}
-              >
-                <option value="OC">한번</option>
-                <option value="ED">매일</option>
-                {isHoliday && <option value="HD">휴일</option> || <option value="WD">평일</option>}
-              </select>
-              <select
-                className="w-5/12 px-2 py-3 border rounded outline-none border-grey-600 mr-2"
-                value={memberSeq}
-                onChange={(e) => setMemberSeq(e.target.value)}
-              >
-                <option value="0">None</option>
-                {memberList?.map((m) => (
-                  <option key={m.seq} value={m.seq}>
-                    {m.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex items-center justify-between">
-              <input
-                value={newTodo}
-                onChange={(e) => setNewTodo(e.target.value)}
-                onKeyDown={(e) => {
-                  if (
-                    e.key === "Enter" &&
-                    e.nativeEvent.isComposing === false &&
-                    newTodo.trim() !== ""
-                  ) {
-                    e.preventDefault();
-                    saveNewTodo();
-                  }
-                }}
-                type="text"
-                placeholder="할일"
-                className="w-8/12 px-2 py-3 border rounded outline-none border-grey-600"
-              />
-              <input
-                value={newPoint}
-                onChange={(e) => {
-                  setNewPoint(e.target.value);
-                }}
-                onKeyDown={(e) => {
-                  if (
-                    e.key === "Enter" &&
-                    e.nativeEvent.isComposing === false &&
-                    newTodo.trim() !== ""
-                  ) {
-                    e.preventDefault();
-                    saveNewTodo();
-                  }
-                }}
-                type="number"
-                placeholder="포인트"
-                className="w-3/12 px-2 py-3 border rounded outline-none border-grey-600"
-              />
-            </div>
+      <TodoInput>
+        <div className="flex flex-col sm:flex-row gap-2 mb-2">
+          <select
+            value={type}
+            onChange={(e) => setType(getTodoType(e.target.value))}
+            className="w-full sm:w-auto px-3 py-2 rounded-lg bg-white border-0 focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="OC">한번</option>
+            <option value="ED">매일</option>
+            {isHoliday && <option value="HD">휴일</option> || <option value="WD">평일</option>}
+          </select>
+          <select
+            value={memberSeq}
+            onChange={(e) => setMemberSeq(e.target.value)}
+            className="w-full sm:w-auto px-3 py-2 rounded-lg bg-white border-0 focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="0">None</option>
+            {memberList?.map((m) => (
+              <option key={m.seq} value={m.seq}>
+                {m.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <input
+            value={newTodo}
+            onChange={(e) => setNewTodo(e.target.value)}
+            placeholder="새로운 할 일을 입력하세요"
+            className="w-full px-4 py-2 rounded-lg bg-white border-0 focus:ring-2 focus:ring-indigo-500"
+          />
+          <div className="flex gap-2">
+            <input
+              value={newPoint}
+              onChange={(e) => setNewPoint(e.target.value)}
+              onFocus={(e) => {
+                if (e.target.value === "0") {
+                  setNewPoint("");
+                }
+              }}
+              onBlur={(e) => {
+                if (!e.target.value) {
+                  setNewPoint("0");
+                }
+              }}
+              type="number"
+              placeholder="포인트"
+              className="flex-1 sm:w-24 min-w-[80px] px-4 py-2 rounded-lg bg-white border-0 focus:ring-2 focus:ring-indigo-500"
+            />
             <button
-              className="w-full mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={(e) => saveNewTodo()}
+              onClick={saveNewTodo}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors whitespace-nowrap"
             >
-              등록
+              추가
             </button>
           </div>
-
-          <div className="card px-4 pt-2 pb-4">
-            {list && list.length === 0 && (
-              <span className="text-gray-400">내역이 없습니다.</span>
-            )}
-            {list &&
-              list.map((todo, idx) => (
-                <div
-                  key={idx}
-                  className="border-b border-slate-150 py-3 dark:border-navy-500"
-                >
-                  <div className="flex justify-between space-x-2 sm:space-x-3">
-                    <div className="flex items-end">
-                      <label className="mr-2">
-                        <input
-                          type="checkbox"
-                          id={`todo${idx}`}
-                          onChange={({ target: { checked } }) => {
-                            if (todo.userSeq === userSeq)
-                              updateTodoCompleted({
-                                ...todo,
-                                completeYn: checked ? "Y" : "N",
-                              });
-                          }}
-                          checked={todo.completeYn === "Y"}
-                          className="form-checkbox is-outline size-5 rounded-full border-slate-400/70 before:bg-primary checked:border-primary hover:border-primary focus:border-primary dark:border-navy-400 dark:before:bg-accent dark:checked:border-accent dark:hover:border-accent dark:focus:border-accent"
-                        />
-                      </label>
-                      <label
-                        className={`inline-block mt-1 text-gray-600  cursor-pointer ${todo.completeYn === "Y" ? "line-through" : ""
-                          }`}
-                        htmlFor={`todo${idx}`}
-                      >
-                        <h2 className="cursor-pointer text-slate-600 line-clamp-1 dark:text-navy-100">
-                          {todo.content}
-                        </h2>
-                      </label>
-                    </div>
-                    <label>
-                      {(!todo.member || userSeq === todo.member.managerSeq) && (
-                        <button
-                          className="w-full mt-1 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                          onClick={(e) => deleteTodo(todo)}
-                        >
-                          삭제
-                        </button>
-                      )}
-                    </label>
-                  </div>
-                  <div className="mt-1 flex items-end justify-between">
-                    <div className="flex flex-wrap items-center font-inter text-xs">
-                      {getTodoTypeString(todo.type)}
-                      <div className="m-1.5 w-px self-stretch bg-slate-200 dark:bg-navy-500"></div>
-                      <span className="flex items-center space-x-1">
-                        <MemberTag userSeq={userSeq} member={todo.member} />
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <div className="m-1.5 w-px self-stretch bg-slate-200 dark:bg-navy-500"></div>
-                      <div className="badge space-x-2.5 px-1 text-success">
-                        <div className="size-2 rounded-full bg-current"></div>
-                        <span
-                          className={
-                            todo.point === 0
-                              ? ""
-                              : todo.point > 0
-                                ? "text-blue-600"
-                                : "text-red-600"
-                          }
-                        >
-                          {numberWithCommas(todo.point)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div>
         </div>
+      </TodoInput>
+
+      <div className="space-y-3">
+        {list?.map((todo, idx) => (
+          <TodoItem key={idx} completed={todo.completeYn === "Y"}>
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={todo.completeYn === "Y"}
+                onChange={(e) => updateTodoCompleted({
+                  ...todo,
+                  completeYn: e.target.checked ? "Y" : "N"
+                })}
+                className="w-5 h-5 rounded-full border-2 border-indigo-500 text-indigo-600 focus:ring-indigo-500"
+              />
+              <span className={`flex-1 ${todo.completeYn === "Y" ? "line-through text-gray-400" : ""}`}>
+                {todo.content}
+              </span>
+              <span className="text-sm font-medium text-gray-500">
+                {numberWithCommas(todo.point)} pts
+              </span>
+              {(!todo.member || userSeq === todo.member.managerSeq) && (
+                <button
+                  onClick={() => deleteTodo(todo)}
+                  className="p-1 text-red-500 hover:bg-red-50 rounded-full"
+                >
+                  <TrashIcon className="w-5 h-5" />
+                </button>
+              )}
+            </div>
+            <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
+              <span>{getTodoTypeString(todo.type)}</span>
+              {todo.member && (
+                <>
+                  <span>•</span>
+                  <MemberTag userSeq={userSeq} member={todo.member} />
+                </>
+              )}
+            </div>
+          </TodoItem>
+        ))}
       </div>
+    </TodoContainer>
     </>
   );
 }
