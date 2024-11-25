@@ -1,18 +1,15 @@
 // next.config.js
 /** @type {import('next').NextConfig} */
-const runtimeCaching = require('next-pwa/cache');
 const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,
   skipWaiting: true,
-  customWorkerDir: 'worker',
-  runtimeCaching,
+  disable: process.env.NODE_ENV === 'development',
+  runtimeCaching: require('next-pwa/cache')
 });
 
-const nextConfig = withPWA({
-    experimental: {
-        appDir: true,
-      },
-})
+const nextConfig = {
+  // experimental 섹션 제거
+}
 
-module.exports = nextConfig
+module.exports = withPWA(nextConfig);
