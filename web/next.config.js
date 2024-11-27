@@ -7,7 +7,9 @@ const withPWA = require('next-pwa')({
   disable: process.env.NODE_ENV === 'development',
   runtimeCaching: require('next-pwa/cache'),
   buildExcludes: [/firebase-messaging-sw\.js$/],
-  customWorkerDir: 'public'
+  customWorkerDir: 'public',
+  scope: '/',
+  publicExcludes: ['!firebase-messaging-sw.js']
 });
 
 const nextConfig = {
@@ -19,6 +21,23 @@ const nextConfig = {
       };
     }
     return config;
+  },
+  async headers() {
+    return [
+      {
+        source: '/firebase-messaging-sw.js',
+        headers: [
+          {
+            key: 'Service-Worker-Allowed',
+            value: '/',
+          },
+          {
+            key: 'Content-Type',
+            value: 'application/javascript',
+          },
+        ],
+      },
+    ];
   },
 }
 

@@ -7,6 +7,9 @@ import {
 } from "firebase/auth";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
+import { client } from "./todo/fetchHelper";
+
+
 const app = initializeApp({
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -42,7 +45,6 @@ if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
         // FCM 메세지 처리
         onMessage(messaging, (payload) => {
           console.log("메세지 수신됨: ", payload);
-          // 알림 표시
           new Notification(payload?.notification?.title || 'Title', {
             body: payload?.notification?.body,
             icon: payload?.notification?.icon,
@@ -62,6 +64,7 @@ export async function getMessageToken() {
       vapidKey: process.env.NEXT_PUBLIC_APP_VAPID_KEY,
     });
     console.log("토큰 획득 성공:", token);
+    await saveTokenToServer(token);
     return token;
   } catch (error) {
     console.error("토큰 획득 실패:", error);
@@ -81,3 +84,19 @@ const gProvider = new GoogleAuthProvider();
 export const signInWithGoogle = async () => {
   await signInWithPopup(auth, gProvider);
 };
+
+// 서버에 토큰을 저장하는 함수
+async function saveTokenToServer(token: string) {
+  try {
+    client(`/user/settingDeviceToken`, {
+      method: "POST",
+      body: {
+        deviceToken: token,
+      },
+    }).then(() => {
+      console.log("setting deviceToken");
+    });
+  } catch (error) {
+    console.error('서버에 토큰 저장 중 오류 발생:', error);
+  }
+}

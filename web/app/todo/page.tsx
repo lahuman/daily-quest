@@ -117,7 +117,7 @@ const TodoInput = styled.div`
   margin-bottom: 2rem;
 `;
 
-const TodoItem = styled.div<{ completed: boolean }>`
+const TodoItem = styled.div<{ completed: string }>`
   background: ${(props) => (props.completed ? "#f8fafc" : "#ffffff")};
   border-radius: 12px;
   padding: 1rem;
@@ -140,7 +140,7 @@ export default function Todo() {
   const [newPoint, setNewPoint] = useState<number | string>(0);
   const [type, setType] = useState<TODO_TYPE>(TODO_TYPE.OC);
   const [dateStr, setDateStr] = useState(
-    params.get("today") || format(new Date(), "yyyyMMdd")
+    params?.get("today") || format(new Date(), "yyyyMMdd")
   );
 
   const [list, setList] = useState<TodoVo[] | undefined>();
@@ -340,7 +340,7 @@ export default function Todo() {
 
         <div className="space-y-3">
           {list?.map((todo, idx) => (
-            <TodoItem key={idx} completed={todo.completeYn === "Y"}>
+            <TodoItem key={idx} completed={todo.completeYn}>
               <div className="flex items-center gap-3">
                 <input
                   type="checkbox"

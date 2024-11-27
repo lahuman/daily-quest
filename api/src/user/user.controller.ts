@@ -38,7 +38,7 @@ export class UserController {
     return await this.userService.existEmail(email);
   }
 
-  @ApiOperation({ summary: '이메일 기준 사용자 seq 조회' })
+  @ApiOperation({ summary: '디바이스 토큰 저장 처리' })
   @Post('/settingDeviceToken')
   @UseGuards(UserGuard)
   async deviceToken(
