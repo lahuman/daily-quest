@@ -153,7 +153,7 @@ export default function Member() {
       {loading && <Loading />}
       <MemberContainer>
         <MemberInput>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col items-start gap-3">
             <div
               className="cursor-pointer rounded-lg w-10 h-10 flex-shrink-0"
               style={{ backgroundColor: color }}
@@ -171,25 +171,27 @@ export default function Member() {
                 </div>
               )}
             </div>
-            <input
-              value={name}
-              style={{ color: color }}
-              onChange={(e) => setName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.nativeEvent.isComposing && name.trim() !== "") {
-                  e.preventDefault();
-                  saveMember();
-                }
-              }}
-              placeholder="이름을 입력하세요"
-              className="flex-1 px-4 py-2 rounded-lg bg-white border-0 focus:ring-2 focus:ring-indigo-500"
-            />
-            <button 
-              onClick={saveMember}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors whitespace-nowrap"
-            >
-              등록
-            </button>
+            <div className="flex flex-row items-end gap-3">
+              <input
+                value={name}
+                style={{ color: color }}
+                onChange={(e) => setName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.nativeEvent.isComposing && name.trim() !== "") {
+                    e.preventDefault();
+                    saveMember();
+                  }
+                }}
+                placeholder="이름을 입력하세요"
+                className="flex-1 px-4 py-2 rounded-lg bg-white border-0 focus:ring-2 focus:ring-indigo-500"
+              />
+              <button 
+                onClick={saveMember}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors whitespace-nowrap"
+              >
+                등록
+              </button>
+            </div>
           </div>
         </MemberInput>
 
