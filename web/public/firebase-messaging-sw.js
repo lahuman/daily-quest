@@ -16,15 +16,15 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 
-// messaging.onBackgroundMessage(function(payload) {
-//   console.log('[firebase-messaging-sw.js] 백그라운드 메시지 수신 ', payload);
-//   const notificationTitle = payload.notification.title;
-//   const notificationOptions = {
-//     body: payload.notification.body,
-//   };
+messaging.onBackgroundMessage(function(payload) {
+  console.log('[firebase-messaging-sw.js] 백그라운드 메시지 수신 ', payload);
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
+    body: payload.notification.body,
+  };
 
-//   self.registration.showNotification(notificationTitle, notificationOptions);
-// });
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});
 
 self.addEventListener("install", function (e) {
   console.log("fcm sw install..");
